@@ -1,0 +1,282 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<tags>
+  <row Id="1" TagName="llc" Count="88" ExcerptPostId="50" WikiPostId="49" />
+  <row Id="2" TagName="new-hampshire" Count="2" ExcerptPostId="177" WikiPostId="176" />
+  <row Id="4" TagName="united-states" Count="176" ExcerptPostId="188" WikiPostId="187" />
+  <row Id="6" TagName="mobile-apps" Count="179" ExcerptPostId="4" WikiPostId="3" />
+  <row Id="7" TagName="tech-company" Count="305" ExcerptPostId="8620" WikiPostId="8619" />
+  <row Id="8" TagName="business-plan" Count="166" />
+  <row Id="11" TagName="investment" Count="103" ExcerptPostId="1464" WikiPostId="1463" />
+  <row Id="13" TagName="venture-capital" Count="58" />
+  <row Id="14" TagName="intellectual-property" Count="106" />
+  <row Id="15" TagName="united-kingdom" Count="64" ExcerptPostId="298" WikiPostId="297" />
+  <row Id="16" TagName="low-capital" Count="9" />
+  <row Id="18" TagName="pennsylvania" Count="1" ExcerptPostId="175" WikiPostId="174" />
+  <row Id="19" TagName="new-york" Count="5" ExcerptPostId="179" WikiPostId="178" />
+  <row Id="20" TagName="taxes" Count="134" ExcerptPostId="1210" WikiPostId="1209" />
+  <row Id="22" TagName="freelancing" Count="25" ExcerptPostId="324" WikiPostId="323" />
+  <row Id="23" TagName="marketing" Count="285" ExcerptPostId="7605" WikiPostId="7604" />
+  <row Id="24" TagName="sales" Count="102" ExcerptPostId="1469" WikiPostId="1468" />
+  <row Id="25" TagName="salary" Count="29" ExcerptPostId="1489" WikiPostId="1488" />
+  <row Id="26" TagName="structure" Count="5" />
+  <row Id="27" TagName="product" Count="89" ExcerptPostId="1460" WikiPostId="1459" />
+  <row Id="28" TagName="service" Count="27" />
+  <row Id="29" TagName="team" Count="43" ExcerptPostId="1477" WikiPostId="1476" />
+  <row Id="30" TagName="compensation" Count="11" />
+  <row Id="32" TagName="copyright" Count="64" ExcerptPostId="1467" WikiPostId="1466" />
+  <row Id="33" TagName="international" Count="48" ExcerptPostId="1475" WikiPostId="1474" />
+  <row Id="34" TagName="trademark" Count="54" />
+  <row Id="35" TagName="patent" Count="31" />
+  <row Id="36" TagName="internet" Count="22" ExcerptPostId="1483" WikiPostId="1482" />
+  <row Id="37" TagName="young-entrepreneurs" Count="24" ExcerptPostId="256" WikiPostId="255" />
+  <row Id="39" TagName="brand" Count="46" />
+  <row Id="41" TagName="stock" Count="31" />
+  <row Id="42" TagName="restricted-stock" Count="4" />
+  <row Id="43" TagName="stock-options" Count="51" ExcerptPostId="9481" WikiPostId="9480" />
+  <row Id="45" TagName="employee-compensation" Count="34" />
+  <row Id="46" TagName="employees" Count="53" ExcerptPostId="1462" WikiPostId="1461" />
+  <row Id="48" TagName="b2b" Count="18" ExcerptPostId="109" WikiPostId="108" />
+  <row Id="52" TagName="silicon-valley" Count="9" />
+  <row Id="54" TagName="ltd" Count="11" />
+  <row Id="55" TagName="director-duties" Count="5" />
+  <row Id="58" TagName="business-proposal" Count="22" />
+  <row Id="59" TagName="partners" Count="26" />
+  <row Id="60" TagName="business-capital" Count="17" />
+  <row Id="63" TagName="partnership" Count="72" />
+  <row Id="64" TagName="naming" Count="17" ExcerptPostId="1485" WikiPostId="1484" />
+  <row Id="65" TagName="testing" Count="10" />
+  <row Id="66" TagName="company-culture" Count="5" />
+  <row Id="67" TagName="umbrella" Count="2" />
+  <row Id="68" TagName="hiring" Count="47" ExcerptPostId="1479" WikiPostId="1478" />
+  <row Id="69" TagName="incubators" Count="8" />
+  <row Id="70" TagName="contractors" Count="20" />
+  <row Id="72" TagName="equity" Count="184" ExcerptPostId="3522" WikiPostId="3521" />
+  <row Id="73" TagName="insurance" Count="15" />
+  <row Id="74" TagName="funding" Count="115" ExcerptPostId="1473" WikiPostId="1472" />
+  <row Id="75" TagName="crowd-funding" Count="35" />
+  <row Id="76" TagName="minimum-viable-product" Count="22" />
+  <row Id="77" TagName="83b" Count="5" />
+  <row Id="79" TagName="ownership" Count="16" />
+  <row Id="82" TagName="resources" Count="7" />
+  <row Id="83" TagName="vision" Count="7" />
+  <row Id="84" TagName="communication" Count="14" />
+  <row Id="85" TagName="us-government" Count="4" ExcerptPostId="326" WikiPostId="325" />
+  <row Id="86" TagName="paperwork" Count="5" />
+  <row Id="87" TagName="business-registration" Count="93" />
+  <row Id="89" TagName="canada" Count="24" ExcerptPostId="316" WikiPostId="315" />
+  <row Id="90" TagName="corporation" Count="14" />
+  <row Id="92" TagName="software" Count="156" ExcerptPostId="8622" WikiPostId="8621" />
+  <row Id="93" TagName="beta-testing" Count="14" />
+  <row Id="94" TagName="sole-proprietorship" Count="15" />
+  <row Id="95" TagName="value" Count="13" />
+  <row Id="96" TagName="s-corporation" Count="13" />
+  <row Id="98" TagName="game-studio" Count="11" />
+  <row Id="99" TagName="grants" Count="4" />
+  <row Id="100" TagName="agile" Count="7" />
+  <row Id="102" TagName="project-management" Count="24" />
+  <row Id="104" TagName="founder" Count="56" ExcerptPostId="1440" WikiPostId="1439" />
+  <row Id="105" TagName="ceo" Count="15" />
+  <row Id="106" TagName="leadership" Count="8" />
+  <row Id="107" TagName="business-card" Count="2" />
+  <row Id="108" TagName="billing" Count="10" />
+  <row Id="109" TagName="statistics" Count="5" />
+  <row Id="110" TagName="gaming" Count="4" />
+  <row Id="111" TagName="india" Count="36" ExcerptPostId="220" WikiPostId="219" />
+  <row Id="112" TagName="web-development" Count="79" />
+  <row Id="114" TagName="android-development" Count="21" />
+  <row Id="116" TagName="hardware" Count="18" />
+  <row Id="117" TagName="discounts" Count="6" />
+  <row Id="118" TagName="consulting" Count="18" />
+  <row Id="120" TagName="angel-investors" Count="46" ExcerptPostId="3519" WikiPostId="3518" />
+  <row Id="121" TagName="investors" Count="89" />
+  <row Id="122" TagName="filing" Count="2" />
+  <row Id="123" TagName="legal" Count="308" ExcerptPostId="1212" WikiPostId="1211" />
+  <row Id="124" TagName="startup-costs" Count="173" />
+  <row Id="125" TagName="texas" Count="5" ExcerptPostId="328" WikiPostId="327" />
+  <row Id="126" TagName="sri-lanka" Count="1" ExcerptPostId="320" WikiPostId="319" />
+  <row Id="128" TagName="bootstrapping" Count="21" />
+  <row Id="130" TagName="liability-insurance" Count="9" />
+  <row Id="131" TagName="accounting" Count="37" />
+  <row Id="132" TagName="entrepreneurism-abroad" Count="6" />
+  <row Id="133" TagName="target-market" Count="49" />
+  <row Id="134" TagName="cashflow" Count="8" />
+  <row Id="135" TagName="growth" Count="70" ExcerptPostId="1438" WikiPostId="1437" />
+  <row Id="136" TagName="e-commerce" Count="43" />
+  <row Id="137" TagName="website" Count="166" />
+  <row Id="138" TagName="cloud" Count="9" />
+  <row Id="139" TagName="servers" Count="10" />
+  <row Id="140" TagName="singapore" Count="2" ExcerptPostId="318" WikiPostId="317" />
+  <row Id="141" TagName="massachusetts" Count="4" ExcerptPostId="322" WikiPostId="321" />
+  <row Id="144" TagName="non-disclosure-agreement" Count="20" />
+  <row Id="150" TagName="liquidation" Count="3" ExcerptPostId="362" WikiPostId="361" />
+  <row Id="153" TagName="financing" Count="31" ExcerptPostId="1481" WikiPostId="1480" />
+  <row Id="154" TagName="peer-to-peer" Count="3" />
+  <row Id="155" TagName="design" Count="18" />
+  <row Id="157" TagName="seed" Count="27" />
+  <row Id="158" TagName="global" Count="6" />
+  <row Id="161" TagName="georgia" Count="2" ExcerptPostId="515" WikiPostId="514" />
+  <row Id="162" TagName="negotiation" Count="11" />
+  <row Id="165" TagName="management" Count="21" />
+  <row Id="166" TagName="process" Count="11" />
+  <row Id="167" TagName="lean" Count="12" ExcerptPostId="5279" WikiPostId="5278" />
+  <row Id="170" TagName="finance" Count="53" />
+  <row Id="173" TagName="delaware" Count="17" />
+  <row Id="176" TagName="networking" Count="25" />
+  <row Id="177" TagName="social-networking" Count="41" ExcerptPostId="1471" WikiPostId="1470" />
+  <row Id="178" TagName="advertising" Count="89" />
+  <row Id="179" TagName="exit" Count="20" />
+  <row Id="184" TagName="employment" Count="15" />
+  <row Id="185" TagName="vesting" Count="17" />
+  <row Id="188" TagName="field-sales" Count="2" />
+  <row Id="189" TagName="customer-development" Count="68" />
+  <row Id="191" TagName="germany" Count="12" />
+  <row Id="192" TagName="quotations" Count="3" />
+  <row Id="193" TagName="law" Count="2" />
+  <row Id="194" TagName="lawyer" Count="15" />
+  <row Id="196" TagName="debt" Count="7" />
+  <row Id="197" TagName="business-model" Count="135" />
+  <row Id="206" TagName="ycombinator" Count="12" />
+  <row Id="208" TagName="market-research" Count="96" />
+  <row Id="209" TagName="forecasting" Count="3" />
+  <row Id="210" TagName="difficult-client" Count="9" />
+  <row Id="211" TagName="contracts" Count="46" />
+  <row Id="213" TagName="pitch" Count="29" />
+  <row Id="214" TagName="revenue" Count="24" />
+  <row Id="216" TagName="goals" Count="1" ExcerptPostId="1233" WikiPostId="1232" />
+  <row Id="222" TagName="idea" Count="94" ExcerptPostId="11842" WikiPostId="11841" />
+  <row Id="223" TagName="domain-name" Count="43" ExcerptPostId="1231" WikiPostId="1230" />
+  <row Id="224" TagName="hours" Count="7" />
+  <row Id="226" TagName="parallel-entrepreneur" Count="3" />
+  <row Id="228" TagName="human-resources" Count="10" />
+  <row Id="231" TagName="merchant-services" Count="9" />
+  <row Id="232" TagName="payment" Count="88" />
+  <row Id="233" TagName="saas" Count="51" ExcerptPostId="3378" WikiPostId="3377" />
+  <row Id="234" TagName="benefits" Count="6" />
+  <row Id="237" TagName="business-structure" Count="53" ExcerptPostId="6135" WikiPostId="6134" />
+  <row Id="239" TagName="pricing" Count="48" />
+  <row Id="240" TagName="economics" Count="2" />
+  <row Id="241" TagName="stealth" Count="2" />
+  <row Id="242" TagName="launch" Count="27" />
+  <row Id="243" TagName="customer-service" Count="28" />
+  <row Id="244" TagName="affiliate-marketing" Count="11" />
+  <row Id="246" TagName="metrics" Count="7" ExcerptPostId="1227" WikiPostId="1226" />
+  <row Id="247" TagName="retention" Count="5" ExcerptPostId="1229" WikiPostId="1228" />
+  <row Id="248" TagName="earnings" Count="7" ExcerptPostId="1208" WikiPostId="1207" />
+  <row Id="249" TagName="buisness-model" Count="6" ExcerptPostId="1225" WikiPostId="1224" />
+  <row Id="252" TagName="work-for-hire" Count="4" />
+  <row Id="253" TagName="maryland" Count="3" ExcerptPostId="5764" WikiPostId="5763" />
+  <row Id="254" TagName="australia" Count="10" ExcerptPostId="13543" WikiPostId="13542" />
+  <row Id="255" TagName="fundraising" Count="23" />
+  <row Id="256" TagName="lean-startup" Count="94" ExcerptPostId="3376" WikiPostId="3375" />
+  <row Id="257" TagName="interns" Count="7" />
+  <row Id="259" TagName="colorado" Count="3" />
+  <row Id="262" TagName="china" Count="10" />
+  <row Id="263" TagName="acquisition" Count="12" />
+  <row Id="265" TagName="tax-structure" Count="10" />
+  <row Id="268" TagName="public-company" Count="8" />
+  <row Id="269" TagName="private-company" Count="22" />
+  <row Id="270" TagName="expansion" Count="7" />
+  <row Id="271" TagName="seasonal" Count="8" ExcerptPostId="1707" WikiPostId="1706" />
+  <row Id="273" TagName="family-business" Count="5" ExcerptPostId="5704" WikiPostId="5703" />
+  <row Id="278" TagName="security" Count="12" />
+  <row Id="279" TagName="restaurants" Count="8" />
+  <row Id="284" TagName="non-profit" Count="8" />
+  <row Id="286" TagName="yc-how-to-start-a-startup" Count="22" ExcerptPostId="3265" WikiPostId="3264" />
+  <row Id="292" TagName="accelerators" Count="9" />
+  <row Id="294" TagName="valuation" Count="42" />
+  <row Id="296" TagName="app-store-optimization" Count="12" />
+  <row Id="297" TagName="ab-testing" Count="4" />
+  <row Id="299" TagName="entrepreneurship" Count="43" />
+  <row Id="303" TagName="chicken-egg" Count="7" />
+  <row Id="304" TagName="content" Count="17" />
+  <row Id="305" TagName="california" Count="9" />
+  <row Id="308" TagName="network-effect" Count="3" />
+  <row Id="309" TagName="product-market-fit" Count="31" ExcerptPostId="3515" WikiPostId="3514" />
+  <row Id="310" TagName="time-management" Count="9" />
+  <row Id="312" TagName="analytics" Count="10" />
+  <row Id="313" TagName="data" Count="29" />
+  <row Id="315" TagName="innovation-accounting" Count="3" />
+  <row Id="317" TagName="pivoting" Count="10" />
+  <row Id="318" TagName="learning" Count="6" />
+  <row Id="319" TagName="cto" Count="17" />
+  <row Id="320" TagName="yc-startup-school" Count="3" />
+  <row Id="321" TagName="media" Count="7" />
+  <row Id="324" TagName="iowa" Count="3" />
+  <row Id="325" TagName="c-corporation" Count="10" />
+  <row Id="327" TagName="prototyping" Count="16" ExcerptPostId="3397" WikiPostId="3396" />
+  <row Id="328" TagName="iterative-development" Count="3" />
+  <row Id="334" TagName="applying" Count="2" />
+  <row Id="335" TagName="term-sheet" Count="5" />
+  <row Id="337" TagName="incorporation" Count="36" />
+  <row Id="338" TagName="online-tool" Count="12" />
+  <row Id="339" TagName="social-entrepreneurship" Count="2" />
+  <row Id="340" TagName="outsourcing" Count="18" />
+  <row Id="341" TagName="italy" Count="2" />
+  <row Id="344" TagName="video" Count="8" />
+  <row Id="348" TagName="programmers" Count="15" />
+  <row Id="350" TagName="co-founder" Count="67" ExcerptPostId="7511" WikiPostId="7510" />
+  <row Id="354" TagName="resale" Count="6" />
+  <row Id="356" TagName="michigan" Count="2" ExcerptPostId="4079" WikiPostId="4078" />
+  <row Id="359" TagName="applications" Count="17" />
+  <row Id="360" TagName="closing" Count="3" />
+  <row Id="361" TagName="licensing" Count="25" />
+  <row Id="362" TagName="open-source" Count="10" />
+  <row Id="363" TagName="retail" Count="9" />
+  <row Id="364" TagName="terminology" Count="6" />
+  <row Id="367" TagName="community" Count="10" />
+  <row Id="373" TagName="user-engagement" Count="10" />
+  <row Id="374" TagName="market-size" Count="20" />
+  <row Id="375" TagName="commissions" Count="7" />
+  <row Id="376" TagName="distribution" Count="9" />
+  <row Id="378" TagName="shipping" Count="5" />
+  <row Id="380" TagName="competitive-events" Count="3" />
+  <row Id="381" TagName="lean-startup-machine" Count="1" ExcerptPostId="5277" WikiPostId="5276" />
+  <row Id="395" TagName="profit-sharing" Count="15" />
+  <row Id="397" TagName="strategy" Count="22" />
+  <row Id="398" TagName="sell" Count="20" />
+  <row Id="401" TagName="startup-weekend" Count="10" />
+  <row Id="402" TagName="pre-launch" Count="12" />
+  <row Id="406" TagName="buy-out" Count="11" />
+  <row Id="407" TagName="business-methodology" Count="6" />
+  <row Id="409" TagName="online-store" Count="12" />
+  <row Id="410" TagName="fulfilment" Count="4" />
+  <row Id="411" TagName="crm" Count="3" />
+  <row Id="412" TagName="email-marketing" Count="10" />
+  <row Id="415" TagName="web-apps" Count="21" />
+  <row Id="417" TagName="enterprise" Count="7" />
+  <row Id="420" TagName="designation" Count="3" />
+  <row Id="421" TagName="churn" Count="2" />
+  <row Id="426" TagName="europe" Count="9" ExcerptPostId="8054" WikiPostId="8053" />
+  <row Id="427" TagName="vat" Count="6" ExcerptPostId="8056" WikiPostId="8055" />
+  <row Id="428" TagName="seo" Count="6" />
+  <row Id="429" TagName="ltv" Count="2" />
+  <row Id="433" TagName="board" Count="5" />
+  <row Id="434" TagName="user-acquisition" Count="13" />
+  <row Id="435" TagName="logo" Count="7" />
+  <row Id="436" TagName="russia" Count="2" />
+  <row Id="438" TagName="privacy" Count="6" />
+  <row Id="441" TagName="education" Count="5" />
+  <row Id="442" TagName="bizspark" Count="10" ExcerptPostId="8881" WikiPostId="8880" />
+  <row Id="443" TagName="competition" Count="8" />
+  <row Id="444" TagName="budget" Count="6" />
+  <row Id="446" TagName="skills" Count="5" />
+  <row Id="447" TagName="untagged" Count="6" ExcerptPostId="13581" WikiPostId="13580" />
+  <row Id="450" TagName="importing" Count="3" />
+  <row Id="456" TagName="ipo" Count="3" />
+  <row Id="458" TagName="remote" Count="14" />
+  <row Id="461" TagName="france" Count="5" />
+  <row Id="467" TagName="tax" Count="5" />
+  <row Id="468" TagName="pay" Count="6" />
+  <row Id="475" TagName="shares" Count="32" />
+  <row Id="480" TagName="export" Count="4" />
+  <row Id="481" TagName="app-store" Count="3" />
+  <row Id="482" TagName="convertible-note" Count="5" />
+  <row Id="484" TagName="mvp" Count="6" />
+  <row Id="485" TagName="monetization" Count="1" />
+  <row Id="486" TagName="south-america" Count="1" ExcerptPostId="12941" WikiPostId="12940" />
+  <row Id="487" TagName="pakistan" Count="1" />
+  <row Id="488" TagName="marketplace" Count="2" />
+  <row Id="490" TagName="intrapreneur" Count="2" />
+  <row Id="491" TagName="customs" Count="1" />
+  <row Id="492" TagName="us" Count="1" />
+</tags>
