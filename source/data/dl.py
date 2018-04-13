@@ -11,10 +11,10 @@ def download_file(url):
                 f.write(chunk)
     return local_filename
 
-
-base = 'https://archive.org'
-bar = progressbar.ProgressBar()
-with open('urls', 'r') as f:
-    contents = f.readlines()[0].split()
-    for url in bar(contents):
-        download_file(base + url)
+if __name__ == "__main__":
+	base = 'https://archive.org'
+	bar = progressbar.ProgressBar()
+	with open('urls', 'r') as f:
+		contents = f.readlines()[0].split()
+		for url in bar(contents):
+			download_file(base + url)
