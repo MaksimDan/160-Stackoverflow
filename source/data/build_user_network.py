@@ -47,9 +47,10 @@ class SetEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-def build_graph():
+def build_graph(_indent=0):
     """
     Builds a network that represents the communication between users.
+	@param _indent: int - indent space for printy print
     :return: str - JSON graph
     """
     # load data
@@ -81,9 +82,12 @@ def build_graph():
         # poster adds a comment
         owner_id, post_id = int(comment.PostId), int(comment.UserId)
         graph[owner_id]['comments'].add(post_id)
-    return json.dumps(graph, indent=4, cls=SetEncoder)
+    return json.dumps(graph, indent=_indent, cls=SetEncoder)
 
 
 if __name__ == "__main__":
-    sys.stdout = open("graph_dump.txt", "w")
-    print(build_graph())
+	sys.stdout = open("graph_dump_view.txt", "w")
+	print(build_graph(4))
+
+	sys.stdout = open("graph_dump_load.txt", "w")
+	print(build_graph())
