@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>eda</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>EDA</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -11795,7 +11795,7 @@ $( document ).ready(function(){
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[180]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
@@ -11823,16 +11823,10 @@ $( document ).ready(function(){
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[182]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Badges</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;/Users/esmondchu/Dropbox/160-Stackoverflow-Data/100000_rows_[168_MB]/Badges.csv&#39;</span><span class="p">)</span>
-<span class="n">Comments</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;/Users/esmondchu/Dropbox/160-Stackoverflow-Data/100000_rows_[168_MB]/Comments.csv&#39;</span><span class="p">)</span>
-<span class="n">PostHistory</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;/Users/esmondchu/Dropbox/160-Stackoverflow-Data/100000_rows_[168_MB]/PostHistory.csv&#39;</span><span class="p">)</span>
-<span class="n">Postlinks</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;/Users/esmondchu/Dropbox/160-Stackoverflow-Data/100000_rows_[168_MB]/Postlinks.csv&#39;</span><span class="p">)</span>
-<span class="n">Posts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;/Users/esmondchu/Dropbox/160-Stackoverflow-Data/100000_rows_[168_MB]/Posts.csv&#39;</span><span class="p">)</span>
-<span class="n">Users</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;/Users/esmondchu/Dropbox/160-Stackoverflow-Data/100000_rows_[168_MB]/Users.csv&#39;</span><span class="p">)</span>
-<span class="n">Votes</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;/Users/esmondchu/Dropbox/160-Stackoverflow-Data/100000_rows_[168_MB]/Votes.csv&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Posts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;/Users/esmondchu/Dropbox/160-Stackoverflow-Data/300000_rows_[504_MB]/Posts.csv&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11850,7 +11844,7 @@ $( document ).ready(function(){
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[183]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">Posts</span><span class="o">.</span><span class="n">isnull</span><span class="p">(),</span> <span class="n">yticklabels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -11867,7 +11861,7 @@ $( document ).ready(function(){
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[3]:</div>
+<div class="prompt output_prompt">Out[183]:</div>
 
 
 
@@ -11886,7 +11880,7 @@ $( document ).ready(function(){
 
 
 <div class="output_png output_subarea ">
-<img src="eda_files/eda_4_1.png"
+<img src="EDA_files/EDA_4_1.png"
 >
 </div>
 
@@ -11898,7 +11892,7 @@ $( document ).ready(function(){
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[184]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">Posts</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
@@ -11919,30 +11913,30 @@ $( document ).ready(function(){
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
-RangeIndex: 100000 entries, 0 to 99999
+RangeIndex: 300000 entries, 0 to 299999
 Data columns (total 20 columns):
-Id                       100000 non-null int64
-PostTypeId               100000 non-null int64
-ParentID                 81053 non-null float64
-AcceptedAnswerId         15069 non-null float64
-CreationDate             100000 non-null object
-Score                    100000 non-null int64
-ViewCount                18947 non-null float64
-Body                     100000 non-null object
-OwnerUserId              96210 non-null float64
-LastEditorUserId         35095 non-null float64
-LastEditorDisplayName    21143 non-null object
-LastEditDate             35478 non-null object
-LastActivityDate         100000 non-null object
-CommunityOwnedDate       5502 non-null object
-ClosedDate               2047 non-null object
-Title                    18947 non-null object
-Tags                     18947 non-null object
-AnswerCount              18947 non-null float64
-CommentCount             100000 non-null int64
-FavoriteCount            12767 non-null float64
+Id                       300000 non-null int64
+PostTypeId               300000 non-null int64
+ParentID                 236239 non-null float64
+AcceptedAnswerId         48185 non-null float64
+CreationDate             300000 non-null object
+Score                    300000 non-null int64
+ViewCount                63761 non-null float64
+Body                     300000 non-null object
+OwnerUserId              285662 non-null float64
+LastEditorUserId         103583 non-null float64
+LastEditorDisplayName    67816 non-null object
+LastEditDate             104904 non-null object
+LastActivityDate         300000 non-null object
+CommunityOwnedDate       14309 non-null object
+ClosedDate               5037 non-null object
+Title                    63761 non-null object
+Tags                     63762 non-null object
+AnswerCount              63761 non-null float64
+CommentCount             300000 non-null int64
+FavoriteCount            41516 non-null float64
 dtypes: float64(7), int64(4), object(9)
-memory usage: 15.3+ MB
+memory usage: 45.8+ MB
 </pre>
 </div>
 </div>
@@ -11961,7 +11955,7 @@ memory usage: 15.3+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[185]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
@@ -11985,7 +11979,7 @@ memory usage: 15.3+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[186]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_answers</span> <span class="o">=</span> <span class="n">Posts</span><span class="p">[</span><span class="n">Posts</span><span class="o">.</span><span class="n">PostTypeId</span> <span class="o">==</span> <span class="mi">2</span><span class="p">]</span>
@@ -11998,7 +11992,7 @@ memory usage: 15.3+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[187]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_answers</span> <span class="o">=</span> <span class="n">df_answers</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -12011,7 +12005,7 @@ memory usage: 15.3+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[188]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_answers</span><span class="o">.</span><span class="n">CreationDate</span> <span class="o">=</span> <span class="n">df_answers</span><span class="o">.</span><span class="n">CreationDate</span><span class="o">.</span><span class="n">str</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span>
@@ -12024,7 +12018,7 @@ memory usage: 15.3+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[189]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">unix_ans</span> <span class="o">=</span> <span class="p">[</span><span class="n">date_ts</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">df_answers</span><span class="o">.</span><span class="n">CreationDate</span><span class="p">]</span>
@@ -12037,7 +12031,7 @@ memory usage: 15.3+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[190]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_answers_time</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;ParentID&#39;</span><span class="p">:</span><span class="n">df_answers</span><span class="o">.</span><span class="n">ParentID</span><span class="p">,</span> <span class="s1">&#39;Cr_time&#39;</span><span class="p">:</span><span class="n">unix_ans</span><span class="p">})</span>
@@ -12050,7 +12044,7 @@ memory usage: 15.3+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[191]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_list</span> <span class="o">=</span> <span class="n">df_answers_time</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">df_answers_time</span><span class="o">.</span><span class="n">ParentID</span><span class="p">)</span>
@@ -12063,7 +12057,7 @@ memory usage: 15.3+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[192]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">uni_par_id</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df_answers_time</span><span class="o">.</span><span class="n">ParentID</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
@@ -12076,7 +12070,7 @@ memory usage: 15.3+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[193]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">ans_date</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">df_list</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">Cr_time</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">uni_par_id</span><span class="p">]</span>
@@ -12089,7 +12083,7 @@ memory usage: 15.3+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[194]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">yes</span> <span class="o">=</span> <span class="mi">0</span>
@@ -12118,7 +12112,7 @@ memory usage: 15.3+ MB
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>2917 15773
+<pre>11868 50552
 </pre>
 </div>
 </div>
@@ -12129,7 +12123,7 @@ memory usage: 15.3+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[195]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#set 1-answer post sd to 0</span>
@@ -12147,7 +12141,7 @@ memory usage: 15.3+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[196]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">statistics</span>
@@ -12161,7 +12155,7 @@ memory usage: 15.3+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[197]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">post_Id</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">df_answers</span><span class="o">.</span><span class="n">ParentID</span><span class="o">.</span><span class="n">unique</span><span class="p">()))</span>
@@ -12174,7 +12168,7 @@ memory usage: 15.3+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[198]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">post_ans_sd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;post_Id&#39;</span><span class="p">:</span><span class="n">post_Id</span><span class="p">,</span> <span class="s1">&#39;time_sd&#39;</span><span class="p">:</span><span class="n">ans_time_sd</span><span class="p">})</span>
@@ -12187,7 +12181,7 @@ memory usage: 15.3+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[199]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">post_ans_sd</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -12203,7 +12197,7 @@ memory usage: 15.3+ MB
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[19]:</div>
+<div class="prompt output_prompt">Out[199]:</div>
 
 
 
@@ -12234,12 +12228,12 @@ memory usage: 15.3+ MB
     <tr>
       <th>0</th>
       <td>4.0</td>
-      <td>1.724331e+06</td>
+      <td>3.638888e+06</td>
     </tr>
     <tr>
       <th>1</th>
       <td>6.0</td>
-      <td>1.628865e+06</td>
+      <td>2.139598e+06</td>
     </tr>
     <tr>
       <th>2</th>
@@ -12249,7 +12243,7 @@ memory usage: 15.3+ MB
     <tr>
       <th>3</th>
       <td>11.0</td>
-      <td>1.567259e+06</td>
+      <td>2.019398e+06</td>
     </tr>
     <tr>
       <th>4</th>
@@ -12277,7 +12271,7 @@ memory usage: 15.3+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[200]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">Parents_post</span> <span class="o">=</span> <span class="n">Posts</span><span class="p">[</span><span class="n">Posts</span><span class="o">.</span><span class="n">PostTypeId</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
@@ -12290,7 +12284,7 @@ memory usage: 15.3+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[201]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">Parents_post</span> <span class="o">=</span> <span class="n">Parents_post</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -12303,7 +12297,7 @@ memory usage: 15.3+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[202]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">Parents_post</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
@@ -12324,30 +12318,30 @@ memory usage: 15.3+ MB
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
-RangeIndex: 18947 entries, 0 to 18946
+RangeIndex: 63761 entries, 0 to 63760
 Data columns (total 20 columns):
-Id                       18947 non-null int64
-PostTypeId               18947 non-null int64
+Id                       63761 non-null int64
+PostTypeId               63761 non-null int64
 ParentID                 0 non-null float64
-AcceptedAnswerId         15069 non-null float64
-CreationDate             18947 non-null object
-Score                    18947 non-null int64
-ViewCount                18947 non-null float64
-Body                     18947 non-null object
-OwnerUserId              17701 non-null float64
-LastEditorUserId         14223 non-null float64
-LastEditorDisplayName    9820 non-null object
-LastEditDate             14381 non-null object
-LastActivityDate         18947 non-null object
-CommunityOwnedDate       715 non-null object
-ClosedDate               2047 non-null object
-Title                    18947 non-null object
-Tags                     18947 non-null object
-AnswerCount              18947 non-null float64
-CommentCount             18947 non-null int64
-FavoriteCount            12767 non-null float64
+AcceptedAnswerId         48185 non-null float64
+CreationDate             63761 non-null object
+Score                    63761 non-null int64
+ViewCount                63761 non-null float64
+Body                     63761 non-null object
+OwnerUserId              57492 non-null float64
+LastEditorUserId         43692 non-null float64
+LastEditorDisplayName    31554 non-null object
+LastEditDate             44445 non-null object
+LastActivityDate         63761 non-null object
+CommunityOwnedDate       1884 non-null object
+ClosedDate               5037 non-null object
+Title                    63761 non-null object
+Tags                     63761 non-null object
+AnswerCount              63761 non-null float64
+CommentCount             63761 non-null int64
+FavoriteCount            41516 non-null float64
 dtypes: float64(7), int64(4), object(9)
-memory usage: 2.9+ MB
+memory usage: 9.7+ MB
 </pre>
 </div>
 </div>
@@ -12358,7 +12352,7 @@ memory usage: 2.9+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[203]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_parents</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;post_Id&#39;</span><span class="p">:</span><span class="n">Parents_post</span><span class="o">.</span><span class="n">Id</span><span class="p">,</span> <span class="s1">&#39;Views_count&#39;</span><span class="p">:</span><span class="n">Parents_post</span><span class="o">.</span><span class="n">ViewCount</span><span class="p">,</span>\
@@ -12372,7 +12366,7 @@ memory usage: 2.9+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[204]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_comb</span> <span class="o">=</span> <span class="n">df_parents</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">post_ans_sd</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;post_Id&#39;</span><span class="p">),</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;post_Id&#39;</span><span class="p">)</span>
@@ -12385,7 +12379,7 @@ memory usage: 2.9+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="prompt input_prompt">In&nbsp;[205]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_comb</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -12401,7 +12395,7 @@ memory usage: 2.9+ MB
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[25]:</div>
+<div class="prompt output_prompt">Out[205]:</div>
 
 
 
@@ -12438,7 +12432,7 @@ memory usage: 2.9+ MB
       <td>543</td>
       <td>34799.0</td>
       <td>4</td>
-      <td>1.724331e+06</td>
+      <td>3.638888e+06</td>
     </tr>
     <tr>
       <th>1</th>
@@ -12446,7 +12440,7 @@ memory usage: 2.9+ MB
       <td>241</td>
       <td>15696.0</td>
       <td>6</td>
-      <td>1.628865e+06</td>
+      <td>2.139598e+06</td>
     </tr>
     <tr>
       <th>2</th>
@@ -12462,7 +12456,7 @@ memory usage: 2.9+ MB
       <td>1286</td>
       <td>130055.0</td>
       <td>11</td>
-      <td>1.567259e+06</td>
+      <td>2.019398e+06</td>
     </tr>
     <tr>
       <th>4</th>
@@ -12493,7 +12487,7 @@ memory usage: 2.9+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="prompt input_prompt">In&nbsp;[206]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
@@ -12512,13 +12506,13 @@ memory usage: 2.9+ MB
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[26]:</div>
+<div class="prompt output_prompt">Out[206]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x1a29e69128&gt;</pre>
+<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x1a227c4f28&gt;</pre>
 </div>
 
 </div>
@@ -12531,7 +12525,7 @@ memory usage: 2.9+ MB
 
 
 <div class="output_png output_subarea ">
-<img src="eda_files/eda_30_1.png"
+<img src="EDA_files/EDA_30_1.png"
 >
 </div>
 
@@ -12551,7 +12545,7 @@ memory usage: 2.9+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[207]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_comb</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -12567,7 +12561,7 @@ memory usage: 2.9+ MB
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[27]:</div>
+<div class="prompt output_prompt">Out[207]:</div>
 
 
 
@@ -12604,7 +12598,7 @@ memory usage: 2.9+ MB
       <td>543</td>
       <td>34799.0</td>
       <td>4</td>
-      <td>1.724331e+06</td>
+      <td>3.638888e+06</td>
     </tr>
     <tr>
       <th>1</th>
@@ -12612,7 +12606,7 @@ memory usage: 2.9+ MB
       <td>241</td>
       <td>15696.0</td>
       <td>6</td>
-      <td>1.628865e+06</td>
+      <td>2.139598e+06</td>
     </tr>
     <tr>
       <th>2</th>
@@ -12628,7 +12622,7 @@ memory usage: 2.9+ MB
       <td>1286</td>
       <td>130055.0</td>
       <td>11</td>
-      <td>1.567259e+06</td>
+      <td>2.019398e+06</td>
     </tr>
     <tr>
       <th>4</th>
@@ -12651,7 +12645,7 @@ memory usage: 2.9+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="prompt input_prompt">In&nbsp;[208]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_comb</span><span class="o">.</span><span class="n">Views_count</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
@@ -12667,19 +12661,19 @@ memory usage: 2.9+ MB
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[28]:</div>
+<div class="prompt output_prompt">Out[208]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>count    1.894700e+04
-mean     3.093298e+04
-std      1.129652e+05
-min      5.900000e+01
-25%      1.401500e+03
-50%      4.288000e+03
-75%      1.628700e+04
+<pre>count    6.376100e+04
+mean     2.319304e+04
+std      9.509128e+04
+min      3.900000e+01
+25%      1.128000e+03
+50%      3.280000e+03
+75%      1.178500e+04
 max      3.328490e+06
 Name: Views_count, dtype: float64</pre>
 </div>
@@ -12692,7 +12686,7 @@ Name: Views_count, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[209]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_comb</span><span class="o">.</span><span class="n">Score</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
@@ -12708,20 +12702,20 @@ Name: Views_count, dtype: float64</pre>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[29]:</div>
+<div class="prompt output_prompt">Out[209]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>count    18947.000000
-mean        42.317306
-std        201.475094
+<pre>count    63761.000000
+mean        28.935509
+std        165.140779
 min         -7.000000
 25%          2.000000
-50%          6.000000
-75%         19.000000
-max       7658.000000
+50%          4.000000
+75%         13.000000
+max       9484.000000
 Name: Score, dtype: float64</pre>
 </div>
 
@@ -12733,7 +12727,7 @@ Name: Score, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[210]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">math</span>
@@ -12750,7 +12744,7 @@ Name: Score, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[211]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">View_log</span> <span class="o">=</span> <span class="n">df_comb</span><span class="o">.</span><span class="n">Views_count</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">loga</span><span class="p">)</span>
@@ -12763,7 +12757,7 @@ Name: Score, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="prompt input_prompt">In&nbsp;[212]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">Scores_log</span> <span class="o">=</span> <span class="n">df_comb</span><span class="o">.</span><span class="n">Score</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">loga</span><span class="p">)</span>
@@ -12776,7 +12770,7 @@ Name: Score, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="prompt input_prompt">In&nbsp;[213]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">yes</span> <span class="o">=</span> <span class="mi">0</span>
@@ -12803,7 +12797,7 @@ Name: Score, dtype: float64</pre>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>102 18845
+<pre>420 63341
 </pre>
 </div>
 </div>
@@ -12822,7 +12816,7 @@ Name: Score, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="prompt input_prompt">In&nbsp;[214]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
@@ -12841,13 +12835,13 @@ Name: Score, dtype: float64</pre>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[34]:</div>
+<div class="prompt output_prompt">Out[214]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x1a29ea60b8&gt;</pre>
+<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x1a29a7f5f8&gt;</pre>
 </div>
 
 </div>
@@ -12860,7 +12854,7 @@ Name: Score, dtype: float64</pre>
 
 
 <div class="output_png output_subarea ">
-<img src="eda_files/eda_40_1.png"
+<img src="EDA_files/EDA_40_1.png"
 >
 </div>
 
@@ -12879,9 +12873,17 @@ Name: Score, dtype: float64</pre>
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Parents-Post-Data-Wrangling">Parents Post Data Wrangling<a class="anchor-link" href="#Parents-Post-Data-Wrangling">&#182;</a></h2>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="prompt input_prompt">In&nbsp;[215]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Parents_post</span>
@@ -12898,7 +12900,7 @@ Name: Score, dtype: float64</pre>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[35]:</div>
+<div class="prompt output_prompt">Out[215]:</div>
 
 
 
@@ -13658,43 +13660,66 @@ Name: Score, dtype: float64</pre>
       <td>...</td>
     </tr>
     <tr>
-      <th>81023</th>
-      <td>159838</td>
+      <th>236209</th>
+      <td>437696</td>
       <td>2</td>
-      <td>142830.0</td>
+      <td>437683.0</td>
       <td>NaN</td>
-      <td>2008-10-01T21:27:25</td>
+      <td>2009-01-13T01:34:22</td>
       <td>0</td>
       <td>NaN</td>
-      <td>&lt;p&gt;A really important thing to check for when ...</td>
-      <td>23072.0</td>
+      <td>&lt;p&gt;For Win32 API way, you need &lt;strong&gt;GetProc...</td>
+      <td>12460.0</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>2008-10-01T21:27:25.023</td>
+      <td>2009-01-13T01:34:22.313</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>81024</th>
-      <td>159840</td>
-      <td>2</td>
-      <td>69546.0</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:27:32</td>
       <td>1</td>
       <td>NaN</td>
-      <td>&lt;p&gt;Instead of having the JS code out in the op...</td>
-      <td>23501.0</td>
+    </tr>
+    <tr>
+      <th>236210</th>
+      <td>437697</td>
+      <td>2</td>
+      <td>437674.0</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:34:33</td>
+      <td>17</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;Quick sample:&lt;/p&gt;\r\n\r\n&lt;pre&gt;&lt;code&gt;&amp;lt;%@ ...</td>
+      <td>43452.0</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>2008-10-01T21:27:32.307</td>
+      <td>2009-01-13T01:34:33.640</td>
+      <td>2009-01-13T01:34:33.640</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>236211</th>
+      <td>437699</td>
+      <td>2</td>
+      <td>437333.0</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:35:08</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;If you can give the table a fixed height, t...</td>
+      <td>14979.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:35:08.083</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -13704,342 +13729,158 @@ Name: Score, dtype: float64</pre>
       <td>NaN</td>
     </tr>
     <tr>
-      <th>81025</th>
-      <td>159841</td>
+      <th>236212</th>
+      <td>437701</td>
       <td>2</td>
-      <td>159039.0</td>
+      <td>437686.0</td>
       <td>NaN</td>
-      <td>2008-10-01T21:27:50</td>
+      <td>2009-01-13T01:36:28</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;The data is likely going to be in plain tex...</td>
+      <td>40161.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:36:28.627</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>236213</th>
+      <td>437702</td>
+      <td>2</td>
+      <td>436576.0</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:36:58</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;It looks like you skipped some steps when u...</td>
+      <td>54404.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:36:58.407</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>236214</th>
+      <td>437703</td>
+      <td>2</td>
+      <td>437676.0</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:37:31</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;I'm not specifically a games programmer, bu...</td>
+      <td>48933.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:37:31.793</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>236215</th>
+      <td>437705</td>
+      <td>2</td>
+      <td>437256.0</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:39:44</td>
+      <td>303</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;Your code is technically correct.  If you l...</td>
+      <td>4668.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:39:44.080</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>12</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>236216</th>
+      <td>437709</td>
+      <td>2</td>
+      <td>426991.0</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:41:14</td>
+      <td>3</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;&lt;em&gt;quote:&lt;/em&gt;&lt;/p&gt;\r\n\r\n&lt;blockquote&gt;\r\n...</td>
+      <td>31615.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:41:14.420</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>236217</th>
+      <td>437711</td>
+      <td>2</td>
+      <td>437698.0</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:41:34</td>
+      <td>6</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;From my little google search, I found &lt;a hr...</td>
+      <td>12460.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:41:34.453</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>236218</th>
+      <td>437717</td>
+      <td>2</td>
+      <td>437686.0</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:44:12</td>
       <td>4</td>
       <td>NaN</td>
-      <td>&lt;p&gt;&lt;a href="http://haxe.org/" rel="nofollow no...</td>
-      <td>4540.0</td>
-      <td>2631715.0</td>
+      <td>&lt;p&gt;Have a look at &lt;a href="http://raphaeljs.co...</td>
+      <td>38795.0</td>
       <td>NaN</td>
-      <td>2017-12-15T21:11:16.750</td>
-      <td>2017-12-15T21:11:16.750</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>1</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>81026</th>
-      <td>159843</td>
-      <td>2</td>
-      <td>159625.0</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:28:11</td>
-      <td>1</td>
-      <td>NaN</td>
-      <td>&lt;p&gt;Do what your users need. For instance, most...</td>
-      <td>23952.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:28:11.667</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>81027</th>
-      <td>159844</td>
-      <td>2</td>
-      <td>135664.0</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:28:21</td>
-      <td>3</td>
-      <td>NaN</td>
-      <td>&lt;blockquote&gt;\r\n  &lt;p&gt;A new function, &lt;code&gt;get...</td>
-      <td>20310.0</td>
-      <td>20310.0</td>
-      <td>Constantin</td>
-      <td>2008-10-01T21:43:17.170</td>
-      <td>2008-10-01T21:43:17.170</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>1</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>81028</th>
-      <td>159845</td>
-      <td>2</td>
-      <td>20034.0</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:28:26</td>
-      <td>1</td>
-      <td>NaN</td>
-      <td>&lt;p&gt;It sounds like fun to design and code, but ...</td>
-      <td>8435.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:28:26.050</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>81029</th>
-      <td>159847</td>
-      <td>2</td>
-      <td>159768.0</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:29:16</td>
-      <td>0</td>
-      <td>NaN</td>
-      <td>&lt;p&gt;Georgi:&lt;/p&gt;\r\n\r\n&lt;p&gt;That would help if it...</td>
-      <td>24302.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:29:16.343</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>81030</th>
-      <td>159848</td>
-      <td>2</td>
-      <td>157770.0</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:29:22</td>
-      <td>35</td>
-      <td>NaN</td>
-      <td>&lt;p&gt;As far as I know, you can only format the f...</td>
-      <td>24190.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:29:22.210</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>3</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>81031</th>
-      <td>159850</td>
-      <td>2</td>
-      <td>159597.0</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:29:36</td>
-      <td>0</td>
-      <td>NaN</td>
-      <td>&lt;p&gt;Only employ good engineers who ensure their...</td>
-      <td>23234.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:29:36.640</td>
-      <td>2008-10-01T22:35:08.497</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>1</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>81032</th>
-      <td>159851</td>
-      <td>2</td>
-      <td>136752.0</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:29:42</td>
-      <td>1</td>
-      <td>NaN</td>
-      <td>&lt;p&gt;FWIW, I've switched to using &lt;code&gt;CaptureS...</td>
-      <td>19505.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:29:42.817</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>1</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>81033</th>
-      <td>159854</td>
-      <td>2</td>
-      <td>159821.0</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:30:07</td>
-      <td>-1</td>
-      <td>NaN</td>
-      <td>&lt;p&gt;I think a blank row is probably the only wa...</td>
-      <td>17826.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:30:07.857</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>81034</th>
-      <td>159857</td>
-      <td>2</td>
-      <td>159797.0</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:30:40</td>
-      <td>30</td>
-      <td>NaN</td>
-      <td>&lt;p&gt;I most definitely think you can use functio...</td>
-      <td>122.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:30:40.927</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>3</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>81035</th>
-      <td>159858</td>
-      <td>2</td>
-      <td>159846.0</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:31:13</td>
-      <td>0</td>
-      <td>NaN</td>
-      <td>&lt;p&gt;Usually, when linking to other libraries, y...</td>
-      <td>23234.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:31:13.033</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>81036</th>
-      <td>159859</td>
-      <td>2</td>
-      <td>148729.0</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:31:51</td>
-      <td>1</td>
-      <td>NaN</td>
-      <td>&lt;p&gt;The second border which gets added is the W...</td>
-      <td>14048.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:31:51.033</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>81037</th>
-      <td>159860</td>
-      <td>2</td>
-      <td>159837.0</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:32:15</td>
-      <td>0</td>
-      <td>NaN</td>
-      <td>&lt;p&gt;Difficult to do depending on the permission...</td>
-      <td>1358.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:32:15.447</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>81038</th>
-      <td>159861</td>
-      <td>2</td>
-      <td>159837.0</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:32:16</td>
-      <td>3</td>
-      <td>NaN</td>
-      <td>&lt;p&gt;PSloggedon from SysInternals will provide t...</td>
-      <td>4490.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:32:16.617</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>3</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>81039</th>
-      <td>159863</td>
-      <td>2</td>
-      <td>159732.0</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:32:43</td>
-      <td>3</td>
-      <td>NaN</td>
-      <td>&lt;p&gt;@1800 INFORMATION&lt;/p&gt;\r\n\r\n&lt;p&gt;Maybe we co...</td>
-      <td>2820.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:32:43.013</td>
+      <td>2009-01-13T01:44:12.277</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -14049,181 +13890,135 @@ Name: Score, dtype: float64</pre>
       <td>NaN</td>
     </tr>
     <tr>
-      <th>81040</th>
-      <td>159865</td>
+      <th>236219</th>
+      <td>437718</td>
       <td>2</td>
-      <td>159842.0</td>
+      <td>437685.0</td>
       <td>NaN</td>
-      <td>2008-10-01T21:33:02</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>&lt;p&gt;No, you'll need to refactor your JavaScript...</td>
-      <td>2688.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:33:02.140</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>1</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>81041</th>
-      <td>159866</td>
-      <td>2</td>
-      <td>159853.0</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:33:44</td>
-      <td>0</td>
-      <td>NaN</td>
-      <td>&lt;p&gt;If you're building a patch, you might want ...</td>
-      <td>9940.0</td>
-      <td>9940.0</td>
-      <td>Mark Roddy</td>
-      <td>2008-10-01T21:58:42.827</td>
-      <td>2008-10-01T21:58:42.827</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>81042</th>
-      <td>159867</td>
-      <td>2</td>
-      <td>159862.0</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:33:45</td>
-      <td>1</td>
-      <td>NaN</td>
-      <td>&lt;p&gt;You may find or be able to make a macro to ...</td>
-      <td>5469.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:33:45.367</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>81043</th>
-      <td>159868</td>
-      <td>2</td>
-      <td>159705.0</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:33:46</td>
-      <td>1</td>
-      <td>NaN</td>
-      <td>&lt;p&gt;First, they're not equivalent. The 1st samp...</td>
-      <td>2199.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:33:46.707</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>3</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>81044</th>
-      <td>159871</td>
-      <td>2</td>
-      <td>159842.0</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:34:33</td>
-      <td>10</td>
-      <td>NaN</td>
-      <td>&lt;p&gt;If you want to evaluate &lt;code&gt;&amp;lt;% code bl...</td>
-      <td>1659.0</td>
-      <td>1659.0</td>
-      <td>marxidad</td>
-      <td>2008-10-02T18:17:50.790</td>
-      <td>2008-10-02T18:17:50.790</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
+      <td>2009-01-13T01:44:18</td>
       <td>7</td>
       <td>NaN</td>
+      <td>&lt;p&gt;You can't mix the CRT/MFC dlls.  Going from...</td>
+      <td>21950.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:44:18.707</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>NaN</td>
     </tr>
     <tr>
-      <th>81045</th>
-      <td>159872</td>
+      <th>236220</th>
+      <td>437721</td>
       <td>2</td>
-      <td>159862.0</td>
+      <td>437686.0</td>
       <td>NaN</td>
-      <td>2008-10-01T21:34:51</td>
+      <td>2009-01-13T01:45:58</td>
       <td>1</td>
       <td>NaN</td>
-      <td>&lt;p&gt;ReSharper has &lt;a href="http://www.jetbrains...</td>
-      <td>2688.0</td>
-      <td>2688.0</td>
-      <td>bdukes</td>
-      <td>2008-10-01T21:45:02.563</td>
-      <td>2008-10-01T21:45:02.563</td>
+      <td>&lt;p&gt;Found a library called &lt;a href="http://www....</td>
+      <td>15124.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:45:58.577</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>81046</th>
-      <td>159873</td>
-      <td>2</td>
-      <td>159597.0</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:34:55</td>
-      <td>0</td>
-      <td>NaN</td>
-      <td>&lt;p&gt;I am also in the camp of less comments the ...</td>
-      <td>14642.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:34:55.677</td>
-      <td>2008-10-01T22:35:08.497</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0</td>
+      <td>1</td>
       <td>NaN</td>
     </tr>
     <tr>
-      <th>81047</th>
-      <td>159874</td>
+      <th>236221</th>
+      <td>437722</td>
       <td>2</td>
-      <td>105659.0</td>
+      <td>437685.0</td>
       <td>NaN</td>
-      <td>2008-10-01T21:35:37</td>
+      <td>2009-01-13T01:46:47</td>
+      <td>7</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;I'm not sure how to strip the executable, b...</td>
+      <td>43452.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:46:47.420</td>
+      <td>2009-01-13T01:46:47.420</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>236222</th>
+      <td>437724</td>
+      <td>2</td>
+      <td>437704.0</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:49:42</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;Well, your tags indicate what you should do...</td>
+      <td>50776.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:49:42.830</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
       <td>4</td>
       <td>NaN</td>
-      <td>&lt;p&gt;For Windows, &lt;code&gt;CaptureStackBackTrace()&lt;...</td>
-      <td>19505.0</td>
+    </tr>
+    <tr>
+      <th>236223</th>
+      <td>437725</td>
+      <td>2</td>
+      <td>437686.0</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:49:42</td>
+      <td>5</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;Have a look at &lt;a href="http://code.google....</td>
+      <td>17174.0</td>
+      <td>17174.0</td>
+      <td>sambo99</td>
+      <td>2012-06-06T05:45:08.520</td>
+      <td>2012-06-06T05:45:08.520</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>2008-10-01T21:35:37.657</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>4</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>236224</th>
+      <td>437726</td>
+      <td>2</td>
+      <td>437723.0</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:50:55</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;You might find the patterns in "SQL Queries...</td>
+      <td>53870.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:50:55.993</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -14233,20 +14028,20 @@ Name: Score, dtype: float64</pre>
       <td>NaN</td>
     </tr>
     <tr>
-      <th>81048</th>
-      <td>159876</td>
+      <th>236225</th>
+      <td>437730</td>
       <td>2</td>
-      <td>155366.0</td>
+      <td>437712.0</td>
       <td>NaN</td>
-      <td>2008-10-01T21:36:17</td>
+      <td>2009-01-13T01:52:56</td>
       <td>0</td>
       <td>NaN</td>
-      <td>&lt;p&gt;Have you tried just a simple Control.GotFoc...</td>
-      <td>23553.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:36:17.747</td>
+      <td>&lt;p&gt;Yes, that's a server option for mysqld, and...</td>
+      <td>43452.0</td>
+      <td>43452.0</td>
+      <td>Stobor</td>
+      <td>2009-01-13T01:58:31.640</td>
+      <td>2009-01-13T01:58:31.640</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -14256,20 +14051,20 @@ Name: Score, dtype: float64</pre>
       <td>NaN</td>
     </tr>
     <tr>
-      <th>81049</th>
-      <td>159878</td>
+      <th>236226</th>
+      <td>437731</td>
       <td>2</td>
-      <td>159862.0</td>
+      <td>435533.0</td>
       <td>NaN</td>
-      <td>2008-10-01T21:36:56</td>
-      <td>0</td>
+      <td>2009-01-13T01:53:46</td>
+      <td>4</td>
       <td>NaN</td>
-      <td>&lt;p&gt;Resharper will do a good job in a limited w...</td>
-      <td>14642.0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2008-10-01T21:36:56.000</td>
+      <td>&lt;p&gt;Just a comment: &lt;em&gt;The fundamental harmoni...</td>
+      <td>18770.0</td>
+      <td>18770.0</td>
+      <td>Federico Ramponi</td>
+      <td>2009-01-13T02:15:37.143</td>
+      <td>2009-01-13T02:15:37.143</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -14279,20 +14074,112 @@ Name: Score, dtype: float64</pre>
       <td>NaN</td>
     </tr>
     <tr>
-      <th>81050</th>
-      <td>159879</td>
+      <th>236227</th>
+      <td>437733</td>
       <td>2</td>
-      <td>144250.0</td>
+      <td>437728.0</td>
       <td>NaN</td>
-      <td>2008-10-01T21:37:36</td>
+      <td>2009-01-13T01:54:28</td>
+      <td>52</td>
+      <td>NaN</td>
+      <td>&lt;pre&gt;&lt;code&gt;System.IO.Directory.GetFiles(@"c:\"...</td>
+      <td>16526.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:54:28.200</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
       <td>1</td>
       <td>NaN</td>
-      <td>&lt;p&gt;To do something similar in my application, ...</td>
-      <td>17826.0</td>
+    </tr>
+    <tr>
+      <th>236228</th>
+      <td>437736</td>
+      <td>2</td>
+      <td>226986.0</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:56:05</td>
+      <td>2</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;Make sure it says "phobos.apple.com" and no...</td>
+      <td>53997.0</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>2008-10-01T21:37:36.997</td>
+      <td>2009-01-13T01:56:05.267</td>
+      <td>2009-01-13T01:56:05.267</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>236229</th>
+      <td>437737</td>
+      <td>2</td>
+      <td>437723.0</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:56:33</td>
+      <td>3</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;Bramha, I'm not sure if you know what you a...</td>
+      <td>15592.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:56:33.533</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>236230</th>
+      <td>437739</td>
+      <td>2</td>
+      <td>437704.0</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:57:28</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;A good answer may require that you get a li...</td>
+      <td>17017.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:57:28.303</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>236231</th>
+      <td>437740</td>
+      <td>2</td>
+      <td>437712.0</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:57:30</td>
+      <td>3</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;The MySQL Timezone table is not loaded by d...</td>
+      <td>53098.0</td>
+      <td>15168.0</td>
+      <td>Jonathan Leffler</td>
+      <td>2009-01-13T04:36:44.817</td>
+      <td>2009-01-13T04:36:44.817</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -14302,20 +14189,89 @@ Name: Score, dtype: float64</pre>
       <td>NaN</td>
     </tr>
     <tr>
-      <th>81051</th>
-      <td>159880</td>
+      <th>236232</th>
+      <td>437741</td>
       <td>2</td>
-      <td>154686.0</td>
+      <td>437723.0</td>
       <td>NaN</td>
-      <td>2008-10-01T21:38:25</td>
+      <td>2009-01-13T01:57:54</td>
+      <td>3</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;I'm surprised to hear you describe SQL as "...</td>
+      <td>14343.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:57:54.280</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>5</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>236233</th>
+      <td>437742</td>
+      <td>2</td>
+      <td>437704.0</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:58:35</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;You should definitely get a girlfriend. Bes...</td>
+      <td>16526.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T01:58:35.230</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>5</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>236234</th>
+      <td>437744</td>
+      <td>2</td>
+      <td>434763.0</td>
+      <td>NaN</td>
+      <td>2009-01-13T02:00:50</td>
       <td>2</td>
       <td>NaN</td>
-      <td>&lt;p&gt;You could probably use the ${extract} opera...</td>
-      <td>11815.0</td>
+      <td>&lt;p&gt;Yes, every function must have a prototype, ...</td>
+      <td>41661.0</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>2008-10-01T21:38:25.417</td>
+      <td>2009-01-13T02:00:50.607</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>236235</th>
+      <td>437746</td>
+      <td>2</td>
+      <td>437712.0</td>
+      <td>NaN</td>
+      <td>2009-01-13T02:04:49</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;Screw this... DATETIME, although much easie...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T02:04:49.677</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -14325,31 +14281,77 @@ Name: Score, dtype: float64</pre>
       <td>NaN</td>
     </tr>
     <tr>
-      <th>81052</th>
-      <td>159882</td>
+      <th>236236</th>
+      <td>437747</td>
       <td>2</td>
-      <td>159862.0</td>
+      <td>433682.0</td>
       <td>NaN</td>
-      <td>2008-10-01T21:41:07</td>
-      <td>10</td>
+      <td>2009-01-13T02:06:17</td>
+      <td>-1</td>
       <td>NaN</td>
-      <td>&lt;p&gt;This is a free plug-in that does what you a...</td>
-      <td>13990.0</td>
-      <td>1838048.0</td>
+      <td>&lt;p&gt;Unless you have &lt;em&gt;very&lt;/em&gt; convincing me...</td>
+      <td>41661.0</td>
       <td>NaN</td>
-      <td>2010-11-18T08:22:36.430</td>
-      <td>2010-11-18T08:22:36.430</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T02:06:17.443</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>2</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>236237</th>
+      <td>437748</td>
+      <td>2</td>
+      <td>116560.0</td>
+      <td>NaN</td>
+      <td>2009-01-13T02:06:17</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;Not entirely true.  &lt;code&gt;ansi-term&lt;/code&gt; ...</td>
+      <td>8457.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T02:06:17.913</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>236238</th>
+      <td>437749</td>
+      <td>2</td>
+      <td>437683.0</td>
+      <td>NaN</td>
+      <td>2009-01-13T02:08:34</td>
+      <td>3</td>
+      <td>NaN</td>
+      <td>&lt;p&gt;You can look at an example on how to use Fa...</td>
+      <td>9842.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2009-01-13T02:08:34.180</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0</td>
       <td>NaN</td>
     </tr>
   </tbody>
 </table>
-<p>81053 rows × 20 columns</p>
+<p>236239 rows × 20 columns</p>
 </div>
 </div>
 
@@ -14361,7 +14363,7 @@ Name: Score, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="prompt input_prompt">In&nbsp;[216]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_answers_time</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -14377,7 +14379,7 @@ Name: Score, dtype: float64</pre>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[36]:</div>
+<div class="prompt output_prompt">Out[216]:</div>
 
 
 
@@ -14443,7 +14445,7 @@ Name: Score, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[37]:</div>
+<div class="prompt input_prompt">In&nbsp;[217]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">parents_time</span> <span class="o">=</span> <span class="n">Parents_post</span><span class="o">.</span><span class="n">CreationDate</span><span class="o">.</span><span class="n">str</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span>
@@ -14456,7 +14458,7 @@ Name: Score, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[38]:</div>
+<div class="prompt input_prompt">In&nbsp;[218]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">unix_parents</span> <span class="o">=</span> <span class="p">[</span><span class="n">date_ts</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">parents_time</span><span class="p">]</span>
@@ -14469,7 +14471,7 @@ Name: Score, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[39]:</div>
+<div class="prompt input_prompt">In&nbsp;[219]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_parents_time</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;Cr_time_parents&#39;</span><span class="p">:</span><span class="n">unix_parents</span><span class="p">,</span> <span class="s1">&#39;ParentID&#39;</span><span class="p">:</span><span class="n">Parents_post</span><span class="o">.</span><span class="n">Id</span><span class="p">})</span>
@@ -14482,7 +14484,7 @@ Name: Score, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[40]:</div>
+<div class="prompt input_prompt">In&nbsp;[220]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_parents_time</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -14498,7 +14500,7 @@ Name: Score, dtype: float64</pre>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[40]:</div>
+<div class="prompt output_prompt">Out[220]:</div>
 
 
 
@@ -14562,9 +14564,17 @@ Name: Score, dtype: float64</pre>
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Merge-Table-&amp;-Create-Columns-of-mins-and-hours">Merge Table &amp; Create Columns of mins and hours<a class="anchor-link" href="#Merge-Table-&amp;-Create-Columns-of-mins-and-hours">&#182;</a></h2>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[41]:</div>
+<div class="prompt input_prompt">In&nbsp;[221]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_compare</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_parents_time</span><span class="p">,</span> <span class="n">df_answers_time</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;ParentID&#39;</span><span class="p">)</span>
@@ -14577,7 +14587,7 @@ Name: Score, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[42]:</div>
+<div class="prompt input_prompt">In&nbsp;[222]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_compare</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -14593,7 +14603,7 @@ Name: Score, dtype: float64</pre>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[42]:</div>
+<div class="prompt output_prompt">Out[222]:</div>
 
 
 
@@ -14665,7 +14675,7 @@ Name: Score, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="prompt input_prompt">In&nbsp;[223]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_compare</span><span class="p">[</span><span class="s1">&#39;Duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_compare</span><span class="o">.</span><span class="n">Cr_time</span> <span class="o">-</span> <span class="n">df_compare</span><span class="o">.</span><span class="n">Cr_time_parents</span>
@@ -14678,7 +14688,7 @@ Name: Score, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[44]:</div>
+<div class="prompt input_prompt">In&nbsp;[224]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_compare</span><span class="p">[</span><span class="s1">&#39;Duration_mins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_compare</span><span class="o">.</span><span class="n">Duration</span><span class="o">/</span><span class="mi">60</span>
@@ -14691,7 +14701,7 @@ Name: Score, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[45]:</div>
+<div class="prompt input_prompt">In&nbsp;[225]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_compare</span><span class="p">[</span><span class="s1">&#39;Duration_hours&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_compare</span><span class="o">.</span><span class="n">Duration_mins</span><span class="o">/</span><span class="mi">60</span>
@@ -14704,7 +14714,7 @@ Name: Score, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[46]:</div>
+<div class="prompt input_prompt">In&nbsp;[226]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_compare</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -14720,7 +14730,7 @@ Name: Score, dtype: float64</pre>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[46]:</div>
+<div class="prompt output_prompt">Out[226]:</div>
 
 
 
@@ -14810,7 +14820,7 @@ Name: Score, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[47]:</div>
+<div class="prompt input_prompt">In&nbsp;[227]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_compare</span><span class="o">.</span><span class="n">Duration_mins</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
@@ -14826,20 +14836,20 @@ Name: Score, dtype: float64</pre>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[47]:</div>
+<div class="prompt output_prompt">Out[227]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>count    80995.000000
-mean      2283.904162
-std       8624.629899
-min     -44770.133333
-25%          7.183333
-50%         23.300000
-75%        185.325000
-max      87521.316667
+<pre>count    236165.000000
+mean       4693.341488
+std       18848.067169
+min      -72157.833333
+25%           8.900000
+50%          31.216667
+75%         263.783333
+max      236965.000000
 Name: Duration_mins, dtype: float64</pre>
 </div>
 
@@ -14851,7 +14861,7 @@ Name: Duration_mins, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[48]:</div>
+<div class="prompt input_prompt">In&nbsp;[228]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_compare</span><span class="o">.</span><span class="n">Duration_hours</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
@@ -14867,20 +14877,20 @@ Name: Duration_mins, dtype: float64</pre>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[48]:</div>
+<div class="prompt output_prompt">Out[228]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>count    80995.000000
-mean        38.065069
-std        143.743832
-min       -746.168889
-25%          0.119722
-50%          0.388333
-75%          3.088750
-max       1458.688611
+<pre>count    236165.000000
+mean         78.222358
+std         314.134453
+min       -1202.630556
+25%           0.148333
+50%           0.520278
+75%           4.396389
+max        3949.416667
 Name: Duration_hours, dtype: float64</pre>
 </div>
 
@@ -14892,7 +14902,7 @@ Name: Duration_hours, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[49]:</div>
+<div class="prompt input_prompt">In&nbsp;[229]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">neg</span> <span class="o">=</span> <span class="mi">0</span>
@@ -14922,7 +14932,7 @@ Name: Duration_hours, dtype: float64</pre>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>80980 15
+<pre>236116 49
 </pre>
 </div>
 </div>
@@ -14933,7 +14943,7 @@ Name: Duration_hours, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[50]:</div>
+<div class="prompt input_prompt">In&nbsp;[230]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_compare</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -14949,7 +14959,7 @@ Name: Duration_hours, dtype: float64</pre>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[50]:</div>
+<div class="prompt output_prompt">Out[230]:</div>
 
 
 
@@ -15037,9 +15047,17 @@ Name: Duration_hours, dtype: float64</pre>
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Calculate-Frequency-and-Probability-of-mins-and-hours">Calculate Frequency and Probability of mins and hours<a class="anchor-link" href="#Calculate-Frequency-and-Probability-of-mins-and-hours">&#182;</a></h2>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[51]:</div>
+<div class="prompt input_prompt">In&nbsp;[231]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">Duration_mins_rounded</span> <span class="o">=</span> <span class="n">df_compare</span><span class="o">.</span><span class="n">Duration_mins</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
@@ -15052,13 +15070,16 @@ Name: Duration_hours, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[52]:</div>
+<div class="prompt input_prompt">In&nbsp;[232]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">fre_mins</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">Duration_mins_rounded</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(),</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 <span class="n">fre_mins</span><span class="p">[</span><span class="s1">&#39;mins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fre_mins</span><span class="o">.</span><span class="n">index</span>
-<span class="n">fre_mins</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">fre_mins</span> <span class="o">=</span> <span class="n">fre_mins</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Duration_mins&#39;</span><span class="p">:</span><span class="s1">&#39;Frequency&#39;</span><span class="p">,</span><span class="s1">&#39;mins&#39;</span><span class="p">:</span><span class="s1">&#39;mins&#39;</span><span class="p">})</span>
+<span class="n">fre_mins</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1">#drop negative mins</span>
+<span class="n">fre_mins</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">fre_mins</span><span class="p">[</span><span class="n">fre_mins</span><span class="o">.</span><span class="n">mins</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fre_mins</span> <span class="o">=</span> <span class="n">fre_mins</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;mins&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -15068,23 +15089,10 @@ Name: Duration_hours, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[53]:</div>
+<div class="prompt input_prompt">In&nbsp;[233]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fre_mins</span><span class="p">[</span><span class="s1">&#39;Probabiity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fre_mins</span><span class="o">.</span><span class="n">Frequency</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">fre_mins</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[54]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fre_mins</span><span class="o">.</span><span class="n">mins</span><span class="p">,</span> <span class="n">fre_mins</span><span class="o">.</span><span class="n">Probabiity</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fre_mins</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -15097,13 +15105,249 @@ Name: Duration_hours, dtype: float64</pre>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[54]:</div>
+<div class="prompt output_prompt">Out[233]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Frequency</th>
+      <th>mins</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>115</th>
+      <td>220</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>2118</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>6429</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>8427</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>9002</td>
+      <td>4.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[234]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fre_mins</span><span class="p">[</span><span class="s1">&#39;Probabiity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fre_mins</span><span class="o">.</span><span class="n">Frequency</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">fre_mins</span><span class="o">.</span><span class="n">Frequency</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[235]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fre_mins</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[235]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Frequency</th>
+      <th>mins</th>
+      <th>Probabiity</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>115</th>
+      <td>220</td>
+      <td>0.0</td>
+      <td>0.000932</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>2118</td>
+      <td>1.0</td>
+      <td>0.008970</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>6429</td>
+      <td>2.0</td>
+      <td>0.027228</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>8427</td>
+      <td>3.0</td>
+      <td>0.035690</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>9002</td>
+      <td>4.0</td>
+      <td>0.038125</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[236]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fre_mins</span><span class="o">.</span><span class="n">Probabiity</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[236]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[&lt;matplotlib.lines.Line2D at 0x1a2b19f390&gt;]</pre>
+<pre>count    24911.000000
+mean         0.000040
+std          0.000690
+min          0.000004
+25%          0.000004
+50%          0.000004
+75%          0.000008
+max          0.038125
+Name: Probabiity, dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Plot-(Probability)">Plot (Probability)<a class="anchor-link" href="#Plot-(Probability)">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[237]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fre_mins</span><span class="o">.</span><span class="n">mins</span><span class="p">,</span> <span class="n">fre_mins</span><span class="o">.</span><span class="n">Probabiity</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Probability of Answered in terms of Minutes&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[237]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Text(0.5,1,&#39;Probability of Answered in terms of Minutes&#39;)</pre>
 </div>
 
 </div>
@@ -15116,7 +15360,327 @@ Name: Duration_hours, dtype: float64</pre>
 
 
 <div class="output_png output_subarea ">
-<img src="eda_files/eda_61_1.png"
+<img src="EDA_files/EDA_68_1.png"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Cumulative-Probability">Cumulative Probability<a class="anchor-link" href="#Cumulative-Probability">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[238]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fre_mins</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[238]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Frequency</th>
+      <th>mins</th>
+      <th>Probabiity</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>115</th>
+      <td>220</td>
+      <td>0.0</td>
+      <td>0.000932</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>2118</td>
+      <td>1.0</td>
+      <td>0.008970</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>6429</td>
+      <td>2.0</td>
+      <td>0.027228</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>8427</td>
+      <td>3.0</td>
+      <td>0.035690</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>9002</td>
+      <td>4.0</td>
+      <td>0.038125</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[239]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fre_mins</span><span class="p">[</span><span class="s1">&#39;cum_pro&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">fre_mins</span><span class="o">.</span><span class="n">Probabiity</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[240]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fre_mins</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[240]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Frequency</th>
+      <th>mins</th>
+      <th>Probabiity</th>
+      <th>cum_pro</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>115</th>
+      <td>220</td>
+      <td>0.0</td>
+      <td>0.000932</td>
+      <td>0.000932</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>2118</td>
+      <td>1.0</td>
+      <td>0.008970</td>
+      <td>0.009902</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>6429</td>
+      <td>2.0</td>
+      <td>0.027228</td>
+      <td>0.037130</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>8427</td>
+      <td>3.0</td>
+      <td>0.035690</td>
+      <td>0.072820</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>9002</td>
+      <td>4.0</td>
+      <td>0.038125</td>
+      <td>0.110945</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[241]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fre_mins</span><span class="o">.</span><span class="n">mins</span><span class="p">,</span> <span class="n">fre_mins</span><span class="o">.</span><span class="n">cum_pro</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;cumulative probability&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;cumulative probability&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[241]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Text(0.5,0,&#39;cumulative probability&#39;)</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="EDA_files/EDA_73_1.png"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Summary-of-Probability-Plots">Summary of Probability Plots<a class="anchor-link" href="#Summary-of-Probability-Plots">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[242]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">14</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">221</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fre_mins</span><span class="o">.</span><span class="n">mins</span><span class="p">,</span> <span class="n">fre_mins</span><span class="o">.</span><span class="n">Probabiity</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;probability&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">222</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fre_mins</span><span class="o">.</span><span class="n">mins</span><span class="p">,</span> <span class="n">fre_mins</span><span class="o">.</span><span class="n">cum_pro</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;cumulative probability&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[242]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Text(0.5,1,&#39;cumulative probability&#39;)</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="EDA_files/EDA_75_1.png"
 >
 </div>
 
