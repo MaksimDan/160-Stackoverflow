@@ -37,7 +37,7 @@ def tag2row(xml_tag, column_types):
     return csv_row
 
 
-def xml2csv(in_path, out_path, column_types, random=300000):
+def xml2csv(in_path, out_path, column_types, random=(False, 300000), limit=(True, 300000)):
     """
     :param in_path: str - xml infile path
     :param out_path: str - csv outfile path
@@ -51,27 +51,40 @@ def xml2csv(in_path, out_path, column_types, random=300000):
         headers = [header for header, _type in column_types]
         csv_writer.writerow(headers)
 
-        # generate random numbers, these will
-        # the rows we will extract the data from
-        # mean and standard deviation
-        n_lines = mapcount(in_path)
-        print(n_lines)
-        mu, sigma = n_lines // random, 5
-        row_extract = np.random.normal(mu, sigma, random).astype(int)
-        row_extract_iter, row_count = 0, 0
-
         bar = progressbar.ProgressBar()
         with open(in_path, 'r', encoding="utf8") as infile:
-            for line in bar(infile):
-                row_count += 1
-                if row_extract_iter < len(row_extract) and row_count == row_extract[row_extract_iter]:
-                    # reset to next row extract
-                    row_extract_iter += 1
-                    row_count = 0
-                    # extract row
-                    row = tag2row(line, column_types)
-                    if row:
-                        csv_writer.writerow(tag2row(line, column_types))
+            # generate random numbers, these will be the rows (noncumulative)
+            # that we will extract the data from mean and standard deviation
+            if random[0]:
+                n_lines = mapcount(in_path)
+                mu, sigma = n_lines // random[1], 5
+                row_extract = np.random.normal(mu, sigma, random[2]).astype(int)
+                row_extract_iter, row_count = 0, 0
+
+                for line in bar(infile):
+                    row_count += 1
+                    if row_extract_iter < len(row_extract) and row_count == row_extract[row_extract_iter]:
+                        # reset to next row extract in order to make cumulative
+                        row_extract_iter += 1
+                        row_count = 0
+                        row = tag2row(line, column_types)
+                        if row:
+                            csv_writer.writerow(tag2row(line, column_types))
+            # read the file sequentially in reverse in order
+            # to read the more recent data. This is because the table is sorted
+            # by creation date
+            elif limit[0]:
+                n_lines = mapcount(in_path)
+                # if the number of rows we want to read exceeds the number of
+                # rows in the file, then we should still be fine
+                seek = n_lines - limit[1]
+                for line in bar(infile):
+                    if seek > 0:
+                        seek -= 1
+                    else:
+                        row = tag2row(line, column_types)
+                        if row:
+                            csv_writer.writerow(tag2row(line, column_types))
 
 
 if __name__ == "__main__":
