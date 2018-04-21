@@ -54,8 +54,8 @@ def build_graph(_indent=False):
     :return: str - JSON graph
     """
     # load data
-    Posts = pd.read_csv('../../160-Stackoverflow-Data/300000_rows_[504_MB]/Posts.csv')
-    Comments = pd.read_csv('../../160-Stackoverflow-Data/300000_rows_[504_MB]/Comments.csv')
+    Posts = pd.read_csv('Posts.csv')
+    Comments = pd.read_csv('Comments.csv')
 
     # initialize nested dictionary
     graph = defaultdict(lambda: defaultdict(lambda: set()))
