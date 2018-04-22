@@ -89,8 +89,8 @@ def build_graph(_indent=False):
 
 
 if __name__ == "__main__":
-    sys.stdout = open("graph_dump_view.txt", "w")
+    sys.stdout = open("graph_dump_view.json", "w")
     print(build_graph(True))
     
-    sys.stdout = open("graph_dump_load.txt", "w")
+    sys.stdout = open("graph_dump_load.json", "w")
     print(build_graph(False))

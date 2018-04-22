@@ -61,8 +61,8 @@ def build_tag_network(_indent=False):
 
 
 if __name__ == "__main__":
-    sys.stdout = open("tag_network_view.txt", "w")
+    sys.stdout = open("tag_network_view.json", "w")
     print(build_tag_network(True))
     
-    sys.stdout = open("tag_network_load.txt", "w")
+    sys.stdout = open("tag_network_load.json", "w")
     print(build_tag_network(False))
