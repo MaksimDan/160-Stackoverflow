@@ -9,8 +9,9 @@ from nltk.corpus import stopwords
 import progressbar
 from textblob import TextBlob
 
-nltk.download('stopwords')
-nltk.download('punkt')
+# nltk.download('stopwords')
+# nltk.download('punkt')
+
 
 """
 File: build_user_post_network.py
@@ -60,10 +61,8 @@ def build_user_communication_df(_indent=False):
     @param _indent: int - indent space for printy print
     :return: str - JSON graph
     """
-    Posts = pd.read_csv('../../160-Stackoverflow-Data/100000_rows/Posts.csv',
-                        dtype={'LastEditorDisplayName': str})
-    Comments = pd.read_csv('../../160-Stackoverflow-Data/100000_rows/Comments.csv',
-                           dtype={'LastEditorDisplayName': str})
+    Posts = pd.read_csv('Posts.csv', dtype={'LastEditorDisplayName': str})
+    Comments = pd.read_csv('Comments.csv', dtype={'LastEditorDisplayName': str})
 
     # initialize nested dictionary
     graph = defaultdict(lambda: defaultdict(lambda: list()))
@@ -94,15 +93,25 @@ def build_user_communication_df(_indent=False):
         except ValueError:
             continue
 
-    # flatten lists
+    # flatten lists (graph two == graph)
     second_keys = ['asks_body', 'asks_title', 'answers_body', 'comments_body']
     graph_two = defaultdict(lambda: defaultdict(lambda: str()))
     for user_id in graph.keys():
         for key_two in second_keys:
             graph_two[user_id][key_two] = ' '.join(graph[user_id][key_two])
 
-    test = pd.DataFrame(graph_two)
-    test.to_csv('test100k.csv')
+    # transform into friendly csv
+    pd.DataFrame(graph_two).to_csv('user_communication.csv')
+
+    # read im as csv and transform to proper friendly format
+    user_qac = pd.read_csv('user_communication.csv').T
+    headers = user_qac.iloc[0]
+    user_qac = user_qac[1:]
+    user_qac.columns = headers
+    user_qac.insert(0, 'userid', user_qac.index)
+    user_qac.reset_index(inplace=True)
+    user_qac.drop('index', axis=1, inplace=True)
+    user_qac.to_csv('user_communication.csv')
 
 
 if __name__ == "__main__":
