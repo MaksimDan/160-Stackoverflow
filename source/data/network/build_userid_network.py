@@ -47,15 +47,15 @@ class SetEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-def build_graph(_indent=0):
+def build_graph(_indent=False):
     """
     Builds a network that represents the communication between users.
 	@param _indent: int - indent space for printy print
     :return: str - JSON graph
     """
     # load data
-    Posts = pd.read_csv('../../160-Stackoverflow-Data/100000_rows_[168_MB]/Posts.csv')
-    Comments = pd.read_csv('../../160-Stackoverflow-Data/100000_rows_[168_MB]/Comments.csv')
+    Posts = pd.read_csv('Posts.csv')
+    Comments = pd.read_csv('Comments.csv')
 
     # initialize nested dictionary
     graph = defaultdict(lambda: defaultdict(lambda: set()))
@@ -82,12 +82,15 @@ def build_graph(_indent=0):
         # poster adds a comment
         owner_id, post_id = int(comment.PostId), int(comment.UserId)
         graph[owner_id]['comments'].add(post_id)
-    return json.dumps(graph, indent=_indent, cls=SetEncoder)
+    if _indent:
+        return json.dumps(graph, indent=4, cls=SetEncoder)
+    else:
+        return json.dumps(graph, cls=SetEncoder)
 
 
 if __name__ == "__main__":
-	sys.stdout = open("graph_dump_view.txt", "w")
-	print(build_graph(4))
-
-	sys.stdout = open("graph_dump_load.txt", "w")
-	print(build_graph())
+    sys.stdout = open("graph_dump_view.json", "w")
+    print(build_graph(True))
+    
+    sys.stdout = open("graph_dump_load.json", "w")
+    print(build_graph(False))
