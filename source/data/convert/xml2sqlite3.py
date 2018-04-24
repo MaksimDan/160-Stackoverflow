@@ -182,20 +182,3 @@ if __name__ == '__main__':
     # convert_to_utf8(ANATHOMY.keys())
     dump_files(ANATHOMY.keys(), ANATHOMY)
 
-
-# from xml.etree import ElementTree
-# from io import StringIO
-# xml = StringIO('''\
-# <?xml version="1.0" encoding="utf-8"?>
-# <MyRoot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" uuid="ertr" xmlns="http://www.example.org/yml/data/litsmlv2">
-#   <Aliases authority="OPP" xmlns="http://www.example.org/yml/data/commonv2">
-#        <Description>myData</Description>
-#             <Identifier>43hhjh87n4nm</Identifier>
-#               </Aliases>
-#                 <RollNo uom="kPa">39979172.201167159</RollNo>
-#                   <PersonName>Miracle Smith</PersonName>
-#                     <Date>2017-06-02T01:10:32-05:00</Date>
-# </MyRoot>''')
-# source = iter(ElementTree.iterparse(xml, events=('start', 'end')))
-# for an_event, an_element in source:
-#     print(an_event, an_element)
