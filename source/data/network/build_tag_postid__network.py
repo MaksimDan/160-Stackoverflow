@@ -43,7 +43,7 @@ def build_tag_network(_indent=False):
     Posts['Tags'] = Posts['Tags'].apply(lambda t: ' '.join(re.findall(r"<(\w+)>", str(t))))
 
     # initialize dictionary
-    d = defaultdict(list)
+    d = defaultdict(set)
     bar = progressbar.ProgressBar()
 
     # add questions and answers
@@ -52,7 +52,8 @@ def build_tag_network(_indent=False):
         if isnan(post.Id):
             continue
         tags, owner_id = post.Tags.split(), int(post.Id)
-        d[owner_id] += tags
+        for tag in tags:
+            d[tag].add(owner_id)
 
     if _indent:
         return json.dumps(d, indent=4, cls=SetEncoder)
