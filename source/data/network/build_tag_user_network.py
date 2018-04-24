@@ -42,16 +42,16 @@ def build_tag_network(_indent=False):
     Posts = pd.read_csv('Posts.csv', dtype={'LastEditorDisplayName': str})
     Posts['Tags'] = Posts['Tags'].apply(lambda t: ' '.join(re.findall(r"<(\w+)>", str(t))))
 
-    # initialize nested dictionary
+    # initialize dictionary
     d = defaultdict(list)
     bar = progressbar.ProgressBar()
 
     # add questions and answers
-    for post in bar(Posts[['Tags', 'OwnerUserId']].itertuples()):
+    for post in bar(Posts[['Tags', 'Id']].itertuples()):
         # ensure that user exists
-        if isnan(post.OwnerUserId):
+        if isnan(post.Id):
             continue
-        tags, owner_id = post.Tags.split(), int(post.OwnerUserId)
+        tags, owner_id = post.Tags.split(), int(post.Id)
         d[owner_id] += tags
 
     if _indent:
