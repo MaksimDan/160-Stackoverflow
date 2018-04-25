@@ -1,6 +1,7 @@
 .dropbox
 desktop.ini
 sandbox/
+.ipynb_checkpoints/
 .DS_Store
 venv/
 # Byte-compiled / optimized / DLL files
