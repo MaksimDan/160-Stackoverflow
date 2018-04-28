@@ -1,27 +1,37 @@
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-import progressbar
-import sys
-import json
 from collections import defaultdict
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+import sys
+import progressbar
+
+import json
+import time
 
 
-def build_n_most_similiar_users(X, df, n=15):
+def build_n_most_similiar_users(X, df, n=5):
     user_sim = defaultdict(lambda: defaultdict(lambda: list()))
-    # we need both full loops because also want to establish the
-    # relationship the inverse relationship in the graph
+
+    start = time.time()
+    sim_mat = (X * X.T)
+    end = time.time()
+    print("Similarity Matrix Finished in", end - start, "time")
+    # self note: to possibly make things more efficient use
+    #            np.arange(<array size>)[array[index]] to preallocate
+    #            memory and then perform a vectorized index
+    # I also need to convert numpy types into native python types
+    # otherwise the json serializer will complain
     bar = progressbar.ProgressBar()
     for i in bar(range(X.shape[0])):
-        user_sim_i = []
-        for j in range(X.shape[0]):
-            if i != j:
-                similarity = (X[i] * X[j].T).A[0][0]
-                if similarity > 0:
-                    user_sim_i.append((df.iloc[j]['userid'], similarity))
-        # append the n most similiar j users (along with weight) to user i
-        most_similar = sorted(user_sim_i, key=lambda x: x[1], reverse=True)[0:n]
-        user_sim[i]['user_id'] = [int(id) for id, _ in most_similar]
-        user_sim[i]['user_weight'] = [float(weight) for _, weight in most_similar]
+        user_focus = df.iloc[i]['userid']
+        # index the n most similiar users into the row
+        most_similiar_i_users = (-sim_mat[i].A).argsort()[0][1:n+1]
+        # map back into the array to obtain the values
+        weights = (sim_mat[i].A[0])[most_similiar_i_users].tolist()
+        # and index into the dataframe to obtain the user ids
+        user_ids = [int(df.iloc[j]['userid']) for j in most_similiar_i_users]
+        user_sim[str(user_focus)]['user_id'] = user_ids
+        user_sim[str(user_focus)]['user_weight'] = weights
     return user_sim
 
 
@@ -35,11 +45,11 @@ def build_similiarity_dataframe(inpaths):
         for column in target_columns:
             X = vectorizer.fit_transform(user_qac[column].values)
             similiarity_graph = build_n_most_similiar_users(X, user_qac)
-            sys.stdout = open(f"{column}", "w")
+            sys.stdout = open(f"{column}.json", "w")
             print(json.dumps(similiarity_graph, indent=4))
 
 
 if __name__ == "__main__":
-    inpaths = ['../../160-Stackoverflow-Data/2500_rows/user_communication.csv']
+    inpaths = ['../../160-Stackoverflow-Data/300000_rows/user_communication.csv']
                # '../../160-Stackoverflow-Data/300000_rows/user_communication.csv']
     build_similiarity_dataframe(inpaths)
