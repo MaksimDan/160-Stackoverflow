@@ -14,10 +14,11 @@ from textblob import TextBlob
 
 
 """
-File: build_user_post_network.py
-Purpose: Builds nested graph that representations the communication
-         between users, who ask questions, answer questions, and post
-         comments.
+File: build_user_communication_network.py
+Objective: Builds nested graph that representations the communication
+           between users, who ask questions, answer questions, and post
+           comments. Outputs a json graph network.
+		   
 Graph Structure:
     graph = {
         <user_id1> = {
