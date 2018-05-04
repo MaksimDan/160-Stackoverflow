@@ -3,6 +3,7 @@ import csv
 from bs4 import BeautifulSoup
 import mmap
 import numpy as np
+from datetime import datetime
 
 
 def mapcount(filename):
@@ -37,7 +38,8 @@ def tag2row(xml_tag, column_types):
     return csv_row
 
 
-def xml2csv(in_path, out_path, column_types, random=(False, 300000), limit=(True, 300000)):
+def xml2csv(in_path, out_path, column_types, random=(False, 300000),
+            limit=(False, 300000)):
     """
     :param in_path: str - xml infile path
     :param out_path: str - csv outfile path
@@ -87,7 +89,33 @@ def xml2csv(in_path, out_path, column_types, random=(False, 300000), limit=(True
                             csv_writer.writerow(tag2row(line, column_types))
 
 
-if __name__ == "__main__":
+def create_train_and_test(in_path, out_path, column_types, creation_date_col,
+                          year=2012):
+    with open(out_path, 'w', encoding='utf-8') as csv_file:
+        csv_writer = csv.writer(csv_file, delimiter=',', quotechar='"',
+                                quoting=csv.QUOTE_MINIMAL, lineterminator='\n')
+        headers = [header for header, _type in column_types]
+        csv_writer.writerow(headers)
+
+        with open(in_path, 'r', encoding="utf8") as infile:
+            n_lines = mapcount(in_path)
+            with progressbar.ProgressBar(max_value=n_lines) as bar:
+                for line in bar(infile):
+                    row = tag2row(line, column_types)
+                    if row:
+                        creation_date = datetime.strptime(row[creation_date_col], "%Y-%m-%dT%H:%M:%S.%f")
+                        if creation_date.year == year:
+                            csv_writer.writerow(tag2row(line, column_types))
+                        elif creation_date.year > year:
+                            # the data is already ordered by ascending time
+                            break
+
+
+def filter_csv_by_tag(tag='Java'):
+    pass
+
+
+def write_xml_to_csv():
     # Postlinks.xml
     column_types = [('Id', int), ('CreationDate', str), ('PostId', int), ('RelatedPostId', int), ('LinkTypeId', int)]
     xml2csv('Postlinks.xml', 'Postlinks.csv', column_types)
@@ -129,3 +157,45 @@ if __name__ == "__main__":
     column_types = [('Id', int), ('PostHistoryTypeId', int), ('PostId', int), ('RevisionGUID', str), ('CreationDate', str),
                     ('UserId', int), ('UserDisplayName', str), ('Comment', str), ('Text', str), ('CloseReasonId', int)]
     xml2csv('PostHistory.xml', 'PostHistory.csv', column_types)
+
+
+def write_train_and_test():
+    # Postlinks.xml
+    column_types = [('Id', int), ('CreationDate', str), ('PostId', int), ('RelatedPostId', int), ('LinkTypeId', int)]
+    create_train_and_test('Postlinks.xml', 'Postlinks.csv', column_types, 1)
+
+
+    # Users.xml
+    column_types = [('Id', int), ('Reputation', str), ('CreationDate', str), ('DisplayName', str), ('EmailHash', str),
+                    ('LastAccessDate', str), ('WebsiteUrl', str), ('Location', str), ('Age', int), ('AboutMe', str),
+                    ('Views', int), ('UpVotes', int), ('DownVotes', int)]
+    create_train_and_test('Users.xml', 'Users.csv', column_types, 2)
+
+
+    # Votes.xml
+    column_types = [('Id', int), ('PostId', int), ('VoteTypeId', int), ('CreationDate', str), ('UserId', int),
+                    ('BountyAmount', int)]
+    create_train_and_test('Votes.xml', 'Votes.csv', column_types, 3)
+
+
+    # Posts.xml
+    column_types = [('Id', int), ('PostTypeId', int), ('ParentID', int), ('AcceptedAnswerId', int), ('CreationDate', str),
+                    ('Score', int), ('ViewCount', int), ('Body', str), ('OwnerUserId', int), ('LastEditorUserId', int),
+                    ('LastEditorDisplayName', str), ('LastEditDate', str), ('LastActivityDate', str),
+                    ('CommunityOwnedDate', str), ('ClosedDate', str), ('Title', str), ('Tags', str), ('AnswerCount', int),
+                    ('CommentCount', int), ('FavoriteCount', int)]
+    create_train_and_test('Posts.xml', 'Posts.csv', column_types, 4)
+
+
+    # Comments.xml
+    column_types = [('Id', int), ('PostId', int), ('Score', int), ('Text', str), ('CreationDate', str), ('UserId', int)]
+    create_train_and_test('Comments.xml', 'Comments.csv', column_types, 4)
+
+
+    # PostHistory.xml
+    column_types = [('Id', int), ('PostHistoryTypeId', int), ('PostId', int), ('RevisionGUID', str), ('CreationDate', str),
+                    ('UserId', int), ('UserDisplayName', str), ('Comment', str), ('Text', str), ('CloseReasonId', int)]
+    create_train_and_test('PostHistory.xml', 'PostHistory.csv', column_types, 4)
+
+if __name__ == "__main__":
+    write_train_and_test()
