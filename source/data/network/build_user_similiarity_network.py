@@ -8,6 +8,11 @@ import progressbar
 import json
 import time
 
+"""
+File: build_user_similiarity_network.py
+Objective: Identifies the n most similiar users as well the associated stength
+           with said user. Outputs a json graph network.
+"""
 
 def build_n_most_similiar_users(X, df, n=5):
     user_sim = defaultdict(lambda: defaultdict(lambda: list()))

@@ -9,6 +9,8 @@ import re
 
 """
 File: tag_user_network.py
+Objective: Maps all the users associated with tag_i.
+           Outputs a json graph network.
 
 Graph Structure:
     graph = {

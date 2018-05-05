@@ -3,6 +3,11 @@ import csv
 from bs4 import BeautifulSoup
 import re
 
+"""
+Extracts out all the tags from xml data,
+and builds a csv containing just these tags.
+"""
+
 
 def tag2row(xml_tag):
     """
