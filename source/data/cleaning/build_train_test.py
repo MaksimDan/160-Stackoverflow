@@ -5,14 +5,13 @@ from copy import copy
 import progressbar
 
 # raw input
-Posts_full = pd.read_csv('../../160-Stackoverflow-Data/train_test/Posts_2012.csv')
+Posts_full = pd.read_csv('../../160-Stackoverflow-Data/train_test/raw/Posts_2012.csv')
 Posts_full.dropna(subset=['OwnerUserId'], inplace=True)
 Posts_full['OwnerUserId'] = Posts_full['OwnerUserId'].astype('int')
 
 # build X
 Posts_X = Posts_full.loc[Posts_full.PostTypeId == 1]
-features_X = ['Id', 'CreationDate', 'Score', 'ViewCount', 'Body', 'OwnerUserId', 'ClosedDate', 'Title', 'Tags', 'AnswerCount', 'CommentCount', 'FavoriteCount']
-X = Posts_X[features_X]
+X = Posts_X.drop(columns=['PostTypeId', 'LastEditorDisplayName', 'LastEditDate', 'LastActivityDate', 'CommunityOwnedDate'])
 X.Tags = X.Tags.apply(lambda t: ' '.join(re.findall(r"<(\w+)>", str(t))))
 X.to_csv('X.csv', index=False)
 
@@ -49,10 +48,9 @@ def remap_tag_synoymns(tag_syn_path, post_inpath):
 remap_tag_synoymns('../../160-Stackoverflow-Data/tags/TagSynonyms.csv', 'X.csv')
 
 # now remove questions that dont have answers, and create the training and test split
-X, y = pd.read_csv('X.csv'), pd.read_csv('y.csv')
 X['y'] = y
 X.dropna(subset=['y'], inplace=True)
-y = copy(X.y)
+y = pd.DataFrame({'owner_user_ids': copy(X.y)})
 X = X.drop('y', axis=1)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = .15, random_state = 42)
 
@@ -61,3 +59,11 @@ X_train.to_csv('X_train.csv')
 X_test.to_csv('X_test.csv')
 y_train.to_csv('y_train.csv')
 y_test.to_csv('y_test.csv')
+
+
+# build answers.csv
+Answers = Posts_full.loc[Posts_full.PostTypeId == 2]
+
+features = ['Id', 'ParentId', 'CreationDate', 'Score', 'ViewCount', 'Body', 'OwnerUserId', 'ClosedDate']
+Answers = Answers[features]
+Answers.to_csv('Answers.csv', index=False)
