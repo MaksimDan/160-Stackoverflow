@@ -1,7 +1,15 @@
-import pandas as pd
 import json
-import sys
-from collections import defaultdict
+import time
+
+# meta
+import logging
+import progressbar
+import pickle
+
+# data
+from sklearn.preprocessing import StandardScaler
+import pandas as pd
+import numpy as np
 
 
 class ResidualMatrix:
@@ -17,7 +25,7 @@ class Feature:
 
 
 class UserAvailability(Feature):
-    JSON_PATH = '../../160-Stackoverflow-Data/train_test/engineered_features/user_availability_network.csv'
+    JSON_PATH = '../../160-Stackoverflow-Data/train_test/engineered_features/user_availability_network.json'
 
     def __init__(self):
         try:
@@ -36,7 +44,7 @@ class UserAvailability(Feature):
 
 
 class UserExpertise(Feature):
-    JSON_PATH = '../../160-Stackoverflow-Data/train_test/engineered_features/user_expertise_static_network.csv'
+    JSON_PATH = '../../160-Stackoverflow-Data/train_test/engineered_features/user_expertise_network.json'
 
     def __init__(self):
         try:
@@ -54,14 +62,14 @@ class UserExpertise(Feature):
 
 
 class BasicProfile(Feature):
-    USERS_PATH = '../../160-Stackoverflow-Data/train_test/Users.csv'
+    JSON_PATH = '../../160-Stackoverflow-Data/train_test/user_basic_profile_network.json'
 
     def __init__(self):
         try:
-            with open(BasicProfile.USERS_PATH) as f:
+            with open(BasicProfile.JSON_PATH) as f:
                 self.Users = json.load(f)
         except OSError as e:
-            print(f'{BasicProfile.USERS_PATH} was not found.', e)
+            print(f'{BasicProfile.JSON_PATH} was not found.', e)
             raise
 
     def get_user_reputation(self, user_id):
@@ -117,14 +125,71 @@ class TagNetwork(Feature):
 
 class Engine:
     def __init__(self):
+        logging.info('Loading all dataframes...')
+        t1 = time.time()
+        # load questions and all user activities
         self.X = pd.read_csv('../../160-Stackoverflow-Data/train_test/X.csv')
         self.y = pd.read_csv('../../160-Stackoverflow-Data/train_test/y.csv')
 
-    # todo: use timeit do see where things are running inefficiently
+        # load engineered features
+        self.user_availability = UserAvailability()
+        self.user_expertise = UserExpertise()
+        self.user_profile = BasicProfile()
+        self.tag_network = TagNetwork()
+        t2 = time.time()
+        logging.info(f'Dataframe loading finished in time {t2 - t1} seconds.')
 
-    def build_user_score_matrix(self, weight_vector):
-        # todo: run standard scaler here
+    def rank(self, n_features, weight_vector):
+        logging.info('Computing ranks...')
+        t1 = time.time()
+
+        n_questions = len(self.X)
+        bar = progressbar.ProgressBar()
+        for index, row in bar(self.X.iterrows()):
+            # n_features + 2, for the user id column and score oolumn
+            matrix_init = np.zeros(shape=(n_questions, n_features + 2), dtype=np.float)
+
+            # add all the 
+            with open('users_list.p', 'rb') as fp:
+                matrix_init[:, 0] = pickle.load(fp)
+            user_score_matrix = self._build_user_score_matrix(row, matrix_init, weight_vector)
+
+        t2 = time.time()
+        logging.info(f'Ranking computation finished in {(t2 - t1)/60} minutes.')
+
+
+    def _build_user_score_matrix(self, question, M, weight_vector):
+        for i, user in enumerate(M[:, 0]):
+            M[i, 1:-1] = self.__compute_feature_row_for_user(user)
+
+        # now transform to fix units (excluding users column, and the score column)
+        scaler = StandardScaler()
+        scaler.fit_transform(M[:, 1:-1])
+
+        # weight each feature
+        M[:, 1: -1] = M[:, 1:-1]*weight_vector
+
+        # compute the final score based off the features by summing
+        # all the rows (excluding the user column and the score column)
+        M[:, -1] = [sum(np.sum(M[i, 1:-1])) for i in range(M.shape[0])]
+
+        # by default sort will sort by the last column
+        return self._sort_matrix_by_column(M, -1, ascending=False)
+
+    def __compute_feature_row_for_user(self, user_id):
         pass
 
-    def build_residual_matrix(self):
+    def _build_residual_matrix(self):
         pass
+
+    def _sort_matrix_by_column(self, M, i_column, ascending=True):
+        multiplier = 1 if ascending else -1
+        return M[np.argsort(multiplier*M.A[:, i_column])]
+
+    def _compute_residuals(self, rank, observed):
+        pass
+
+
+if __name__ == '__main__':
+    logging.basicConfig(filename='engine.log', level=logging.INFO)
+    engine = Engine()
