@@ -1,13 +1,13 @@
 import pandas as pd
-import json
-import sys
 import progressbar
 from collections import defaultdict
+import dill as pickle
+
 
 """
 File: build_user_basic_profile_network.py
 Objective: Build a json file that identifies the basic
-		   meta profile properties associated with a user.
+           meta profile properties associated with a user.
 
 Graph Structure:
     {
@@ -18,19 +18,21 @@ Graph Structure:
     }
 """
 
-# load data
-Users = pd.read_csv('../../160-Stackoverflow-Data/train_test/Users.csv')
 
-# only interested in the user and the creation dates
-user_basic_profile = defaultdict(lambda: defaultdict(lambda: int()))
+def build_user_basic_profile_network():
+    # load data
+    Users = pd.read_csv('../../160-Stackoverflow-Data/train_test/Users.csv')
 
-bar = progressbar.ProgressBar()
-for index, row in bar(Users.iterrows()):
-    user_basic_profile[row['Id']]['reputation'] = row.Reputation
-    user_basic_profile[row['Id']]['views'] = row.Views
-    user_basic_profile[row['Id']]['creation_date'] = row.CreationDate
-    user_basic_profile[row['Id']]['upvotes'] = row.UpVotes
-    user_basic_profile[row['Id']]['downvotes'] = row.DownVotes
+    # only interested in the user and the creation dates
+    user_basic_profile = defaultdict(lambda: defaultdict(lambda: int()))
 
-sys.stdout = open("user_basic_profile_network.json", "w")
-print(json.dumps(user_basic_profile))
+    bar = progressbar.ProgressBar()
+    for index, row in bar(Users.iterrows()):
+        user_basic_profile[int(row['Id'])]['reputation'] = row.Reputation
+        user_basic_profile[int(row['Id'])]['views'] = row.Views
+        user_basic_profile[int(row['Id'])]['creation_date'] = row.CreationDate
+        user_basic_profile[int(row['Id'])]['upvotes'] = row.UpVotes
+        user_basic_profile[int(row['Id'])]['downvotes'] = row.DownVotes
+
+    with open('user_basic_profile_network.p', 'wb') as fp:
+        pickle.dump(user_basic_profile, fp)
