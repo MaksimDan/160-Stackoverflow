@@ -3,10 +3,23 @@ import json
 import progressbar
 import sys
 
+"""
+File: build_user_availibility_network.py
+Objective: Build a json file that identifies the probability
+	       an arbitrary user is active on hour i.
+
+Graph Structure:
+    {
+        <user_id1> = {'hr1': p_hr1, 'hr2': p_hr2 ... },
+        <user_id1> = {'hr1': p_hr1, 'hr2': p_hr2 ... },
+        ...
+        <user_idn> = {'hr1': p_hr1, 'hr2': p_hr2 ... },
+    }
+"""
 
 # load data
 Comments = pd.read_csv('../../160-Stackoverflow-Data/train_test/Comments.csv')
-Posts = pd.read_csv('../../160-Stackoverflow-Data/train_test/raw/Posts_2012_Clean.csv')
+Posts = pd.read_csv('../../160-Stackoverflow-Data/train_test/Posts_Clean.csv')
 Votes = pd.read_csv('../../160-Stackoverflow-Data/train_test/Votes.csv')
 
 # only interested in the user and the creation dates

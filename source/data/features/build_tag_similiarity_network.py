@@ -9,15 +9,15 @@ import sys
 
 
 """
-File: <filename.py>
-Objective: <your description here>
+File: build_tag_similiarity_network.py
+Objective: Represent the cosine relationship between tags.
 def build_all_tag_network
 Graph Structure:
     {
-        <tag1> = [index1, index2, ... ],
-        <tag2> = [index1, index2, ... ],
+        <tag1> = [[tag, strength], [tag, strength], ... ],
+        <tag2> = [[tag, strength], [tag, strength], ... ],
         ...
-        <tagn> = [index1, index2, ... ],
+        <tagn> = [[tag, strength], [tag, strength], ... ],
     }
 """
 

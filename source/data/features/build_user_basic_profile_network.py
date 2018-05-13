@@ -4,6 +4,20 @@ import sys
 import progressbar
 from collections import defaultdict
 
+"""
+File: build_user_basic_profile_network.py
+Objective: Build a json file that identifies the basic
+		   meta profile properties associated with a user.
+
+Graph Structure:
+    {
+        <user_id1> = {'prop1': val1, 'prop2': val2, ... },
+        <user_id1> = {'prop1': val1, 'prop2': val2, ... },
+        ...
+        <user_idn> = {'prop1': val1, 'prop2': val2, ... },
+    }
+"""
+
 # load data
 Users = pd.read_csv('../../160-Stackoverflow-Data/train_test/Users.csv')
 

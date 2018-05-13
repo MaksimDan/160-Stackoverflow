@@ -10,8 +10,19 @@ import time
 
 """
 File: build_user_similiarity_network.py
-Objective: Identifies the n most similiar users as well the associated stength
+Objective: Identifies the n most similar users as well the associated stength
            with said user. Outputs a json graph network.
+		   
+Graph Structure:
+    {
+        <user_id1> = {'user_id': [user1, user2, user3, ..., usern]
+					  'user_weight': [weight1, weight2, weight3, ..., weightn]},
+        <user_id1> = {'user_id': [user1, user2, user3, ..., usern]
+					  'user_weight': [weight1, weight2, weight3, ..., weightn]},
+        ...
+        <user_idn> = {'user_id': [user1, user2, user3, ..., usern]
+					  'user_weight': [weight1, weight2, weight3, ..., weightn]}
+    }
 """
 
 def build_n_most_similiar_users(X, df, n=5):

@@ -4,6 +4,20 @@ import json
 import progressbar
 import sys
 
+"""
+File: build_user_expertise_network.py
+Objective: Build a json file that identifies the associated level
+           of strength per tag of the user.
+
+Graph Structure:
+    {
+        <user_id1> = {'frequency1': val1, 'frequency2': val2},
+        <user_id1> = {'frequency1': val1, 'frequency2': val2},
+        ...
+        <user_idn> = {'frequency1': val1, 'frequency2': val2}
+    }
+"""
+
 Posts = pd.read_csv('../../160-Stackoverflow-Data/train_test/raw/Posts_2012_Clean.csv')
 Comments = pd.read_csv('../../160-Stackoverflow-Data/train_test/Comments.csv')
 
