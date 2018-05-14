@@ -2,52 +2,69 @@ import pandas as pd
 import re
 from sklearn.model_selection import train_test_split
 from copy import copy
-import progressbar
 import json 
+from collections import defaultdict
 
-# raw input
+
+# read inputs
 Posts_full = pd.read_csv('~/Dropbox/160-Stackoverflow-Data/train_test/Posts_Clean.csv')
+Votes = pd.read_csv('~/Dropbox/160-Stackoverflow-Data/train_test/Votes.csv')
+Comments = pd.read_csv('~/Dropbox/160-Stackoverflow-Data/train_test/Comments.csv')
+Post_his = pd.read_csv('~/Dropbox/160-Stackoverflow-Data/train_test/PostsHistory_2012.csv')
+
+# clean data 
 Posts_full.dropna(subset=['OwnerUserId'], inplace=True)
-Posts_full['OwnerUserId'] = Posts_full['OwnerUserId'].astype('int')
+Posts_full['OwnerUserId'] = Posts_full['OwnerUserId'].astype('str')
+
+Votes.dropna(subset=['UserId'], inplace=True)
+Votes['UserId'] = Votes['UserId'].astype('str')
+
+Comments.dropna(subset=['UserId'], inplace=True)
+Comments['UserId'] = Comments['UserId'].astype('str')
+
+Post_his.dropna(subset=['UserId'], inplace=True)
+Post_his['UserId'] = Post_his['UserId'].astype('str')
+
 
 # build X - the questions and features
 Posts_X = Posts_full.loc[Posts_full.PostTypeId == 1]
-X = Posts_X.drop(columns=['PostTypeId', 'LastEditorDisplayName', 'LastEditDate', 'LastActivityDate', 'CommunityOwnedDate'])
+X = Posts_X.drop(columns=['Unnamed: 0','PostTypeId', 'LastEditorDisplayName', 'LastEditDate', 'LastActivityDate', 'CommunityOwnedDate'])
+X['Id'] = X['Id'].astype(str) 
 X.to_csv('X.csv', index=False)
 
-# build y - the answers, comments, upvotes, downvotes, favorites
-answerers_per_question = Posts_full.groupby('ParentId')
-questionid_to_answerers = {questionid: list(answerers['OwnerUserId'].values )
-                              for questionid, answerers in answerers_per_question}
 
-# Comments = pd.read_csv('../../160-Stackoverflow-Data/train_test/Comments.csv')
-# commenters_per_question = Comments.groupby('PostId')
-# questionid_to_commentors = {questionid: list(commenters['UserId'].values )
-#                               for questionid, commenters in commenters_per_question}
+# build y - the answers, comments, upvotes, downvotes, favorites 
+activity = defaultdict(lambda :{'1' : [], '2': [], '3': [], '5': [], 'editers' : [], 'commenters': [], 'answerers': []})
 
-# Votes = pd.read_csv('../../160-Stackoverflow-Data/train_test/Votes.csv')
-# up_down_votes_per_question = Votes.groupby('PostId')
-# questionid_to_voters = {questionid: {'upvoters': list(voters['UserId'].values ), 'downvoters':}
-#                               for questionid, voters in up_down_votes_per_question}
+# answers
+Posts_full['ParentId'] = Posts_full['ParentId'].astype(str).apply(lambda row : row.rstrip(".0"))
+Posts_full[Posts_full['PostTypeId'] == 2].apply(lambda row : activity[row.ParentId]['answerers'].append(row.OwnerUserId), axis=1)
 
+# comments
+Comments.apply(lambda row: activity[row.PostId]['commenters'].append(row.UserId), axis=1)
 
+# vote activites
+Votes = Votes[Votes['VoteTypeId'].isin([1, 2, 3, 5])]
+Votes.apply(lambda row : activity[row.PostId][str(row.VoteTypeId)].append(row.UserId), axis=1)
 
-# y_list = [{'answerers': questionid_to_answerers.get(question_id, ''),
-#            'commentors': questionid_to_commentors.get(question_id, '')} 
-#           for question_id in X.Id.values]
-# y = pd.DataFrame({'owner_user_ids': y_list})
-# y.to_csv('y.csv', index=False)
+# edits
+Post_his = Post_his[(Post_his['PostHistoryTypeId'] >= 4) & (Post_his['PostHistoryTypeId'] <= 6)]    
+Post_his.apply(lambda row: activity[row.PostId]['editers'].append(row.UserId), axis=1)
 
 
-# # now remove questions that dont have answers, and create the training and test split
-# X['y'] = y
-# X.dropna(subset=['y'], inplace=True)
-# y = pd.DataFrame({'owner_user_ids': copy(X.y)})
-# X = X.drop('y', axis=1)
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = .15, random_state = 42)
+y = pd.DataFrame.from_dict(activity, orient='index')
+y = y.rename(index=str, columns={"1": "accepted", "2": "upvotes", "3": "downvotes", "5": "favorite"})
 
-# # save to csv
-# X_train.to_csv('X_train.csv', index=False)
-# X_test.to_csv('X_test.csv', index=False)
-# y_train.to_csv('y_train.csv', index=False)
-# y_test.to_csv('y_test.csv', index=False)
+# split to train test
+y.to_csv('y.csv', index_label='Id')
+X = X.set_index('Id')
+full = X.join(y)
+y = full.iloc[:,16:24]
+X = full.iloc[:,0:15]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = .15, random_state = 42)
+
+# save to csv
+X_train.to_csv('X_train.csv', index_label='Id')
+X_test.to_csv('X_test.csv', index_label='Id')
+y_train.to_csv('y_train.csv', index_label='Id')
+y_test.to_csv('y_test.csv', index_label='Id')
