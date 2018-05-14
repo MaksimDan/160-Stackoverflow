@@ -15,9 +15,9 @@ from textblob import TextBlob
 
 """
 File: build_user_communication_network.py
-Objective: Builds nested graph that representations the communication
-           between users, who ask questions, answer questions, and post
-           comments. Outputs a json graph network.
+Objective: Builds nested graph that representations that literally
+           concatenates all the postal information by a user.
+		   Outputs a json graph network.
 		   
 Graph Structure:
     graph = {
