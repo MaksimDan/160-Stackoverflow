@@ -4,7 +4,12 @@ import math
 import os
 import json
 from collections import defaultdict
+
+# visualization
+import matplotlib.pyplot as plt
+import matplotlib.colors
 import pprint
+
 
 # meta
 import logging
@@ -17,10 +22,13 @@ import pandas as pd
 import numpy as np
 
 import sys
+
+
 # in order for the pickle files to unpack
 # the modules must be included where they were
 # packed.
 sys.path.append('../source/data/features')
+BASE_PATH = '../../160-Stackoverflow-Data/train_test/'
 
 
 class Feature:
@@ -35,7 +43,7 @@ class Feature:
 
 
 class UserAvailability(Feature):
-    pickle_path = '../../160-Stackoverflow-Data/train_test/engineered_features/user_availability_network.p'
+    pickle_path = BASE_PATH + 'engineered_features/user_availability_network.p'
 
     def __init__(self):
         self.UA_network = Feature.load_p_file(UserAvailability.pickle_path)
@@ -55,7 +63,7 @@ class UserAvailability(Feature):
 
 
 class UserExpertise(Feature):
-    pickle_path = '../../160-Stackoverflow-Data/train_test/engineered_features/user_expertise_network.p'
+    pickle_path = BASE_PATH + 'engineered_features/user_expertise_network.p'
 
     def __init__(self):
         self.UE_network = Feature.load_p_file(UserExpertise.pickle_path)
@@ -83,7 +91,7 @@ class UserExpertise(Feature):
 
 
 class BasicProfile(Feature):
-    pickle_path = '../../160-Stackoverflow-Data/train_test/engineered_features/user_basic_profile_network.p'
+    pickle_path = BASE_PATH + 'engineered_features/user_basic_profile_network.p'
 
     def __init__(self):
         self.Users = Feature.load_p_file(BasicProfile.pickle_path)
@@ -131,7 +139,7 @@ class BasicProfile(Feature):
 
 
 class TagNetwork(Feature):
-    pickle_path = '../../160-Stackoverflow-Data/train_test/engineered_features/tag_network.p'
+    pickle_path = BASE_PATH + 'engineered_features/tag_network.p'
 
     def __init__(self):
         self.TAG_Network = Feature.load_p_file(TagNetwork.pickle_path)
@@ -141,27 +149,47 @@ class TagNetwork(Feature):
 
 
 class Indicator:
-    pickle_path = '../../160-Stackoverflow-Data/train_test/engineered_features/indicator_network.p'
+    pickle_path = BASE_PATH + 'engineered_features/indicator_network.p'
 
     def __init__(self):
         self.I_Network = Feature.load_p_file(Indicator.pickle_path)
 
 
 class ResidualColorMatrix:
-    def __init__(self, color_map):
-        self.color_map = color_map
+    rbg = {'GREEN': (0, 255, 0), 'CYAN': (0, 255, 255), 'BLUE': (0, 128, 255), 'PURPLE': (127, 0, 255),
+           'LIGHT_GREY': (224, 224, 224), 'ORANGE': (255, 128, 0), 'YELLOW': (255, 255, 0), 'RED': (255, 0, 0)}
+    color_map = {'base': {'label': 0, 'rgb': rbg['LIGHT_GREY']},
+                 'i_answer': {'label': 1, 'rgb': rbg['BLUE']},
+                 'i_comment': {'label': 2, 'rgb': rbg['CYAN']},
+                 'i_upvote': {'label': 3, 'rgb': rbg['GREEN']},
+                 'i_downvote': {'label': 4, 'rgb': rbg['RED']},
+                 'i_favorite': {'label': 5, 'rgb': rbg['YELLOW']},
+                 'i_edit': {'label': 6, 'rgb': rbg['PURPLE']}}
 
-    def build_residual_matrix(self, question_error, n_users):
+    @staticmethod
+    def build_residual_matrix(question_error, n_users):
         n_questions = len(question_error)
         residual_matrix = np.zeros((n_questions, n_users))
         for row, observed_i in question_error.items():
             for feature_type, users in observed_i.items():
                 for u_id in users:
-                    residual_matrix[row, u_id] = self.color_map[feature_type]
+                    residual_matrix[row, u_id] = ResidualColorMatrix.color_map[feature_type]
         return residual_matrix
 
-    def colorize_residual_matrix(self, residual_matrix):
-        pass
+    @staticmethod
+    def colorize_residual_matrix(mat, save_path):
+        ca = [list(ResidualColorMatrix.color_map[key]['rgb']) for key in ResidualColorMatrix.color_map.keys()]
+        colors = np.matrix(ca)/255
+        cmap = matplotlib.colors.ListedColormap(colors)
+        norm = matplotlib.colors.BoundaryNorm(np.arange(len(ca)+1)-0.5, len(ca))
+
+        plt.imshow(mat, cmap=cmap, norm=norm)
+        plt.axis('off')
+        cb = plt.colorbar(ticks=np.arange(len(ca)))
+        cb.ax.set_yticklabels(ResidualColorMatrix.color_map.keys())
+        plt.title('Residual Matrix')
+        plt.savefig(save_path)
+        plt.show()
 
 
 class Residuals:
@@ -209,8 +237,8 @@ class Engine:
         t1 = time.time()
 
         # load questions and all user activities
-        self.X = pd.read_csv('../../160-Stackoverflow-Data/train_test/X100.csv')
-        self.y = pd.read_csv('../../160-Stackoverflow-Data/train_test/y100.csv')
+        self.X = pd.read_csv(BASE_PATH + 'X100.csv')
+        self.y = pd.read_csv(BASE_PATH + 'y100.csv')
         self.X['CreationDate'] = pd.to_datetime(self.X['CreationDate'], format="%Y-%m-%dT%H:%M:%S")
 
         # load engineered features
@@ -221,7 +249,7 @@ class Engine:
         # self.user_expertise = UserExpertise()
 
         # load all users list (order does not matter)
-        with open('users_list.p', 'rb') as fp:
+        with open(BASE_PATH + 'meta/users_list.p', 'rb') as fp:
             self.unique_users_list = pickle.load(fp)
 
         t2 = time.time()
@@ -229,10 +257,10 @@ class Engine:
 
         self.all_residuals = Residuals(self.X, self.y)
 
-    def build_and_display_residual_matrix(self, color_map):
-        r_matrix = ResidualColorMatrix(color_map)
+    def build_and_display_residual_matrix(self, save_path):
+        r_matrix = ResidualColorMatrix()
         r_matrix_raw = r_matrix.build_residual_matrix(self.all_residuals.residual_matrix_raw, len(self.unique_users_list))
-        return r_matrix.colorize_residual_matrix(r_matrix_raw)
+        r_matrix.colorize_residual_matrix(r_matrix_raw, save_path)
 
     def rank_all_questions(self, w):
         n_features = len(w)
@@ -255,9 +283,9 @@ class Engine:
         logging.info(f'Ranking all questions computation finished in {(t2 - t1)/60} minutes.')
         logging.info(self.all_residuals.get_summarize_statistics())
 
-    def _rank_question(self, X_row, M, w):
+    def _rank_question(self, x_row, M, w):
         for i, user in enumerate(M[:, 0]):
-            M[i, 1:-1] = self._compute_feature_row_for_user(user, X_row)
+            M[i, 1:-1] = self._compute_feature_row_for_user(user, x_row)
 
         # weight each feature
         M[:, 1: -1] = np.multiply(M[:, 1:-1], w)
@@ -273,9 +301,9 @@ class Engine:
         # by default sort will sort by the last column
         return Engine._sort_matrix_by_column(M, -1, ascending=False)
 
-    def _compute_feature_row_for_user(self, user_id, X_row):
-        user_avail = self.user_availability.get_user_availability_probability(user_id, X_row.CreationDate.hour)
-        # user_expertise = self.user_expertise.get_user_sum_expertise(user_id, X_row['Tags'].split())
+    def _compute_feature_row_for_user(self, user_id, x_row):
+        user_avail = self.user_availability.get_user_availability_probability(user_id, x_row.CreationDate.hour)
+        # user_expertise = self.user_expertise.get_user_sum_expertise(user_id, x_row['Tags'].split())
         user_basic_profile = self.user_profile.get_all_measureable_features(user_id)
         # [user_expertise]
         return [user_avail] + user_basic_profile
@@ -355,22 +383,30 @@ class Test:
         weights = np.random.rand(1, self.n_features)[0] + 1.5
         engine.rank_all_questions(weights)
 
-    def random_weight_with_visual_residual(self, color_map):
+    def random_weight_with_visual_residual(self):
         engine = Engine()
         weights = np.random.rand(1, self.n_features)[0] + 1.5
         engine.rank_all_questions(weights)
-        engine.build_and_display_residual_matrix(color_map)
+        engine.build_and_display_residual_matrix('TEST_random_weight_with_visual_residual.png')
 
     def weight_tune(self):
         engine = Engine()
         w = WeightVector.tune_weight_vector(self.n_features)
         engine.rank_all_questions(w)
 
-    def weight_tune_with_visual_residual(self, color_map):
+    def weight_tune_with_visual_residual(self):
         engine = Engine()
         w = WeightVector.tune_weight_vector(self.n_features)
         engine.rank_all_questions(w)
-        engine.build_and_display_residual_matrix(color_map)
+        engine.build_and_display_residual_matrix('TEST_weight_tune_with_visual_residual.png')
+
+
+def primative_tests():
+    my_test = Test(5)
+    my_test.random_weight()
+    my_test.random_weight_with_visual_residual()
+    my_test.weight_tune()
+    my_test.weight_tune_with_visual_residual()
 
 
 # Feature Summary:
@@ -382,21 +418,11 @@ class Test:
 #   UserExpertise (1) ignored for now
 #   UserAvailability (1)
 
-
 if __name__ == '__main__':
     # delete old log file, if existing
     try:
         os.remove('engine_log.log')
     except OSError:
         pass
-
     logging.basicConfig(filename='engine_log.log', level=logging.INFO)
-
-    colormap = {'i_answer': {'label': 1, 'rgb': (0, 0, 1)},
-                'i_comment': {'label': 2, 'rgb': (0, 1, 0)} }
-
-    test = Test(5)
-    test.random_weight()
-    # test.random_weight_with_visual_residual(colormap)
-    # test.weight_tune()
-    # test.weight_tune_with_visual_residual(colormap)
+    primative_tests()
