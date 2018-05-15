@@ -1,6 +1,3 @@
-import json 
-import pandas as pd 
-import numpy as np
 import pandas as pd
 import json
 from collections import defaultdict
@@ -9,15 +6,15 @@ import sys
 
 
 """
-File: <filename.py>
-Objective: <your description here>
+File: build_tag_similiarity_network.py
+Objective: Represent the cosine relationship between tags.
 def build_all_tag_network
 Graph Structure:
     {
-        <tag1> = [index1, index2, ... ],
-        <tag2> = [index1, index2, ... ],
+        <tag1> = [[tag, strength], [tag, strength], ... ],
+        <tag2> = [[tag, strength], [tag, strength], ... ],
         ...
-        <tagn> = [index1, index2, ... ],
+        <tagn> = [[tag, strength], [tag, strength], ... ],
     }
 """
 
@@ -41,8 +38,6 @@ def build_all_tag_network(all_tags_path, data_ratio, _indent=False):
     return json.dumps(d)
 
 
-
-
 def cosine_sim(tag1, tag2, tag_dict):
     tag1_set = set(tag_dict[tag1])
     tag2_set = set(tag_dict[tag2])
@@ -51,16 +46,15 @@ def cosine_sim(tag1, tag2, tag_dict):
     return num / den 
 
 
-        
 def build_graph():
     graph = defaultdict(dict)
     for i in range(n):
         tag = all_tags[i]
         similar_tags = tag_similarity.loc[tag,:].nlargest(n=15)
-        
         graph[tag] = {'similar_tags' : [(a, b) for a, b in zip(similar_tags.axes[0].tolist(), similar_tags.values.tolist())\
                                        if b > 0]}
     return graph
+
 
 def build_network():
     tag_dict = json.load(open('tag_index_network.json'))
@@ -79,8 +73,6 @@ def build_network():
     graph = build_graph()
     with open('tag_network_graph.json', 'w+') as outfile:
         json.dump(graph, outfile)
-
-
 
 
 if __name__ == "__main__":

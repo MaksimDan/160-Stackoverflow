@@ -2,68 +2,69 @@ import pandas as pd
 import re
 from sklearn.model_selection import train_test_split
 from copy import copy
-import progressbar
+import json 
+from collections import defaultdict
 
-# raw input
-Posts_full = pd.read_csv('../../160-Stackoverflow-Data/train_test/raw/Posts_2012.csv')
+
+# read inputs
+Posts_full = pd.read_csv('~/Dropbox/160-Stackoverflow-Data/train_test/Posts_Clean.csv')
+Votes = pd.read_csv('~/Dropbox/160-Stackoverflow-Data/train_test/Votes.csv')
+Comments = pd.read_csv('~/Dropbox/160-Stackoverflow-Data/train_test/Comments.csv')
+Post_his = pd.read_csv('~/Dropbox/160-Stackoverflow-Data/train_test/PostsHistory_2012.csv')
+
+# clean data 
 Posts_full.dropna(subset=['OwnerUserId'], inplace=True)
-Posts_full['OwnerUserId'] = Posts_full['OwnerUserId'].astype('int')
+Posts_full['OwnerUserId'] = Posts_full['OwnerUserId'].astype('str')
 
-# build X
+Votes.dropna(subset=['UserId'], inplace=True)
+Votes['UserId'] = Votes['UserId'].astype('str')
+
+Comments.dropna(subset=['UserId'], inplace=True)
+Comments['UserId'] = Comments['UserId'].astype('str')
+
+Post_his.dropna(subset=['UserId'], inplace=True)
+Post_his['UserId'] = Post_his['UserId'].astype('str')
+
+
+# build X - the questions and features
 Posts_X = Posts_full.loc[Posts_full.PostTypeId == 1]
-X = Posts_X.drop(columns=['PostTypeId', 'LastEditorDisplayName', 'LastEditDate', 'LastActivityDate', 'CommunityOwnedDate'])
-X.Tags = X.Tags.apply(lambda t: ' '.join(re.findall(r"<(\w+)>", str(t))))
+X = Posts_X.drop(columns=['Unnamed: 0','PostTypeId', 'LastEditorDisplayName', 'LastEditDate', 'LastActivityDate', 'CommunityOwnedDate'])
+X['Id'] = X['Id'].astype(str) 
 X.to_csv('X.csv', index=False)
 
-# build y
-answerers_per_question = Posts_full.groupby('ParentId')
-question_and_answerers = {questionid: ' '.join(str(x) for x in answerers['OwnerUserId'].values) for questionid, answerers in answerers_per_question}
 
-y_list = [question_and_answerers.get(question_id, '') for question_id in X.Id.values]
-y = pd.DataFrame({'owner_user_ids': y_list})
-y.to_csv('y.csv', index=False)
+# build y - the answers, comments, upvotes, downvotes, favorites 
+activity = defaultdict(lambda :{'1' : [], '2': [], '3': [], '5': [], 'editers' : [], 'commenters': [], 'answerers': []})
 
+# answers
+Posts_full['ParentId'] = Posts_full['ParentId'].astype(str).apply(lambda row : row.rstrip(".0"))
+Posts_full[Posts_full['PostTypeId'] == 2].apply(lambda row : activity[row.ParentId]['answerers'].append(row.OwnerUserId), axis=1)
 
-# map in the synoymns
-def remap_tag_synoymns(tag_syn_path, post_inpath):
-    tag_syn_df = pd.read_csv(tag_syn_path)
-    tag_map = {str(row['SourceTagName']).lower(): str(row['TargetTagName']).lower()
-               for index, row in tag_syn_df.iterrows()}
+# comments
+Comments.apply(lambda row: activity[row.PostId]['commenters'].append(row.UserId), axis=1)
 
-    posts_df = pd.read_csv(post_inpath)
-    old_tag_list = posts_df.Tags.values
-    new_tag_list = []
+# vote activites
+Votes = Votes[Votes['VoteTypeId'].isin([1, 2, 3, 5])]
+Votes.apply(lambda row : activity[row.PostId][str(row.VoteTypeId)].append(row.UserId), axis=1)
 
-    bar = progressbar.ProgressBar()
-    for tags in bar(old_tag_list):
-        if isinstance(tags, str):
-            new_tag_list.append(
-                ' '.join([tag_map[tag.lower()] if tag.lower() in tag_map else tag for tag in tags.split()]))
-        else:
-            new_tag_list.append('')
-    posts_df['Tags'] = new_tag_list
-    posts_df.to_csv('X.csv', index=False)
+# edits
+Post_his = Post_his[(Post_his['PostHistoryTypeId'] >= 4) & (Post_his['PostHistoryTypeId'] <= 6)]    
+Post_his.apply(lambda row: activity[row.PostId]['editers'].append(row.UserId), axis=1)
 
 
-remap_tag_synoymns('../../160-Stackoverflow-Data/tags/TagSynonyms.csv', 'X.csv')
+y = pd.DataFrame.from_dict(activity, orient='index')
+y = y.rename(index=str, columns={"1": "accepted", "2": "upvotes", "3": "downvotes", "5": "favorite"})
 
-# now remove questions that dont have answers, and create the training and test split
-X['y'] = y
-X.dropna(subset=['y'], inplace=True)
-y = pd.DataFrame({'owner_user_ids': copy(X.y)})
-X = X.drop('y', axis=1)
+# split to train test
+y.to_csv('y.csv', index_label='Id')
+X = X.set_index('Id')
+full = X.join(y)
+y = full.iloc[:,16:24]
+X = full.iloc[:,0:15]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = .15, random_state = 42)
 
 # save to csv
-X_train.to_csv('X_train.csv')
-X_test.to_csv('X_test.csv')
-y_train.to_csv('y_train.csv')
-y_test.to_csv('y_test.csv')
-
-
-# build answers.csv
-Answers = Posts_full.loc[Posts_full.PostTypeId == 2]
-
-features = ['Id', 'ParentId', 'CreationDate', 'Score', 'ViewCount', 'Body', 'OwnerUserId', 'ClosedDate']
-Answers = Answers[features]
-Answers.to_csv('Answers.csv', index=False)
+X_train.to_csv('X_train.csv', index_label='Id')
+X_test.to_csv('X_test.csv', index_label='Id')
+y_train.to_csv('y_train.csv', index_label='Id')
+y_test.to_csv('y_test.csv', index_label='Id')
