@@ -15,20 +15,20 @@ import pprint
 import logging
 import progressbar
 import pickle
+import sys
 
 # data
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 import numpy as np
 
-import sys
-
-
+# preprocessing
 # in order for the pickle files to unpack
 # the modules must be included where they were
 # packed.
 sys.path.append('../source/data/features')
 BASE_PATH = '../../160-Stackoverflow-Data/train_test/'
+progressbar.streams.flush()
 
 
 class Feature:
@@ -92,6 +92,7 @@ class UserExpertise(Feature):
 
 class BasicProfile(Feature):
     pickle_path = BASE_PATH + 'engineered_features/user_basic_profile_network.p'
+    n_features = 4
 
     def __init__(self):
         self.Users = Feature.load_p_file(BasicProfile.pickle_path)
@@ -169,11 +170,11 @@ class ResidualColorMatrix:
     @staticmethod
     def build_residual_matrix(question_error, n_users):
         n_questions = len(question_error)
-        residual_matrix = np.zeros((n_questions, n_users))
+        residual_matrix = np.zeros((n_questions, n_users), dtype=np.int)
         for row, observed_i in question_error.items():
-            for feature_type, users in observed_i.items():
-                for u_id in users:
-                    residual_matrix[row, u_id] = ResidualColorMatrix.color_map[feature_type]
+            for feature_type, rank in observed_i.items():
+                for i in rank:
+                    residual_matrix[row, i] = ResidualColorMatrix.color_map[feature_type]['label']
         return residual_matrix
 
     @staticmethod
@@ -202,14 +203,22 @@ class Residuals:
         observed = json.loads(self.y['owner_user_ids'].values[y_index])
         predicted = {int(score_matrix[i, 0]): {'index': i, 'score': score_matrix[i, -1]} for i in range(score_matrix.shape[0])}
 
-        # user_id = observed['answerers'][0]
-        # if user_id in predicted:
-        #     print('yee')
-        # else:
-        #     print('wee')
+        # TODO: ensure all users have proper indexing
+        # index_answer = [predicted[user]['index'] for user in observed['answerers']]
+        # index_comment = [predicted[user]['index'] for user in observed['commentors']]
 
-        index_answer = [predicted[user]['index'] for user in observed['answerers']]
-        index_comment = [predicted[user]['index'] for user in observed['commentors']]
+        index_answer, index_comment = [], []
+        for user in observed['answerers']:
+            try:
+                index_answer.append(predicted[user]['index'])
+            except KeyError:
+                logging.debug(f'Missing answerer user: {user}')
+
+        for user in observed['commentors']:
+            try:
+                index_comment.append(predicted[user]['index'])
+            except KeyError:
+                logging.debug(f'Missing commenter user: {user}')
 
         self.error['answer'] += sum(index_answer)
         self.error['comment'] += sum(index_comment)
@@ -220,79 +229,96 @@ class Residuals:
     def get_total_error(self):
         return self.error['answer'] + self.error['comment']
 
-    def get_summarize_statistics(self):
-        stats = '\n Residual Summary Statistics\n'
+    def get_summarize_statistics(self, n_total_users):
+        stats = 'Residual Summary Statistics\n\n'
 
-        stats += 'Error per Individual User Activity'
+        stats += 'Error per Individual User Activity:\n'
         stats += (pprint.pformat(self.error, indent=4, width=1) + '\n')
 
-        stats += 'Total Error\n'
-        stats += str(self.get_total_error())
+        stats += 'Total Error: '
+        stats += str(self.get_total_error()) + '\n'
+
+        n_questions = len(self.residual_matrix_raw)
+        stats += 'Average Rank Error Per Question: '
+        stats += str(self.get_total_error()/n_questions) + '\n'
+
+        stats += 'Average Percent Rank Error Per Question: '
+        stats += str(self.get_total_error()/n_questions/n_total_users) + '\n'
+
+        # todo: average percent tank error broken down by type of response
         return stats
 
 
 class Engine:
+    logging.info('Loading all data frames...')
+    t1 = time.time()
+
+    # load questions and all user activities
+    X = pd.read_csv(BASE_PATH + 'X100.csv').head(10)
+    y = pd.read_csv(BASE_PATH + 'y100.csv').head(10)
+    X['CreationDate'] = pd.to_datetime(X['CreationDate'], format="%Y-%m-%dT%H:%M:%S")
+
+    # load engineered features
+    user_availability = UserAvailability()
+    user_profile = BasicProfile()
+    # todo: ignore these for now, integrate them later once everything works
+    # tag_network = TagNetwork()
+    # user_expertise = UserExpertise()
+
+    # load all users list (order does not matter)
+    with open(BASE_PATH + 'meta/users_list.p', 'rb') as fp:
+        unique_users_list = pickle.load(fp)
+
+    t2 = time.time()
+    logging.info(f'Dataframe loading finished in time {t2 - t1} seconds.\n')
+
     def __init__(self):
-        logging.info('Loading all data frames...')
-        t1 = time.time()
-
-        # load questions and all user activities
-        self.X = pd.read_csv(BASE_PATH + 'X100.csv')
-        self.y = pd.read_csv(BASE_PATH + 'y100.csv')
-        self.X['CreationDate'] = pd.to_datetime(self.X['CreationDate'], format="%Y-%m-%dT%H:%M:%S")
-
-        # load engineered features
-        self.user_availability = UserAvailability()
-        self.user_profile = BasicProfile()
-        # todo: ignore these for now, integrate them later once everything works
-        # self.tag_network = TagNetwork()
-        # self.user_expertise = UserExpertise()
-
-        # load all users list (order does not matter)
-        with open(BASE_PATH + 'meta/users_list.p', 'rb') as fp:
-            self.unique_users_list = pickle.load(fp)
-
-        t2 = time.time()
-        logging.info(f'Dataframe loading finished in time {t2 - t1} seconds.')
-
-        self.all_residuals = Residuals(self.X, self.y)
+        self.all_residuals = Residuals(Engine.X, Engine.y)
 
     def build_and_display_residual_matrix(self, save_path):
         r_matrix = ResidualColorMatrix()
-        r_matrix_raw = r_matrix.build_residual_matrix(self.all_residuals.residual_matrix_raw, len(self.unique_users_list))
+        r_matrix_raw = r_matrix.build_residual_matrix(self.all_residuals.residual_matrix_raw, len(Engine.unique_users_list))
         r_matrix.colorize_residual_matrix(r_matrix_raw, save_path)
 
-    def rank_all_questions(self, w):
+    def rank_all_questions(self, w, log_disabled=False):
+        print('\n Ranking All Questions \n')
+        logger = logging.getLogger()
+        logger.disabled = log_disabled
         n_features = len(w)
 
         # n_features + 2, for the user id column and score column
-        matrix_init = np.zeros(shape=(len(self.unique_users_list), n_features + 2), dtype=np.float)
+        matrix_init = np.zeros(shape=(len(Engine.unique_users_list), n_features + 2), dtype=np.float)
         # add the users list as the first column of matrix
-        matrix_init[:, 0] = np.array(self.unique_users_list)
+        matrix_init[:, 0] = np.array(Engine.unique_users_list)
 
-        logging.info('Computing ranks...')
+        logging.info(f'Computing ranks using weight vector: {w}')
         t1 = time.time()
 
         # iterate through all questions
         bar = progressbar.ProgressBar()
-        for index, row in bar(self.X.iterrows()):
-            question_score_matrix = self._rank_question(row, copy(matrix_init), w)
+        print(w)
+        w_new = ','.join(str(x)[0:3] for x in w)
+        for index, row in bar(Engine.X.iterrows()):
+            question_score_matrix = Engine._rank_question(row, copy(matrix_init), w)
+            # np.savetxt(f'r_matrix_q-{index}_w-{w_new}.csv', question_score_matrix[:, 0], delimiter=",")
             self.all_residuals.compute_and_store_residuals(question_score_matrix, index)
 
         t2 = time.time()
         logging.info(f'Ranking all questions computation finished in {(t2 - t1)/60} minutes.')
-        logging.info(self.all_residuals.get_summarize_statistics())
+        logging.info(self.all_residuals.get_summarize_statistics(len(Engine.unique_users_list)))
+        logger.disabled = False
 
-    def _rank_question(self, x_row, M, w):
+    @staticmethod
+    def _rank_question(x_row, M, w):
         for i, user in enumerate(M[:, 0]):
-            M[i, 1:-1] = self._compute_feature_row_for_user(user, x_row)
-
-        # weight each feature
-        M[:, 1: -1] = np.multiply(M[:, 1:-1], w)
+            M[i, 1:-1] = Engine._compute_feature_row_for_user(user, x_row)
 
         # now transform to fix units (excluding users column, and the score column)
         scaler = MinMaxScaler()
         M[:, 1:-1] = scaler.fit_transform(M[:, 1:-1])
+
+        # weight each feature
+        M[:, 1: -1] = np.multiply(M[:, 1:-1], w)
 
         # compute the final score based off the features by summing
         # all the rows (excluding the user column and the score column)
@@ -301,10 +327,12 @@ class Engine:
         # by default sort will sort by the last column
         return Engine._sort_matrix_by_column(M, -1, ascending=False)
 
-    def _compute_feature_row_for_user(self, user_id, x_row):
-        user_avail = self.user_availability.get_user_availability_probability(user_id, x_row.CreationDate.hour)
-        # user_expertise = self.user_expertise.get_user_sum_expertise(user_id, x_row['Tags'].split())
-        user_basic_profile = self.user_profile.get_all_measureable_features(user_id)
+    @staticmethod
+    def _compute_feature_row_for_user(user_id, x_row):
+        # todo: add user expertise
+        user_avail = Engine.user_availability.get_user_availability_probability(user_id, x_row.CreationDate.hour)
+        # user_expertise = Engine.user_expertise.get_user_sum_expertise(user_id, x_row['Tags'].split())
+        user_basic_profile = Engine.user_profile.get_all_measureable_features(user_id)
         # [user_expertise]
         return [user_avail] + user_basic_profile
 
@@ -321,16 +349,22 @@ class WeightVector:
         # < 1.0 would make the make the weights decrease
         weights = np.random.rand(1, n_features)[0] + 1.5
         logging.info('Beginning gradient descent...')
+        logging.info(f'Initial random weights: {weights}')
 
+        t1 = time.time()
         engine = Engine()
-        engine.rank_all_questions(weights)
-        error = engine.all_residuals.get_total_error()
+        engine.rank_all_questions(weights, log_disabled=True)
+        prev_error = engine.all_residuals.get_total_error()
 
         bar = progressbar.ProgressBar()
         for i in bar(range(len(weights))):
-            weights[i] = WeightVector._tune_single_weight(weights, i, base_alpha, exponential_increase, error)
-        logging.info(f'Finished gradient descent. The final weight vector is {weights}.')
+            logging.info(f'Now optimizing weight {i}.')
+            weights[i] = WeightVector._tune_single_weight(weights, i, base_alpha, exponential_increase, prev_error)
 
+        t2 = time.time()
+        logging.info(f'\nFinished gradient descent in {(t2-t1)/60} minutes.'
+                     f'\nThe final weight vector is {weights}.')
+        engine.rank_all_questions(weights, log_disabled=False)
         return weights
 
     @staticmethod
@@ -338,45 +372,61 @@ class WeightVector:
         def adjust_weight(increase):
             w[i] = math.pow(w[i], alpha if increase else 1 / alpha)
 
-        break_state = 4
-        sm = [{},
-              {'error_decrease': {'next_state': 2, 'op': adjust_weight, 'param': True},
-               'error_increase': {'next_state': 3, 'op': adjust_weight, 'param': False}},
+        def loop_until_error_increase(c_error, p_error, a, increase):
+            p_weight = w[i]
+            while c_error < p_error:
+                print('why doe')
+                logging.info(f'\tError decreased: w[{i}]={w[i]}, error={c_error}, alpha={a}')
+                p_weight = w[i]
 
-              {'error_decrease': {'next_state': 2, 'op': adjust_weight, 'param': True},
-               'error_increase': {'next_state': break_state, 'op': None}},
+                a *= exp_increase
+                adjust_weight(increase)
+                e = Engine()
+                e.rank_all_questions(w, log_disabled=True)
+                p_error = c_error
+                c_error = engine.all_residuals.get_total_error()
+            return p_weight
 
-              {'error_decrease': {'next_state': 3, 'op': adjust_weight, 'param': False},
-               'error_increase': {'next_state': break_state, 'op': None}}]
-
+        # first try increasing the weight
         prev_weight = w[i]
-        current_state = 1
-        while current_state != break_state:
-            engine_trail = Engine()
-            engine_trail.rank_all_questions(w)
-            error = engine_trail.all_residuals.get_total_error()
+        alpha *= exp_increase
+        adjust_weight(True)
 
-            # if the error is greater, move in the reverse direction
-            if error < prev_error:
-                # adjust the weight accordingly
-                sm[current_state]['op'](sm[current_state]['param'])
-                prev_weight = w[i]
-                current_state = sm[current_state]['error_decrease']
-                alpha *= exp_increase
-                logging.info(f'Error decreased: w[{i}]={w[i]}, error={error}')
-            else:
-                if sm[current_state]['op']:
-                    sm[current_state]['op'](sm[current_state]['param'])
-                current_state = sm[current_state]['error_increase']
-                logging.info(f'Error increased: w[{i}]={w[i]}, error={error}')
-            prev_error = error
+        engine = Engine()
+        engine.rank_all_questions(w, log_disabled=True)
+        current_error = engine.all_residuals.get_total_error()
+        print(current_error, prev_error)
+        # if the error decreases, repeat the same operation unit it does not
+        if current_error < prev_error:
+            print('error decrease with increased alpha')
+            return loop_until_error_increase(current_error, prev_error, alpha, True)
+        # otherwise restore the initial weight and error and
+        # work backwards decreasing alpha
+        else:
+            print('error increased with increased alpha')
+            w[i] = prev_weight
+            adjust_weight(False)
 
-        return prev_weight
+            engine = Engine()
+            engine.rank_all_questions(w, log_disabled=True)
+            current_error = engine.all_residuals.get_total_error()
+            return loop_until_error_increase(current_error, prev_error, alpha, False)
 
 
 class Test:
     def __init__(self, n_features):
         self.n_features = n_features
+
+    def build_error_matrix_by_cartisian_weight(self):
+        pass
+
+    def manual_weights(self, W):
+        for w in W:
+            self.manual_weight(w)
+
+    def manual_weight(self, w):
+        engine = Engine()
+        engine.rank_all_questions(w)
 
     def random_weight(self):
         engine = Engine()
@@ -401,28 +451,39 @@ class Test:
         engine.build_and_display_residual_matrix('TEST_weight_tune_with_visual_residual.png')
 
 
-def primative_tests():
-    my_test = Test(5)
+def primative_tests(n_features):
+    my_test = Test(n_features)
+    # my_test.manual_weight(np.array([30, 100, 0, 20, 1000]))
     my_test.random_weight()
-    my_test.random_weight_with_visual_residual()
-    my_test.weight_tune()
-    my_test.weight_tune_with_visual_residual()
+    # my_test.random_weight_with_visual_residual()
+    # my_test.weight_tune()
+    # my_test.weight_tune_with_visual_residual()
 
 
-# Feature Summary:
-#   BasicProfile (4):
-#     - reputation
-#     - views
-#     - up votes
-#     - down votes
-#   UserExpertise (1) ignored for now
-#   UserAvailability (1)
-
-if __name__ == '__main__':
+def set_up_log_file(name):
     # delete old log file, if existing
     try:
         os.remove('engine_log.log')
     except OSError:
         pass
-    logging.basicConfig(filename='engine_log.log', level=logging.INFO)
-    primative_tests()
+
+    # remove all handlers associated with the root logger object
+    for handler in logging.root.handlers[:]:
+        logging.root.removeHandler(handler)
+    logging.basicConfig(filename=name, level=logging.INFO)
+
+
+'''
+Feature Summary:
+  BasicProfile (4):
+    - reputation
+    - views
+    - up votes
+    - down votes
+  UserExpertise (1) ignored for now
+  UserAvailability (1)
+'''
+
+if __name__ == '__main__':
+    set_up_log_file('engine_log.log')
+    primative_tests(5)

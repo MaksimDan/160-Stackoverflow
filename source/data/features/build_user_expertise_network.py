@@ -41,28 +41,29 @@ def build_user_expertise_network():
                 try:
                     for tag in row.Tags.split():
                         user_profile[key][tag]['n_questions'] += 1
-                except AttributeError as e:
+                except AttributeError:
                     continue
 
-                # tally up the number of answers per tag
-                user_a = pd.merge(user_a, post_answers_merge, left_on='ParentId', right_on='Id', how='left')
-                if len(user_a) != 0:
-                    for index, row in user_a.iterrows():
-                        try:
-                            for tag in row.Tags_y.split():
-                                user_profile[key][tag]['n_answers'] += 1
-                        except AttributeError as e:
-                            continue
+        # tally up the number of answers per tag
+        user_a = pd.merge(user_a, post_answers_merge, left_on='ParentId', right_on='Id', how='left')
+        if len(user_a) != 0:
+            for index, row in user_a.iterrows():
+                try:
+                    for tag in row.Tags_y.split():
+                        user_profile[key][tag]['n_answers'] += 1
+                except AttributeError:
+                    continue
 
-                # tally up the number of comments per tag
-                user_c = pd.merge(user_c, post_answers_merge, left_on='PostId', right_on='Id', how='left')
-                if len(user_c) != 0:
-                    for index, row in user_c.iterrows():
-                        try:
-                            for tag in row.Tags.split():
-                                user_profile[key][tag]['n_comments'] += 1
-                        except AttributeError as e:
-                            continue
+        # tally up the number of comments per tag
+        user_c = pd.merge(user_c, post_answers_merge, left_on='PostId', right_on='Id', how='left')
+        if len(user_c) != 0:
+            for index, row in user_c.iterrows():
+                try:
+                    for tag in row.Tags.split():
+                        user_profile[key][tag]['n_comments'] += 1
+                except AttributeError:
+                    continue
 
         with open('user_expertise_network.p', 'wb') as fp:
             pickle.dump(user_profile, fp)
+
