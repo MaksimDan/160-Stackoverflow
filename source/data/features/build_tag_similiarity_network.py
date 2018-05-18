@@ -3,7 +3,7 @@ import json
 from collections import defaultdict
 import progressbar
 import sys
-
+import jsonpickle
 
 """
 File: build_tag_similiarity_network.py
@@ -57,7 +57,7 @@ def build_graph():
 
 
 def build_network():
-    tag_dict = json.load(open('tag_index_network.json'))
+    tag_dict = json.load(open('/Users/John/Dropbox/160-Stackoverflow-Data/tags/tag_index_network.json'))
     
     # store the cosine(tag1, tag2)
     all_tags = list(tag_dict)
@@ -72,10 +72,8 @@ def build_network():
     tag_similarity = tag_similarity.astype(float)
     graph = build_graph()
     with open('tag_network_graph.json', 'w+') as outfile:
-        json.dump(graph, outfile)
-
+        outfile.write(jsonpickle.encode(graph))
 
 if __name__ == "__main__":
-    sys.stdout = open("tag_index_network.json", "w")
-    print(build_all_tag_network('../../160-Stackoverflow-Data/tags/AllTagsClean.csv', 2/3))
+    print(build_all_tag_network('/Users/John/Dropbox/160-Stackoverflow-Data/tags/AllTagsClean.csv', 2/3))
     print(build_network())
