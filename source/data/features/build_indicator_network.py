@@ -36,33 +36,31 @@ class I:
     Answers = Posts.loc[Posts.PostTypeId == 2]
 
     @staticmethod
-    # this feature should
-    def is_inactive_user(user_id, question_id):
-        try:
-            question_creation_date = I.Questions.loc[I.Questions.Id == question_id].CreationDate.values[0]
-            user_creation_date = I.Users.loc[I.Users.Id == user_id].CreationDate.values[0]
-            user_last_access_date = I.Users.loc[I.Users.Id == user_id].LastAccessDate.values[0]
+    def user_created_account_after_question(user_id, question_id):
+        question_creation_date = I.Questions.loc[I.Questions.Id == question_id].CreationDate
+        user_creation_date = I.Users.loc[I.Users.Id == user_id].CreationDate
+        return int(question_creation_date < user_creation_date)
 
-            user_create_account_before_question = user_creation_date < question_creation_date
-            user_access_account_before_question = user_creation_date < user_last_access_date
-
-            return int(user_create_account_before_question and user_access_account_before_question)
-        except:
-            return None
+    @staticmethod
+    def user_inactive_before_question(user_id, question_id):
+        question_creation_date = I.Questions.loc[I.Questions.Id == question_id].CreationDate
+        user_last_access_date = I.Users.loc[I.Users.Id == user_id].LastAccessDate
+        return int(user_last_access_date < question_creation_date)
 
 
 def build_indicator_network():
-    inactive_by_post_id = defaultdict(set)
+    i_dict = defaultdict(lambda: defaultdict(lambda: set()))
     all_questions, all_users = I.Questions, I.all_users
 
     bar = progressbar.ProgressBar()
     for question_id in bar(all_questions.Id.values):
         for user_id in all_users:
-            if I.is_inactive_user(user_id, question_id):
-                inactive_by_post_id[question_id].add(user_id)
-
+            if I.user_created_account_after_question(user_id, question_id):
+                i_dict[question_id]['create_after_q'].add(user_id)
+            if I.user_inactive_before_question(user_id, question_id):
+                i_dict[question_id]['inactive_before_q'].add(user_id)
     with open('indicator_network.p', 'wb') as fp:
-        pickle.dump(inactive_by_post_id, fp)
+        pickle.dump(i_dict, fp)
 
 
 build_indicator_network()
