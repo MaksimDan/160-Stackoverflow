@@ -1,14 +1,15 @@
+# data structures
 import time
-from copy import copy
-import math
-import os
 import json
+
+# utilities
 from collections import defaultdict
+import math
+from copy import copy
+
 
 # visualization
 import matplotlib.pyplot as plt
-import matplotlib.colors
-import pprint
 import seaborn as sns
 
 # meta
@@ -22,10 +23,8 @@ from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 import numpy as np
 
-# preprocessing
-# in order for the pickle files to unpack
-# the modules must be included where they were
-# packed.
+# preprocessing in order for the pickle files to unpack
+# the modules must be included where they were packed
 sys.path.append('../source/data/features')
 BASE_PATH = '../../160-Stackoverflow-Data/train_test/'
 
@@ -155,37 +154,80 @@ class Indicator:
         self.I_Network = Feature.load_p_file(Indicator.pickle_path)
 
 
-class ResidualPlot:
-    col_list = ["blue", "cyan", "green",
-                "red", "yellow", "purple"]
+class ResidualPlots:
+    col_list = ["blue", "cyan", "green", "red", "yellow", "purple"]
+    col_list_palette = sns.xkcd_palette(col_list)
 
     @staticmethod
-    def build_residual_dataframe(observed_ranks):
+    def _build_residual_dataframe(observed_ranks):
+        df = pd.DataFrame(ResidualPlots.__flatten_residual_dictionary(observed_ranks))
+        df['rank'] = np.array(df['rank'].values) / max(df['rank'].values)
+        return df
+
+    @staticmethod
+    def __flatten_residual_dictionary(r_dict):
         flatted_d = []
-        for question_i, activities in observed_ranks.items():
+        for question_i, activities in r_dict.items():
             for activity, index_list in activities.items():
                 for rank in index_list:
                     flatted_d.append({'question_number': question_i, 'rank': rank, 'activity': activity})
-
-        # df = pd.DataFrame(flatted_d)
-        # scaler = MinMaxScaler()
-        # df['rank'] = scaler.fit_transform(df['rank'].values.reshape(-1, 1))
-        # return df
-        return pd.DataFrame(flatted_d)
+        return flatted_d
 
     @staticmethod
-    def visualize_residuals(df, save_path):
-        col_list_palette = sns.xkcd_palette(ResidualPlot.col_list)
-        sns.set_palette(col_list_palette)
+    def plot_residual_matrix(raw_residuals, save_path):
+        df = ResidualPlots._build_residual_dataframe(raw_residuals)
+        sns.set_palette(ResidualPlots.col_list_palette)
 
         g = sns.lmplot('rank', 'question_number', data=df, hue='activity',
-                       fit_reg=False, palette=col_list_palette, markers='s',
+                       fit_reg=False, palette=ResidualPlots.col_list_palette, markers='s',
                        scatter_kws={"s": 10})
         g.set(xticks=[])
         g.set(yticks=[])
         ax = plt.gca()
         ax.invert_yaxis()
         plt.gcf().suptitle("Residual Matrix")
+        plt.savefig(save_path)
+        plt.show()
+
+    @staticmethod
+    def build_threshold_dataframe(raw_residuals):
+        df = ResidualPlots._build_residual_dataframe(raw_residuals)
+
+        def find_nearest(array, value):
+            idx = np.searchsorted(array, value, side="left")
+            if idx > 0 and (idx == len(array) or math.fabs(value - array[idx - 1]) < math.fabs(value - array[idx])):
+                return idx - 1
+            else:
+                return idx
+
+        threshold_error_by_activity = []
+        for activity, sub_df in df.groupby('activity'):
+            sorted_ranks = np.array(sorted(sub_df['rank'].values))
+            for threshold in np.arange(0, 1 + .1, .01):
+                threshold_error_by_activity.append({'activity': activity,
+                                                    't': threshold,
+                                                    'rank': find_nearest(sorted_ranks, threshold)})
+        return pd.DataFrame(threshold_error_by_activity)
+
+    @staticmethod
+    def plot_error_by_threshold(raw_residuals, save_path):
+        threshold_error_by_activity_df = ResidualPlots.build_threshold_dataframe(raw_residuals)
+        sns.lmplot('t', 'rank', data=threshold_error_by_activity_df, hue='activity', fit_reg=False,
+                   palette=ResidualPlots.col_list_palette, markers='.')
+        plt.gcf().suptitle('Threshold Error by User Activity')
+        plt.savefig(save_path)
+        plt.show()
+
+    @staticmethod
+    def plot_error_distributions(raw_error_dict, save_path):
+        n_error_types = len(raw_error_dict)
+        fig, axs = plt.subplots(1, n_error_types, figsize=(15, 6))
+        axs = axs.ravel()
+
+        for i, (activity, ranks) in enumerate(raw_error_dict.items()):
+            sns.distplot(ranks, ax=axs[i]).set_title(activity)
+
+        fig.suptitle('Rank Distribution by Activity Level', fontsize=14)
         plt.savefig(save_path)
         plt.show()
 
@@ -231,11 +273,14 @@ class Residuals:
     def get_summarize_statistics(self, n_total_users):
         stats = 'Residual Summary Statistics\n\n'
 
-        stats += 'Error per Individual User Activity:\n'
+        stats += 'Error per User Activity:\n'
         stats += Residuals.pprint_dict(self.flatted_errors())
 
-        stats += '\nAverage Percent Error per Individual User Activity:\n'
+        stats += '\nAverage Percent Error per User Activity:\n'
         stats += Residuals.pprint_dict(self.get_average_percent_rank_error_per_question(n_total_users))
+
+        stats += '\nThreshold Error per User Activity:\n'
+        stats += Residuals.pprint_dict(self.summarize_error_by_threshold())
 
         n_questions = len(self.residual_dict)
         stats += '\nAverage Rank Error Per Question: '
@@ -252,24 +297,27 @@ class Residuals:
             flatted_errors[activity] = sum(ranks)
         return flatted_errors
 
-    def plot_error_distributions(self, save_path):
-        n_error_types = len(self.error)
-        fig, axs = plt.subplots(1, n_error_types, figsize=(15, 6))
-        axs = axs.ravel()
-
-        for i, (activity, ranks) in enumerate(self.error.items()):
-            sns.distplot(ranks, ax=axs[i]).set_title(activity)
-
-        fig.suptitle('Rank Distribution by Activity Level', fontsize=14)
-        plt.savefig(save_path)
-        plt.show()
-
     def get_average_percent_rank_error_per_question(self, n_total_users):
         d = self.flatted_errors()
         n_questions = len(self.residual_dict)
         for activity, sum_rank_error in d.items():
             d[activity] = sum_rank_error/n_questions/n_total_users
         return d
+
+    def summarize_error_by_threshold(self):
+        r_plot = ResidualPlots()
+        t_df = r_plot.build_threshold_dataframe(self.residual_dict)
+
+        # now min max scale the position (rank) of the rank of obtain the error
+        t_df['rank'] = np.array(t_df['rank'].values) / max(t_df['rank'].values)
+
+        threshold_summary = {}
+        summary_marker = np.arange(0, 1 + .1, .1)
+        for activity, sub_df in t_df.groupby('activity'):
+            # get increments of .1 for summary
+            summary_threshold = np.array(sub_df['rank'])[np.where(np.isin(np.array(sub_df['t']), summary_marker))]
+            threshold_summary[activity] = {f'{t*100}%': t_error for t, t_error in zip(summary_threshold, summary_marker)}
+        return threshold_summary
 
     @staticmethod
     def pprint_dict(d):
@@ -281,8 +329,8 @@ class Engine:
     t1 = time.time()
 
     # load questions and all user activities
-    X = pd.read_csv(BASE_PATH + 'X100.csv')
-    y = pd.read_csv(BASE_PATH + 'y100.csv')
+    X = pd.read_csv(BASE_PATH + 'X100.csv').head(10)
+    y = pd.read_csv(BASE_PATH + 'y100.csv').head(10)
     X['CreationDate'] = pd.to_datetime(X['CreationDate'], format="%Y-%m-%dT%H:%M:%S")
 
     # load engineered features
@@ -303,9 +351,8 @@ class Engine:
         self.all_residuals = Residuals(Engine.X, Engine.y)
 
     def display_residual_plot(self, save_path):
-        r = ResidualPlot()
-        df = r.build_residual_dataframe(self.all_residuals.residual_dict)
-        r.visualize_residuals(df, save_path)
+        r = ResidualPlots()
+        r.plot_residual_matrix(self.all_residuals.residual_dict, save_path)
 
     def rank_all_questions(self, w, log_disabled=False):
         print('\nRanking All Questions \n')
@@ -438,86 +485,3 @@ class WeightVector:
             engine.rank_all_questions(w, log_disabled=True)
             current_error = engine.all_residuals.get_total_error()
             return loop_until_error_increase(current_error, prev_error, alpha, False)
-
-
-class Test:
-    def __init__(self, n_features):
-        self.n_features = n_features
-
-    def build_error_matrix_by_cartisian_weight(self):
-        pass
-
-    def manual_weights(self, W):
-        for w in W:
-            self.manual_weight(w)
-
-    def manual_weight(self, w):
-        engine = Engine()
-        engine.rank_all_questions(w)
-
-    def random_weight(self):
-        engine = Engine()
-        weights = np.random.rand(1, self.n_features)[0] + 1.5
-        engine.rank_all_questions(weights)
-
-    def random_weight_with_visual_residual(self):
-        engine = Engine()
-        weights = np.random.rand(1, self.n_features)[0] + 1.5
-        engine.rank_all_questions(weights)
-        engine.display_residual_plot('TEST_random_weight_with_visual_residual.png')
-
-    def weight_tune(self):
-        engine = Engine()
-        w = WeightVector.tune_weight_vector(self.n_features)
-        engine.rank_all_questions(w)
-
-    def weight_tune_with_visual_residual(self):
-        engine = Engine()
-        w = WeightVector.tune_weight_vector(self.n_features)
-        engine.rank_all_questions(w)
-        engine.display_residual_plot('TEST_weight_tune_with_visual_residual.png')
-
-    def random_weight_rank_distributions(self):
-        engine = Engine()
-        weights = np.random.rand(1, self.n_features)[0] + 1.5
-        engine.rank_all_questions(weights)
-        engine.all_residuals.plot_error_distributions('TEST_random_weight_rank_distributions.png')
-
-
-def primative_tests(n_features):
-    my_test = Test(n_features)
-    # my_test.manual_weight(np.array([30, 100, 0, 20, 1000]))
-    # my_test.random_weight()
-    my_test.random_weight_with_visual_residual()
-    # my_test.weight_tune()
-    # my_test.weight_tune_with_visual_residual()
-    # my_test.random_weight_rank_distributions()
-
-
-def set_up_log_files(name):
-    # delete old log file, if existing
-    try:
-        os.remove(name)
-    except OSError:
-        pass
-
-    # remove all handlers associated with the root logger object
-    for handler in logging.root.handlers[:]:
-        logging.root.removeHandler(handler)
-    logging.basicConfig(filename=name, level=logging.DEBUG)
-
-
-'''
-Feature Summary:
-  BasicProfile (4):
-    - reputation
-    - views
-    - up votes
-    - down votes
-  UserExpertise (1) ignored for now
-  UserAvailability (1)
-'''
-
-if __name__ == '__main__':
-    set_up_log_files('engine_info.log')
-    primative_tests(5)
