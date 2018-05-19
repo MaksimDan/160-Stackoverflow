@@ -1,5 +1,6 @@
 from engine import Engine
-from engine import WeightVector
+from weights import WeightVector
+from visuals import ResidualPlots
 import numpy as np
 import logging
 import os
@@ -17,25 +18,23 @@ class TestBasic:
 
 class TestPlots:
     def __init__(self, n_features):
-        self.n_features = n_features
+        self.engine = Engine()
+        weights = np.random.rand(1, n_features)[0] + 1.5
+        self.engine.rank_all_questions(weights)
+        raw_r = ResidualPlots._build_residual_dataframe(self.engine.residuals.raw_residuals_per_question)
+        raw_r.to_csv('residuals_300_questions.csv')
 
     def residual_matrix(self):
-        engine = Engine()
-        weights = np.random.rand(1, self.n_features)[0] + 1.5
-        engine.rank_all_questions(weights)
-        engine.display_residual_plot('TEST_residual_matrix.png')
+        ResidualPlots.plot_residual_matrix(self.engine.residuals.raw_residuals_per_question,
+                                           'TEST_residual_matrix.png')
 
     def rank_distributions(self):
-        engine = Engine()
-        weights = np.random.rand(1, self.n_features)[0] + 1.5
-        engine.rank_all_questions(weights)
-        engine.all_residuals.plot_error_distributions('TEST_rank_distributions.png')
+        ResidualPlots.plot_error_distributions(self.engine.residuals.raw_residuals_per_question,
+                                               'TEST_rank_distributions.png')
 
     def error_by_threshold(self):
-        engine = Engine()
-        weights = np.random.rand(1, self.n_features)[0] + 1.5
-        engine.rank_all_questions(weights)
-        engine.all_residuals.plot_error_by_threshold('TEST_error_by_threshold.png')
+        ResidualPlots.plot_error_by_threshold(self.engine.residuals.raw_residuals_per_question,
+                                              'TEST_error_by_threshold.png')
 
 
 class TestWeightVector:
@@ -103,4 +102,5 @@ Current Feature Summary:
 if __name__ == '__main__':
     set_up_log_files('engine_info.log')
     t = Test(5)
-    t.basic_tests()
+    # t.basic_tests()
+    t.plot_tests()

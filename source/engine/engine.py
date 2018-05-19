@@ -1,242 +1,28 @@
 # data structures
 import time
 import json
+from features import *
+from visuals import ResidualPlots
 
 # utilities
 from collections import defaultdict
-import math
 from copy import copy
-
-
-# visualization
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 # meta
 import logging
 import progressbar
-import pickle
-import sys
 
 # data
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 import numpy as np
 
-# preprocessing in order for the pickle files to unpack
-# the modules must be included where they were packed
-sys.path.append('../source/data/features')
-BASE_PATH = '../../160-Stackoverflow-Data/train_test/'
-
-
-class Feature:
-    @staticmethod
-    def load_p_file(p_file_path):
-        try:
-            with open(p_file_path, 'rb') as f:
-                return pickle.load(f)
-        except OSError as e:
-            print(e)
-            raise
-
-
-class UserAvailability(Feature):
-    pickle_path = BASE_PATH + 'engineered_features/user_availability_network.p'
-
-    def __init__(self):
-        self.UA_network = Feature.load_p_file(UserAvailability.pickle_path)
-
-    def get_user_availability_probability(self, user_id, hour):
-        try:
-            self.UA_network[int(user_id)]
-        except KeyError as e:
-            print(f'User {e} was unidentified in the user availability network.', e)
-            raise
-        try:
-            return self.UA_network[int(user_id)][str(hour)]
-        # if hour was not found, then there is no chance that the
-        # user could have answered the question
-        except KeyError:
-            return 0
-
-
-class UserExpertise(Feature):
-    pickle_path = BASE_PATH + 'engineered_features/user_expertise_network.p'
-
-    def __init__(self):
-        self.UE_network = Feature.load_p_file(UserExpertise.pickle_path)
-
-    def get_user_sum_expertise(self, user_id, tags):
-        return sum([self._get_user_expertise(user_id, tag) for tag in tags])
-
-    def _get_user_expertise(self, user_id, tag):
-        # note that you are currently summing the frequency
-        # of comments, questions, and answers. this inversely
-        # will affect the residual analysis
-        try:
-            user_tag_expertise = self.UE_network[int(user_id)]
-            if tag not in user_tag_expertise:
-                return 0
-            else:
-                # otherwise return the sum of the frequencies of posts per tag
-                a = user_tag_expertise[tag].get('n_answers', 0.0)
-                b = user_tag_expertise[tag].get('n_comments', 0.0)
-                c = user_tag_expertise[tag].get('n_questions', 0.0)
-                return a + b + c
-        except KeyError as e:
-            print(f'user_id {user_id} was not found.', e)
-            raise
-
-
-class BasicProfile(Feature):
-    pickle_path = BASE_PATH + 'engineered_features/user_basic_profile_network.p'
-    n_features = 4
-
-    def __init__(self):
-        self.Users = Feature.load_p_file(BasicProfile.pickle_path)
-
-    def get_all_measureable_features(self, user_id):
-        return [self._get_user_reputation(user_id),
-                self._get_views(user_id),
-                self._get_upvotes(user_id),
-                self._get_downvotes(user_id)]
-
-    def _get_user_reputation(self, user_id):
-        try:
-            return self.Users[int(user_id)]['reputation']
-        except KeyError as e:
-            print(f'user_id {e} was not found.')
-            raise
-
-    def _get_creation_date(self, user_id):
-        try:
-            return self.Users[int(user_id)]['creation_date']
-        except KeyError as e:
-            print(f'user_id {e} was not found.')
-            raise
-
-    def _get_views(self, user_id):
-        try:
-            return self.Users[int(user_id)]['views']
-        except KeyError as e:
-            print(f'user_id {e} was not found.')
-            raise
-
-    def _get_upvotes(self, user_id):
-        try:
-            return self.Users[int(user_id)]['upvotes']
-        except KeyError as e:
-            print(f'user_id {e} was not found.')
-            raise
-
-    def _get_downvotes(self, user_id):
-        try:
-            return self.Users[int(user_id)]['downvotes']
-        except KeyError as e:
-            print(f'user_id {e} was not found.')
-            raise
-
-
-class TagNetwork(Feature):
-    pickle_path = BASE_PATH + 'engineered_features/tag_network.p'
-
-    def __init__(self):
-        self.TAG_Network = Feature.load_p_file(TagNetwork.pickle_path)
-
-    def shortest_path(self, a, b):
-        pass
-
-
-class Indicator:
-    pickle_path = BASE_PATH + 'engineered_features/indicator_network.p'
-
-    def __init__(self):
-        self.I_Network = Feature.load_p_file(Indicator.pickle_path)
-
-
-class ResidualPlots:
-    col_list = ["blue", "cyan", "green", "red", "yellow", "purple"]
-    col_list_palette = sns.xkcd_palette(col_list)
-
-    @staticmethod
-    def _build_residual_dataframe(observed_ranks):
-        df = pd.DataFrame(ResidualPlots.__flatten_residual_dictionary(observed_ranks))
-        df['rank'] = np.array(df['rank'].values) / max(df['rank'].values)
-        return df
-
-    @staticmethod
-    def __flatten_residual_dictionary(r_dict):
-        flatted_d = []
-        for question_i, activities in r_dict.items():
-            for activity, index_list in activities.items():
-                for rank in index_list:
-                    flatted_d.append({'question_number': question_i, 'rank': rank, 'activity': activity})
-        return flatted_d
-
-    @staticmethod
-    def plot_residual_matrix(raw_residuals, save_path):
-        df = ResidualPlots._build_residual_dataframe(raw_residuals)
-        sns.set_palette(ResidualPlots.col_list_palette)
-
-        g = sns.lmplot('rank', 'question_number', data=df, hue='activity',
-                       fit_reg=False, palette=ResidualPlots.col_list_palette, markers='s',
-                       scatter_kws={"s": 10})
-        g.set(xticks=[])
-        g.set(yticks=[])
-        ax = plt.gca()
-        ax.invert_yaxis()
-        plt.gcf().suptitle("Residual Matrix")
-        plt.savefig(save_path)
-        plt.show()
-
-    @staticmethod
-    def build_threshold_dataframe(raw_residuals):
-        df = ResidualPlots._build_residual_dataframe(raw_residuals)
-
-        def find_nearest(array, value):
-            idx = np.searchsorted(array, value, side="left")
-            if idx > 0 and (idx == len(array) or math.fabs(value - array[idx - 1]) < math.fabs(value - array[idx])):
-                return idx - 1
-            else:
-                return idx
-
-        threshold_error_by_activity = []
-        for activity, sub_df in df.groupby('activity'):
-            sorted_ranks = np.array(sorted(sub_df['rank'].values))
-            for threshold in np.arange(0, 1 + .1, .01):
-                threshold_error_by_activity.append({'activity': activity,
-                                                    't': threshold,
-                                                    'rank': find_nearest(sorted_ranks, threshold)})
-        return pd.DataFrame(threshold_error_by_activity)
-
-    @staticmethod
-    def plot_error_by_threshold(raw_residuals, save_path):
-        threshold_error_by_activity_df = ResidualPlots.build_threshold_dataframe(raw_residuals)
-        sns.lmplot('t', 'rank', data=threshold_error_by_activity_df, hue='activity', fit_reg=False,
-                   palette=ResidualPlots.col_list_palette, markers='.')
-        plt.gcf().suptitle('Threshold Error by User Activity')
-        plt.savefig(save_path)
-        plt.show()
-
-    @staticmethod
-    def plot_error_distributions(raw_error_dict, save_path):
-        n_error_types = len(raw_error_dict)
-        fig, axs = plt.subplots(1, n_error_types, figsize=(15, 6))
-        axs = axs.ravel()
-
-        for i, (activity, ranks) in enumerate(raw_error_dict.items()):
-            sns.distplot(ranks, ax=axs[i]).set_title(activity)
-
-        fig.suptitle('Rank Distribution by Activity Level', fontsize=14)
-        plt.savefig(save_path)
-        plt.show()
-
 
 class Residuals:
     def __init__(self, X, y):
         self.X, self.y = X, y
-        self.error = defaultdict(list)
-        self.residual_dict = defaultdict(lambda: defaultdict(lambda: list()))
+        self.error_per_question = defaultdict(list)
+        self.raw_residuals_per_question = defaultdict(lambda: defaultdict(lambda: list()))
 
     def compute_and_store_residuals(self, score_matrix, y_index):
         observed = json.loads(self.y['owner_user_ids'].values[y_index])
@@ -259,12 +45,12 @@ class Residuals:
             except KeyError:
                 logging.debug(f'Missing commenter user: {user}')
 
-        self.error['answer'].append(sum(index_answer))
-        self.error['comment'].append(sum(index_comment))
+        self.error_per_question['answer'].append(sum(index_answer))
+        self.error_per_question['comment'].append(sum(index_comment))
 
         # flatten the results for ease of implementation
-        self.residual_dict[y_index]['i_answer'] = index_answer
-        self.residual_dict[y_index]['i_comment'] = index_comment
+        self.raw_residuals_per_question[y_index]['i_answer'] = index_answer
+        self.raw_residuals_per_question[y_index]['i_comment'] = index_comment
 
     def get_total_error(self):
         d = self.flatted_errors()
@@ -279,10 +65,10 @@ class Residuals:
         stats += '\nAverage Percent Error per User Activity:\n'
         stats += Residuals.pprint_dict(self.get_average_percent_rank_error_per_question(n_total_users))
 
-        stats += '\nThreshold Error per User Activity:\n'
+        stats += '\nThreshold Accuracy per User Activity:\n'
         stats += Residuals.pprint_dict(self.summarize_error_by_threshold())
 
-        n_questions = len(self.residual_dict)
+        n_questions = len(self.raw_residuals_per_question)
         stats += '\nAverage Rank Error Per Question: '
         stats += str(self.get_total_error()/n_questions) + '\n'
 
@@ -293,30 +79,30 @@ class Residuals:
 
     def flatted_errors(self):
         flatted_errors = defaultdict(int)
-        for activity, ranks in self.error.items():
+        for activity, ranks in self.error_per_question.items():
             flatted_errors[activity] = sum(ranks)
         return flatted_errors
 
     def get_average_percent_rank_error_per_question(self, n_total_users):
         d = self.flatted_errors()
-        n_questions = len(self.residual_dict)
+        n_questions = len(self.raw_residuals_per_question)
         for activity, sum_rank_error in d.items():
             d[activity] = sum_rank_error/n_questions/n_total_users
         return d
 
     def summarize_error_by_threshold(self):
         r_plot = ResidualPlots()
-        t_df = r_plot.build_threshold_dataframe(self.residual_dict)
-
-        # now min max scale the position (rank) of the rank of obtain the error
-        t_df['rank'] = np.array(t_df['rank'].values) / max(t_df['rank'].values)
+        t_df = r_plot.build_threshold_dataframe(self.raw_residuals_per_question)
 
         threshold_summary = {}
         summary_marker = np.arange(0, 1 + .1, .1)
         for activity, sub_df in t_df.groupby('activity'):
-            # get increments of .1 for summary
-            summary_threshold = np.array(sub_df['rank'])[np.where(np.isin(np.array(sub_df['t']), summary_marker))]
-            threshold_summary[activity] = {f'{t*100}%': t_error for t, t_error in zip(summary_threshold, summary_marker)}
+            # normalize the positions where the thresholds are, in order to observe relative position
+            sub_df['position'] = np.array(sub_df['position'].values) / max(sub_df['position'].values)
+            basic_increment_index = np.where(np.isin(np.array(sub_df['t']), summary_marker))
+            summary_threshold = np.array(sub_df['position'])[basic_increment_index]
+            threshold_summary[activity] = {f'{round(t*100, 1)}%': t_error
+                                           for t, t_error in zip(summary_marker, summary_threshold)}
         return threshold_summary
 
     @staticmethod
@@ -329,8 +115,8 @@ class Engine:
     t1 = time.time()
 
     # load questions and all user activities
-    X = pd.read_csv(BASE_PATH + 'X100.csv').head(10)
-    y = pd.read_csv(BASE_PATH + 'y100.csv').head(10)
+    X = pd.read_csv(BASE_PATH + 'X.csv').head(300)
+    y = pd.read_csv(BASE_PATH + 'y.csv').head(300)
     X['CreationDate'] = pd.to_datetime(X['CreationDate'], format="%Y-%m-%dT%H:%M:%S")
 
     # load engineered features
@@ -348,14 +134,9 @@ class Engine:
     logging.info(f'DataFrame loading finished in time {t2 - t1} seconds.\n')
 
     def __init__(self):
-        self.all_residuals = Residuals(Engine.X, Engine.y)
-
-    def display_residual_plot(self, save_path):
-        r = ResidualPlots()
-        r.plot_residual_matrix(self.all_residuals.residual_dict, save_path)
+        self.residuals = Residuals(Engine.X, Engine.y)
 
     def rank_all_questions(self, w, log_disabled=False):
-        print('\nRanking All Questions \n')
         logger = logging.getLogger()
         logger.disabled = log_disabled
         n_features = len(w)
@@ -375,12 +156,13 @@ class Engine:
         for index, row in bar(Engine.X.iterrows()):
             question_score_matrix = Engine._rank_question(row, copy(matrix_init), w)
             # np.savetxt(f'r_matrix_q-{index}_w-{w_new}.csv', question_score_matrix[:, 0], delimiter=",")
-            self.all_residuals.compute_and_store_residuals(question_score_matrix, index)
+            self.residuals.compute_and_store_residuals(question_score_matrix, index)
 
         t2 = time.time()
         logging.info(f'Ranking all questions computation finished in {(t2 - t1)/60} minutes.'
                      f'With an average time of {(t2 - t1)/len(Engine.X)} seconds per question.')
-        logging.info(self.all_residuals.get_summarize_statistics(len(Engine.unique_users_list)))
+        if not log_disabled:
+            logging.info(self.residuals.get_summarize_statistics(len(Engine.unique_users_list)))
         logger.disabled = False
 
     @staticmethod
@@ -415,73 +197,3 @@ class Engine:
     def _sort_matrix_by_column(M, i_column, ascending=True):
         multiplier = 1 if ascending else -1
         return M[np.argsort(multiplier*M[:, i_column])]
-
-
-class WeightVector:
-    @staticmethod
-    def tune_weight_vector(n_features, base_alpha=2, exponential_increase=2):
-        # start at from at least 1.5 for reasonably fast transition time
-        # < 1.0 would make the make the weights decrease
-        weights = np.random.rand(1, n_features)[0] + 1.5
-        logging.info('Beginning gradient descent...')
-        logging.info(f'Initial random weights: {weights}')
-
-        t1 = time.time()
-        engine = Engine()
-        engine.rank_all_questions(weights, log_disabled=True)
-        prev_error = engine.all_residuals.get_total_error()
-
-        bar = progressbar.ProgressBar()
-        for i in bar(range(len(weights))):
-            logging.info(f'Now optimizing weight {i}.')
-            weights[i] = WeightVector._tune_single_weight(weights, i, base_alpha, exponential_increase, prev_error)
-
-        t2 = time.time()
-        logging.info(f'\nFinished gradient descent in {(t2-t1)/60} minutes.'
-                     f'\nThe final weight vector is {weights}.')
-        engine.rank_all_questions(weights, log_disabled=False)
-        return weights
-
-    @staticmethod
-    def _tune_single_weight(w, i, alpha, exp_increase, prev_error):
-        def adjust_weight(increase):
-            w[i] = math.pow(w[i], alpha if increase else 1 / alpha)
-
-        def loop_until_error_increase(c_error, p_error, a, increase):
-            p_weight = w[i]
-            while c_error < p_error:
-                print('why doe')
-                logging.info(f'\tError decreased: w[{i}]={w[i]}, error={c_error}, alpha={a}')
-                p_weight = w[i]
-
-                a *= exp_increase
-                adjust_weight(increase)
-                e = Engine()
-                e.rank_all_questions(w, log_disabled=True)
-                p_error = c_error
-                c_error = engine.all_residuals.get_total_error()
-            return p_weight
-
-        # first try increasing the weight
-        prev_weight = w[i]
-        alpha *= exp_increase
-        adjust_weight(True)
-
-        engine = Engine()
-        engine.rank_all_questions(w, log_disabled=True)
-        current_error = engine.all_residuals.get_total_error()
-        # if the error decreases, repeat the same operation unit it does not
-        if current_error < prev_error:
-            print('error decrease with increased alpha')
-            return loop_until_error_increase(current_error, prev_error, alpha, True)
-        # otherwise restore the initial weight and error and
-        # work backwards decreasing alpha
-        else:
-            print('error increased with increased alpha')
-            w[i] = prev_weight
-            adjust_weight(False)
-
-            engine = Engine()
-            engine.rank_all_questions(w, log_disabled=True)
-            current_error = engine.all_residuals.get_total_error()
-            return loop_until_error_increase(current_error, prev_error, alpha, False)
