@@ -47,8 +47,8 @@ class TestWeightVector:
         print('Optimized weight vector:', w)
         engine.rank_all_questions(w)
 
-    def build_error_matrix_by_cartisian_weight(self):
-        pass
+    def build_error_matrix_by_cartisian_weight(self, axis_lim, inc):
+        WeightVector.cartisian_weight_approximation(self.n_features, axis_lim, inc)
 
 
 class Test:
@@ -72,7 +72,6 @@ class Test:
 
     def weight_vector_tests(self):
         self.wt.weight_tune()
-        self.wt.build_error_matrix_by_cartisian_weight()
 
 
 def set_up_log_files(name):
@@ -101,6 +100,10 @@ Current Feature Summary:
 
 if __name__ == '__main__':
     set_up_log_files('engine_info.log')
-    t = Test(5)
+    # t = Test(5)
     # t.basic_tests()
-    t.plot_tests()
+    # t.plot_tests()
+
+    # estimated run time: 26 hours
+    t = TestWeightVector(5)
+    t.build_error_matrix_by_cartisian_weight((0, 500), 100)

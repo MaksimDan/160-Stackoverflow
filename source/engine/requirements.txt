@@ -1,0 +1,8 @@
+progressbar2
+logging
+numpy
+pandas
+seaborn
+matplotlib
+dill
+sklearn

@@ -22,6 +22,9 @@ def build_user_expertise_network():
     Posts = pd.read_csv('../../160-Stackoverflow-Data/train_test/Posts_Clean.csv')
     Comments = pd.read_csv('../../160-Stackoverflow-Data/train_test/Comments.csv')
 
+    # only interested in questions and answers from posts
+    Posts = Posts.loc[(Posts.PostTypeId == 1) | (Posts.PostTypeId == 2)]
+
     # first need to have the answers dataframe contain the tags from the question
     # we will also need to merge the post id of a comment with this as well
     # this dataframe below will be used for that purpose
@@ -64,6 +67,10 @@ def build_user_expertise_network():
                 except AttributeError:
                     continue
 
-        with open('user_expertise_network.p', 'wb') as fp:
-            pickle.dump(user_profile, fp)
+    with open('user_expertise_network.p', 'wb') as fp:
+        pickle.dump(user_profile, fp)
+
+
+build_user_expertise_network()
+
 

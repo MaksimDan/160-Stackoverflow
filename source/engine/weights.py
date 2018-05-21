@@ -4,27 +4,36 @@ import progressbar
 import numpy as np
 import math
 import itertools
+import pandas as pd
 from engine import Engine
 
 
 class WeightVector:
     @staticmethod
     def cartisian_weight_approximation(n_features, axis_lim, inc):
+        total_engine_runs = math.pow(abs(axis_lim[0] - axis_lim[1]) // inc, n_features)
         logging.info('Beginning cartisian_weight_approximation')
-        t1 = time.time()
+        logging.info(f'Planning out {total_engine_runs} engine runs.')
 
+        t1 = time.time()
         temp_dict = []
-        for weights in itertools.product(range(axis_lim[0], axis_lim[1]+inc, inc), repeat=n_features):
-            engine = Engine()
-            engine.rank_all_questions(weights, log_disabled=True)
-            weight_dict = {f'f{i}'}
-            temp_dict.append({'error': engine.residuals.get_total_error()})
+        i = 0
+        with progressbar.ProgressBar(max_value=total_engine_runs) as bar:
+            for weights in itertools.product(range(axis_lim[0], axis_lim[1]+inc, inc), repeat=n_features):
+                engine = Engine()
+                engine.rank_all_questions(weights, log_disabled=True)
+                weight_dict = {f'f{i}': w for i, w in enumerate(weights)}
+                weight_dict['error'] = engine.residuals.get_total_error()
+                temp_dict.append(weight_dict)
+                bar.update(i)
+                i += 1
+
         t2 = time.time()
-        logging.info(f'\nFinished gradient descent in {(t2-t1)/60} minutes.'
-                     f'\nThe final weight vector is {weights}.')
+        logging.info(f'cartisian_weight_approximation finished in {(t2-t1)/60} minutes.')
+        pd.DataFrame(temp_dict).to_csv('error_by_cartisian_weight.csv')
 
     @staticmethod
-    def tune_weight_vector(n_features, base_alpha=2, exponential_increase=2):
+    def tune_weight_vector(n_features, base_alpha=2, exponential_increase=5):
         # start at from at least 1.5 for reasonably fast transition time
         # < 1.0 would make the make the weights decrease
         weights = np.random.rand(1, n_features)[0] + 1.5
