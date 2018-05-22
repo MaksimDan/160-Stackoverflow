@@ -115,8 +115,8 @@ class Engine:
     t1 = time.time()
 
     # load questions and all user activities
-    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(15)
-    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(15)
+    X = pd.read_csv(BASE_PATH + 'X100.csv').head(15)
+    y = pd.read_csv(BASE_PATH + 'y100.csv').head(15)
     X['CreationDate'] = pd.to_datetime(X['CreationDate'], format="%Y-%m-%dT%H:%M:%S")
 
     # load engineered features

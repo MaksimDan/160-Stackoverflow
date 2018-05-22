@@ -21,6 +21,10 @@
 * consider collaborative filtering as another feature (see one note, and there is a bookmarked youtube video on it).
 * for the presentation - running residual matrix as a function of optimal weight configurations
 * post links: create network for similiar posts and then we can use this to gauge the connectional strenght between posts.
+* look more into ROC curves
+* add exponential decay as part of the score metric. -> think about how this consequentially effects other things.
+* review duncans advice (mp3)
+
 
 # duncans advice:
 * focus on on the big picture, and what you will deliver not the methods, or performance
