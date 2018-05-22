@@ -6,7 +6,7 @@ import numpy as np
 
 
 class ResidualPlots:
-    col_list = ["blue", "cyan", "green", "red", "yellow", "purple"]
+    col_list = ["blue", "cyan", "purple", "yellow"]
     col_list_palette = sns.xkcd_palette(col_list)
 
     @staticmethod
@@ -32,10 +32,20 @@ class ResidualPlots:
         g = sns.lmplot('rank', 'question_number', data=df, hue='activity',
                        fit_reg=False, palette=ResidualPlots.col_list_palette, markers='s',
                        scatter_kws={"s": 10})
+
+        # colors for vertical lines
+        keys = ['i_answer', 'i_comment', 'i_edit', 'i_favorite']
+        dic = dict(zip(keys, ResidualPlots.col_list))
+
         g.set(xticks=[])
         g.set(yticks=[])
         ax = plt.gca()
         ax.invert_yaxis()
+
+        avg_error = df.groupby('activity')['rank'].mean()
+        for err in avg_error:
+            plt.axvline(x=err, ymax=0.96, color=dic.get(avg_error[avg_error == err].index[0]))
+
         plt.gcf().suptitle("Residual Matrix")
         plt.savefig(save_path)
         plt.show()

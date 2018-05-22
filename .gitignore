@@ -6,6 +6,7 @@ sandbox/
 venv/
 source/engine/.idea/
 scratch.py
+todo.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
