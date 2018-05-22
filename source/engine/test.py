@@ -21,8 +21,8 @@ class TestPlots:
         self.engine = Engine()
         weights = np.random.rand(1, n_features)[0] + 1.5
         self.engine.rank_all_questions(weights)
-        raw_r = ResidualPlots._build_residual_dataframe(self.engine.residuals.raw_residuals_per_question)
-        raw_r.to_csv('residuals_300_questions.csv')
+        # raw_r = ResidualPlots._build_residual_dataframe(self.engine.residuals.raw_residuals_per_question)
+        # raw_r.to_csv('residuals_300_questions.csv')
 
     def residual_matrix(self):
         ResidualPlots.plot_residual_matrix(self.engine.residuals.raw_residuals_per_question,
@@ -99,7 +99,7 @@ Current Feature Summary:
 '''
 
 if __name__ == '__main__':
-    set_up_log_files('engine_info.log')
+    set_up_log_files('run.log')
     t = Test(5)
     # t.basic_tests()
     t.plot_tests()
