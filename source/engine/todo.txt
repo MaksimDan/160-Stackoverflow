@@ -1,0 +1,51 @@
+# todo
+* shuffle x.csv and y.csv
+* the current debug errors? They are currently happening because there is mismatch between between the user ids between what we observe in y.csv and all the users. this means that either all_users does not encapsulate all users (doubt it), or that the observed users in y.csv are incorrect. Look at the debug log and see if the users exist in the list. 
+* reread paper
+* remap users list only from all the possible responders that you measure (from y.csv)
+* rerun user expertise network, as it does not seem to be currently inline with X.csv ... (user id key errors)
+* throughly comment the code description within engine
+* theshold error goes only to .80
+* visualization problem with multiple user activity.
+	* problem with multiple people ON TYPE -> needs to be made unique, otherwise this will produce a larger error since it is counted twice
+* document components of the engine on google doc proposal	
+* change y axis on threshold plot to be percentage accuracy.
+
+# future features and ideas
+*  Additionally incorporate the frequency for each tag of every user for users.csv as another feature
+* engineered feature: users compatability. Identify which users have activities together (comments, postids, upvotes, downvotes, answers, favorites) -> these are defined as user-co-occurances. Incorporate this as part of the user similiarity matrix. This users are more likely to come accross the same question. Users that comments together tend to be available together.
+* taking into account user reputation per tag. (kinda overlaps with other features though)
+* general popularity of tag
+* if time permits, incorporate spectral clustering somehow into the model.	
+* From the tag network, using spectral clustering to further catagorize the tags into groups.
+* consider collaborative filtering as another feature (see one note, and there is a bookmarked youtube video on it).
+* for the presentation - running residual matrix as a function of optimal weight configurations
+* post links: create network for similiar posts and then we can use this to gauge the connectional strenght between posts.
+
+# duncans advice:
+* focus on on the big picture, and what you will deliver not the methods, or performance
+* Formalize what you mean by an error. Here are some of the ways we can quantify error:
+	* How many do we get right?
+	* How many did we get right in the top 10, top 100?
+	* Make sure to measure the error in multiple ways. How we define the error depends one our purpose? Our purpose could mean trying identify as many people as possible, in the hopes that at least one person would answer this question. Then our error metric in this case likely be using a threshold as described below.	However, it is also good to consider multiple types of error and what they measure.
+	* Rank error from recommender system.
+		* Model: ignore user(s) by threshold.
+		* If user does not appear top x% of the recommender system, then ignore the user. Then the accuracy metric would be the number of people we got right. For example, 100% acceptance would mean 100% accurate model (not a good model, but still a model), but a 50% acceptance threshold might mean only 20% success rate.
+* What does it mean when a user answered a question? edited, commented, or answered the question, upvoted, downvoted, or favorited (any activity in general). These need to all be handled a bit differently.
+* IMPORTANT: Also focus on some RESIDUAL(error) analysis: identify what percent of people were not on stackoverflow when the recommender system recommended the question to them. After formalizing the error. Take a look at the characteristics of that error. Can we identify a group of people in that error that we happen to get wrong all the time? This will help direct us in engineering more features that can minimize the error. Duncan recommends that this is where we should spend MOST of our time on the project.
+	* User availability
+	* How many people did the recommender system recommend, but they happened to have created there account after the fact? (see indicator variables).
+	* Why dont the people show up in our rankings?
+		* Use this to justify what threshold to chose. For example, if 20% of people dont see the answer as determined by the recommender system, then it would make sense to ignore 20% of the poeple as selected by the recommender system.
+	* How many people dont seem to be active (latency) at the time of the question was posted?
+	* How many people could have answered?
+* More eda, respect the data, look at the data, dont fight it the data.
+	* Will be useful in deciding the features.
+* End goal: understand what you are doing do you can explain it.
+
+
+# paper
+* collaboration - more answer, more comments == more lasting value to thread (number of unique views)
+* so therefore group together a team of people to write together a response
+* Title: Routing User Activity for Collaborative Answering in Stackoverflow
+* the questions do not necessarily have to be unanswered. We are strictly just routing questions, which as a use case may be used to route users to unanswered questions. However, purely from a educational perspective, these are the samething.

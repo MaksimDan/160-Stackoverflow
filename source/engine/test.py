@@ -100,10 +100,10 @@ Current Feature Summary:
 
 if __name__ == '__main__':
     set_up_log_files('engine_info.log')
-    # t = Test(5)
+    t = Test(5)
     # t.basic_tests()
-    # t.plot_tests()
+    t.plot_tests()
 
     # estimated run time: 26 hours
-    t = TestWeightVector(5)
-    t.build_error_matrix_by_cartisian_weight((0, 500), 100)
+    # t = TestWeightVector(5)
+    # t.build_error_matrix_by_cartisian_weight((0, 500), 100)

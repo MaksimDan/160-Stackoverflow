@@ -3,8 +3,8 @@ import sys
 
 # preprocessing in order for the pickle files to unpack
 # the modules must be included where they were packed
-sys.path.append('../source/data/features')
-BASE_PATH = '../../160-Stackoverflow-Data/train_test/'
+sys.path.append('../../source/data/features')
+BASE_PATH = '../../../160-Stackoverflow-Data/train_test/'
 
 
 class Feature:

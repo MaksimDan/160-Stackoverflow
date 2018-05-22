@@ -5,6 +5,7 @@ sandbox/
 .DS_Store
 venv/
 source/engine/.idea/
+scratch.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
