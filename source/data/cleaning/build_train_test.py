@@ -5,10 +5,10 @@ from collections import defaultdict
 # read inputs
 BASE_PATH = '../../160-Stackoverflow-Data/train_test/raw_query/'
 
-Posts_full = pd.read_csv(BASE_PATH + 'Posts_2012_Jan_June.csv')
-Votes = pd.read_csv(BASE_PATH + 'Votes_2012_Jan_June.csv')
-Comments = pd.read_csv(BASE_PATH + 'Comments_2012_Jan_June.csv')
-Post_his = pd.read_csv(BASE_PATH + 'PostHistory_2012_Jan_June.csv')
+Posts_full = pd.read_csv(BASE_PATH + 'Posts.csv')
+Votes = pd.read_csv(BASE_PATH + 'Votes.csv')
+Comments = pd.read_csv(BASE_PATH + 'Comments.csv')
+Post_his = pd.read_csv(BASE_PATH + 'PostHistory.csv')
 
 # read inputs
 print("Finished Reading Files")
@@ -78,3 +78,5 @@ X_train.to_csv('X_train.csv', index=False)
 X_test.to_csv('X_test.csv', index=False)
 y_train.to_csv('y_train.csv', index=False)
 y_test.to_csv('y_test.csv', index=False)
+
+

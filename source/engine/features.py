@@ -19,7 +19,7 @@ class Feature:
 
 
 class UserAvailability(Feature):
-    pickle_path = BASE_PATH + 'engineered_features/user_availability_network.p'
+    pickle_path = BASE_PATH + 'engineered_features/user_availibility_network.p'
 
     def __init__(self):
         self.UA_network = Feature.load_p_file(UserAvailability.pickle_path)

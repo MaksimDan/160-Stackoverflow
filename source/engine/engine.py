@@ -25,7 +25,7 @@ class Residuals:
         self.raw_residuals_per_question = defaultdict(lambda: defaultdict(lambda: list()))
 
     def compute_and_store_residuals(self, score_matrix, y_index):
-        observed = json.loads(self.y['owner_user_ids'].values[y_index])
+        observed = self.y.iloc[y_index]
         predicted = {int(score_matrix[i, 0]): {'index': i, 'score': score_matrix[i, -1]} for i in range(score_matrix.shape[0])}
 
         # TODO: ensure all users have proper indexing
@@ -33,13 +33,13 @@ class Residuals:
         # index_comment = [predicted[user]['index'] for user in observed['commentors']]
 
         index_answer, index_comment = [], []
-        for user in observed['answerers']:
+        for user in eval(observed.answerers):
             try:
                 index_answer.append(predicted[user]['index'])
             except KeyError:
                 logging.debug(f'Missing answerer user: {user}')
 
-        for user in observed['commentors']:
+        for user in eval(observed.commenters):
             try:
                 index_comment.append(predicted[user]['index'])
             except KeyError:
@@ -115,8 +115,8 @@ class Engine:
     t1 = time.time()
 
     # load questions and all user activities
-    X = pd.read_csv(BASE_PATH + 'X100.csv').head(15)
-    y = pd.read_csv(BASE_PATH + 'y100.csv').head(15)
+    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(15)
+    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(15)
     X['CreationDate'] = pd.to_datetime(X['CreationDate'], format="%Y-%m-%dT%H:%M:%S")
 
     # load engineered features
@@ -152,10 +152,8 @@ class Engine:
         # iterate through all questions
         bar = progressbar.ProgressBar()
 
-        # w_new = ','.join(str(x)[0:3] for x in w)
         for index, row in bar(Engine.X.iterrows()):
             question_score_matrix = Engine._rank_question(row, copy(matrix_init), w)
-            # np.savetxt(f'r_matrix_q-{index}_w-{w_new}.csv', question_score_matrix[:, 0], delimiter=",")
             self.residuals.compute_and_store_residuals(question_score_matrix, index)
 
         t2 = time.time()
