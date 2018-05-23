@@ -18,18 +18,19 @@ Graph Structure:
     }
 """
 
-BASE_PATH = '../../160-Stackoverflow-Data/train_test/'
+BASE_PATH = '../../160-Stackoverflow-Data/train_test/raw_query/'
 
 
 class I:
     # the data
-    Users = pd.read_csv(BASE_PATH + 'Users.csv')
-    Posts = pd.read_csv(BASE_PATH + 'Posts_Clean.csv')
-    all_users = pickle.load(open(BASE_PATH + 'meta/users_list.p', 'rb'))
+    Users = pd.read_csv(BASE_PATH + 'Users.csv', low_memory = False)
+    Posts = pd.read_csv(BASE_PATH + 'Posts.csv', low_memory = False)
+    all_users = pickle.load(open(BASE_PATH + '../meta/users_list.p', 'rb'))
 
     # date preprocessing
     Posts.CreationDate = pd.to_datetime(Posts.CreationDate, format="%Y-%m-%dT%H:%M:%S")
-    Users.CreationDate = pd.to_datetime(Users.LastAccessDate, format="%Y-%m-%dT%H:%M:%S")
+    Users.CreationDate = pd.to_datetime(Users.CreationDate, format="%Y-%m-%dT%H:%M:%S")
+    Users.LastAccessDate = pd.to_datetime(Users.LastAccessDate, format="%Y-%m-%dT%H:%M:%S")
 
     # date subsetting
     Questions = Posts.loc[Posts.PostTypeId == 1]
@@ -39,13 +40,13 @@ class I:
     def user_created_account_after_question(user_id, question_id):
         question_creation_date = I.Questions.loc[I.Questions.Id == question_id].CreationDate
         user_creation_date = I.Users.loc[I.Users.Id == user_id].CreationDate
-        return int(question_creation_date < user_creation_date)
+        return int(user_creation_date.iloc[0] > question_creation_date.iloc[0])
 
     @staticmethod
     def user_inactive_before_question(user_id, question_id):
         question_creation_date = I.Questions.loc[I.Questions.Id == question_id].CreationDate
         user_last_access_date = I.Users.loc[I.Users.Id == user_id].LastAccessDate
-        return int(user_last_access_date < question_creation_date)
+        return int(user_last_access_date.iloc[0] < question_creation_date.iloc[0])
 
 
 def build_indicator_network():
@@ -61,6 +62,5 @@ def build_indicator_network():
                 i_dict[question_id]['inactive_before_q'].add(user_id)
     with open('indicator_network.p', 'wb') as fp:
         pickle.dump(i_dict, fp)
-
 
 build_indicator_network()
