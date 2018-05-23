@@ -6,13 +6,14 @@ import numpy as np
 
 
 class ResidualPlots:
-    col_list = ["blue", "cyan", "green", "red", "yellow", "purple"]
+    col_list = ["blue", "cyan", "purple", "yellow"]
     col_list_palette = sns.xkcd_palette(col_list)
 
     @staticmethod
     def _build_residual_dataframe(observed_ranks):
         df = pd.DataFrame(ResidualPlots.__flatten_residual_dictionary(observed_ranks))
-        df['rank'] = np.array(df['rank'].values) / max(df['rank'].values)
+        _max_rank = max(df['rank'].values)
+        df['rank'] = df['rank'].apply(lambda x: x / _max_rank)
         return df
 
     @staticmethod
@@ -32,10 +33,20 @@ class ResidualPlots:
         g = sns.lmplot('rank', 'question_number', data=df, hue='activity',
                        fit_reg=False, palette=ResidualPlots.col_list_palette, markers='s',
                        scatter_kws={"s": 10})
+
+        # colors for vertical lines
+        keys = ['i_answer', 'i_comment', 'i_edit', 'i_favorite']
+        dic = dict(zip(keys, ResidualPlots.col_list))
+
         g.set(xticks=[])
         g.set(yticks=[])
         ax = plt.gca()
         ax.invert_yaxis()
+
+        avg_error = df.groupby('activity')['rank'].mean()
+        for err in avg_error:
+            plt.axvline(x=err, ymax=0.96, color=dic.get(avg_error[avg_error == err].index[0]))
+
         plt.gcf().suptitle("Residual Matrix")
         plt.savefig(save_path)
         plt.show()
@@ -58,13 +69,13 @@ class ResidualPlots:
             for threshold in np.arange(0, 1 + .01, .01):
                 threshold_error_by_activity.append({'activity': activity,
                                                     't': threshold,
-                                                    'position': find_nearest(sorted_ranks, threshold)})
+                                                    'capture_accuracy': find_nearest(sorted_ranks, threshold) / len(sorted_ranks)})
         return pd.DataFrame(threshold_error_by_activity)
 
     @staticmethod
     def plot_error_by_threshold(raw_residuals, save_path):
         threshold_error_by_activity_df = ResidualPlots.build_threshold_dataframe(raw_residuals)
-        sns.lmplot('t', 'position', data=threshold_error_by_activity_df, hue='activity', fit_reg=False,
+        sns.lmplot('t', 'capture_accuracy', data=threshold_error_by_activity_df, hue='activity', fit_reg=False,
                    palette=ResidualPlots.col_list_palette, markers='.')
         plt.gcf().suptitle('Threshold Accuracy by User Activity')
         plt.savefig(save_path)

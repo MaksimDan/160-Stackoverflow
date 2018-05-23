@@ -21,8 +21,8 @@ class TestPlots:
         self.engine = Engine()
         weights = np.random.rand(1, n_features)[0] + 1.5
         self.engine.rank_all_questions(weights)
-        raw_r = ResidualPlots._build_residual_dataframe(self.engine.residuals.raw_residuals_per_question)
-        raw_r.to_csv('residuals_300_questions.csv')
+        # raw_r = ResidualPlots._build_residual_dataframe(self.engine.residuals.raw_residuals_per_question)
+        # raw_r.to_csv('residuals_300_questions.csv')
 
     def residual_matrix(self):
         ResidualPlots.plot_residual_matrix(self.engine.residuals.raw_residuals_per_question,
@@ -89,21 +89,30 @@ def set_up_log_files(name):
 
 '''
 Current Feature Summary:
-  BasicProfile (4):
-    - reputation
-    - views
-    - up votes
-    - down votes
-  UserExpertise (1) ignored for now
-  UserAvailability (1)
+    BasicProfile (4):
+        - reputation
+        - views
+        - up votes
+        - down votes
+    UserExpertise (1) 
+    UserAvailability (1)
+
+Remaining Features:
+    Indicator Network
+    
+Post Features and Residual Analysis:
+    Tag Network
+    User Similarity Network
+    Similiar Questions Network
+    PostLinks
 '''
 
 if __name__ == '__main__':
-    set_up_log_files('engine_info.log')
-    # t = Test(5)
+    set_up_log_files('run.log')
+    t = Test(6)
     # t.basic_tests()
-    # t.plot_tests()
+    t.plot_tests()
 
     # estimated run time: 26 hours
-    t = TestWeightVector(5)
-    t.build_error_matrix_by_cartisian_weight((0, 500), 100)
+    # t = TestWeightVector(5)
+    # t.build_error_matrix_by_cartisian_weight((0, 500), 100)

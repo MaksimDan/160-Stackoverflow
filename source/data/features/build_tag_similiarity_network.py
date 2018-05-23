@@ -2,8 +2,8 @@ import pandas as pd
 import json
 from collections import defaultdict
 import progressbar
-import sys
-import jsonpickle
+import dill as pickle
+
 
 """
 File: build_tag_similiarity_network.py
@@ -72,7 +72,8 @@ def build_network():
     tag_similarity = tag_similarity.astype(float)
     graph = build_graph()
     with open('tag_network_graph.json', 'w+') as outfile:
-        outfile.write(jsonpickle.encode(graph))
+        outfile.write(pickle.encode(graph))
+
 
 if __name__ == "__main__":
     print(build_all_tag_network('/Users/John/Dropbox/160-Stackoverflow-Data/tags/AllTagsClean.csv', 2/3))

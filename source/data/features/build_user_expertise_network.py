@@ -19,8 +19,9 @@ Graph Structure:
 
 
 def build_user_expertise_network():
-    Posts = pd.read_csv('../../160-Stackoverflow-Data/train_test/Posts_Clean.csv')
-    Comments = pd.read_csv('../../160-Stackoverflow-Data/train_test/Comments.csv')
+    from build_all_features import BASE_PATH
+    Posts = pd.read_csv(BASE_PATH + 'raw_query/Posts.csv')
+    Comments = pd.read_csv(BASE_PATH + 'raw_query/Comments.csv')
 
     # only interested in questions and answers from posts
     Posts = Posts.loc[(Posts.PostTypeId == 1) | (Posts.PostTypeId == 2)]
@@ -69,8 +70,4 @@ def build_user_expertise_network():
 
     with open('user_expertise_network.p', 'wb') as fp:
         pickle.dump(user_profile, fp)
-
-
-build_user_expertise_network()
-
 

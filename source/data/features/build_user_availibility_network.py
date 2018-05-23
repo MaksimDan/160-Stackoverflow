@@ -1,7 +1,5 @@
 import pandas as pd
-import json
 import progressbar
-import sys
 import dill as pickle
 
 
@@ -21,10 +19,12 @@ Graph Structure:
 
 
 def build_user_availibility_network():
+    from build_all_features import BASE_PATH
+
     # load data
-    Comments = pd.read_csv('../../160-Stackoverflow-Data/train_test/Comments.csv')
-    Posts = pd.read_csv('../../160-Stackoverflow-Data/train_test/Posts_Clean.csv')
-    Votes = pd.read_csv('../../160-Stackoverflow-Data/train_test/Votes.csv')
+    Comments = pd.read_csv(BASE_PATH + 'raw_query/Comments.csv')
+    Posts = pd.read_csv(BASE_PATH + 'raw_query/Posts.csv')
+    Votes = pd.read_csv(BASE_PATH + 'raw_query/Votes.csv')
 
     # only interested in the user and the creation dates
     Full = Comments[['UserId', 'CreationDate']].append(Posts[['OwnerUserId', 'CreationDate']]).append(Votes[['UserId', 'CreationDate']])
@@ -36,5 +36,5 @@ def build_user_availibility_network():
         activities = group['CreationDate'].dt.hour.value_counts(normalize=True)
         user_availability[int(key)] = activities.to_dict()
 
-    with open('user_availability_network.p', 'wb') as fp:
+    with open('user_availibility_network.p', 'wb') as fp:
         pickle.dump(user_availability, fp)

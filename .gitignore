@@ -4,7 +4,9 @@ sandbox/
 .ipynb_checkpoints/
 .DS_Store
 venv/
-source/engine/.idea/
+source/engine/.idea
+scratch.py
+todo.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

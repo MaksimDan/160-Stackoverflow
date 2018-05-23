@@ -21,7 +21,8 @@ Graph Structure:
 
 def build_user_basic_profile_network():
     # load data
-    Users = pd.read_csv('../../160-Stackoverflow-Data/train_test/Users.csv')
+    from build_all_features import BASE_PATH
+    Users = pd.read_csv(BASE_PATH + 'raw_query/Users.csv')
 
     # only interested in the user and the creation dates
     user_basic_profile = defaultdict(lambda: defaultdict(lambda: int()))
