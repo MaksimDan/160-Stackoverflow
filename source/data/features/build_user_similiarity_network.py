@@ -1,7 +1,6 @@
 import pandas as pd
 from collections import defaultdict
 from sklearn.feature_extraction.text import TfidfVectorizer
-
 import time
 import progressbar
 import dill as pickle
@@ -66,4 +65,5 @@ def build_similiarity_dataframe(path):
 
 
 def build_user_similiarity_network():
-    build_similiarity_dataframe('../../160-Stackoverflow-Data/300000_rows/user_communication.csv')
+    from build_all_features import BASE_PATH
+    build_similiarity_dataframe(BASE_PATH + 'raw_query/user_communication.csv')

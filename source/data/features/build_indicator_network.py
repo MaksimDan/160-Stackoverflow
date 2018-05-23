@@ -18,13 +18,12 @@ Graph Structure:
     }
 """
 
-BASE_PATH = '../../160-Stackoverflow-Data/train_test/'
 
-
-class I:
+def build_indicator_network():
     # the data
-    Users = pd.read_csv(BASE_PATH + 'Users.csv')
-    Posts = pd.read_csv(BASE_PATH + 'Posts_Clean.csv')
+    from build_all_features import BASE_PATH
+    Users = pd.read_csv(BASE_PATH + 'raw_query/Users.csv')
+    Posts = pd.read_csv(BASE_PATH + 'raw_query/Posts.csv')
     all_users = pickle.load(open(BASE_PATH + 'meta/users_list.p', 'rb'))
 
     # date preprocessing
@@ -35,32 +34,26 @@ class I:
     Questions = Posts.loc[Posts.PostTypeId == 1]
     Answers = Posts.loc[Posts.PostTypeId == 2]
 
-    @staticmethod
     def user_created_account_after_question(user_id, question_id):
-        question_creation_date = I.Questions.loc[I.Questions.Id == question_id].CreationDate
-        user_creation_date = I.Users.loc[I.Users.Id == user_id].CreationDate
+        question_creation_date = Questions.loc[Questions.Id == question_id].CreationDate
+        user_creation_date = Users.loc[Users.Id == user_id].CreationDate
         return int(question_creation_date < user_creation_date)
 
-    @staticmethod
     def user_inactive_before_question(user_id, question_id):
-        question_creation_date = I.Questions.loc[I.Questions.Id == question_id].CreationDate
-        user_last_access_date = I.Users.loc[I.Users.Id == user_id].LastAccessDate
+        question_creation_date = Questions.loc[Questions.Id == question_id].CreationDate
+        user_last_access_date = Users.loc[Users.Id == user_id].LastAccessDate
         return int(user_last_access_date < question_creation_date)
 
-
-def build_indicator_network():
     i_dict = defaultdict(lambda: defaultdict(lambda: set()))
-    all_questions, all_users = I.Questions, I.all_users
+    all_questions, all_users = Questions, all_users
 
     bar = progressbar.ProgressBar()
     for question_id in bar(all_questions.Id.values):
         for user_id in all_users:
-            if I.user_created_account_after_question(user_id, question_id):
+            if user_created_account_after_question(user_id, question_id):
                 i_dict[question_id]['create_after_q'].add(user_id)
-            if I.user_inactive_before_question(user_id, question_id):
+            if user_inactive_before_question(user_id, question_id):
                 i_dict[question_id]['inactive_before_q'].add(user_id)
     with open('indicator_network.p', 'wb') as fp:
         pickle.dump(i_dict, fp)
 
-
-build_indicator_network()
