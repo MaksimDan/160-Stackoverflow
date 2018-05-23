@@ -30,9 +30,11 @@ t1 = time.time()
 
 Posts_2012_Jan_June = get_base_query('*')
 
-Posts_2012_Jan_May_df = pd.read_sql(Posts_2012_Jan_June, data)
+Posts_2012_Jan_June = pd.read_sql(Posts_2012_Jan_June, data)
+Posts_2012_Jan_June.to_csv('Posts_2012_Jan_June.csv', index=False)
+
 t2 = time.time()
-print('Answers Done', t2-t1)
+print('Posts Done', t2-t1)
 
 #############################################################################
 
@@ -48,7 +50,7 @@ Comments_2012_Jan_June = \
     ({get_base_query('Posts.Id')})
     """
 Comments_2012_Jan_June_df = pd.read_sql(Comments_2012_Jan_June, data)
-Comments_2012_Jan_June_df.to_csv('Comments_2012_Jan_June.csv')
+Comments_2012_Jan_June_df.to_csv('Comments_2012_Jan_June.csv', index=False)
 
 t2 = time.time()
 print('Comments Done', t2 - t1)
@@ -67,7 +69,7 @@ Postlinks_2012_Jan_June = \
     ({get_base_query('Posts.Id')})
     """
 Postlinks_2012_Jan_June_df = pd.read_sql(Postlinks_2012_Jan_June, data)
-Postlinks_2012_Jan_June_df.to_csv('Postlinks_2012_Jan_June.csv')
+Postlinks_2012_Jan_June_df.to_csv('Postlinks_2012_Jan_June.csv', index=False)
 
 t2 = time.time()
 print('Postlinks_2012 Done', t2 - t1)
@@ -86,7 +88,7 @@ Votes_2012_Jan_June = \
     ({get_base_query('Posts.Id')})
     """
 Votes_2012_Jan_June_df = pd.read_sql(Votes_2012_Jan_June, data)
-Votes_2012_Jan_June_df.to_csv('Votes_2012_Jan_June.csv')
+Votes_2012_Jan_June_df.to_csv('Votes_2012_Jan_June.csv', index=False)
 
 t2 = time.time()
 print('Votes_2012 Done', t2 - t1)
@@ -105,7 +107,7 @@ Users_2012_Jan_June = \
     ({get_base_query('Posts.OwnerUserId')})
     """
 Users_2012_Jan_June_df = pd.read_sql(Users_2012_Jan_June, data)
-Users_2012_Jan_June_df.to_csv('Users_2012_Jan_June.csv')
+Users_2012_Jan_June_df.to_csv('Users_2012_Jan_June.csv', index=False)
 
 t2 = time.time()
 print('Users_2012 Done', t2 - t1)
@@ -124,7 +126,7 @@ PostHistory_2012_Jan_June = \
     ({get_base_query('Posts.Id')})
     """
 PostHistory_2012_Jan_June_df = pd.read_sql(PostHistory_2012_Jan_June, data)
-PostHistory_2012_Jan_June_df.to_csv('PostHistory_2012_Jan_June.csv')
+PostHistory_2012_Jan_June_df.to_csv('PostHistory_2012_Jan_June.csv', index=False)
 
 t2 = time.time()
 print('PostHistory_2012 Done', t2 - t1)
