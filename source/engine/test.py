@@ -89,18 +89,27 @@ def set_up_log_files(name):
 
 '''
 Current Feature Summary:
-  BasicProfile (4):
-    - reputation
-    - views
-    - up votes
-    - down votes
-  UserExpertise (1) ignored for now
-  UserAvailability (1)
+    BasicProfile (4):
+        - reputation
+        - views
+        - up votes
+        - down votes
+    UserExpertise (1) 
+    UserAvailability (1)
+
+Remaining Features:
+    Indicator Network
+    
+Post Features and Residual Analysis:
+    Tag Network
+    User Similarity Network
+    Similiar Questions Network
+    PostLinks
 '''
 
 if __name__ == '__main__':
     set_up_log_files('run.log')
-    t = Test(5)
+    t = Test(6)
     # t.basic_tests()
     t.plot_tests()
 

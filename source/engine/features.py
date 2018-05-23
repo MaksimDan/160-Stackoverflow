@@ -60,7 +60,8 @@ class UserExpertise(Feature):
                 a = user_tag_expertise[tag].get('n_answers', 0.0)
                 b = user_tag_expertise[tag].get('n_comments', 0.0)
                 c = user_tag_expertise[tag].get('n_questions', 0.0)
-                return a + b + c
+                # note the comments are purposefully given less weight
+                return a + b/2 + c
         except KeyError as e:
             print(f'user_id {user_id} was not found.', e)
             raise
