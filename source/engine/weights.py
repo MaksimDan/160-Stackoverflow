@@ -12,26 +12,25 @@ class WeightVector:
     @staticmethod
     def cartisian_weight_approximation(n_features, axis_lim, inc):
         # total_expected_run_time_in_hrs = (single_run_in_min * dimension_single_axis^dimension_weights)/60
-        total_engine_runs = math.pow(abs(axis_lim[0] - axis_lim[1]) // inc, n_features)
+        all_weights = list(itertools.product(range(axis_lim[0], axis_lim[1]+inc, inc), repeat=n_features))
+        total_engine_runs = len(all_weights)
         logging.info('Beginning cartisian_weight_approximation')
         logging.info(f'Planning out {total_engine_runs} engine runs.')
 
         t1 = time.time()
         temp_dict = []
-        i = 0
         with progressbar.ProgressBar(max_value=total_engine_runs) as bar:
-            for weights in itertools.product(range(axis_lim[0], axis_lim[1]+inc, inc), repeat=n_features):
+            for weights in all_weights:
                 engine = Engine()
                 engine.rank_all_questions(weights, log_disabled=True)
                 weight_dict = {f'f{i}': w for i, w in enumerate(weights)}
                 weight_dict['error'] = engine.residuals.get_total_error()
                 temp_dict.append(weight_dict)
-                bar.update(i)
-                i += 1
+                # bar.update(i)
 
         t2 = time.time()
         logging.info(f'cartisian_weight_approximation finished in {(t2-t1)/60} minutes.')
-        pd.DataFrame(temp_dict).to_csv('error_by_cartisian_weight.csv')
+        pd.DataFrame(temp_dict).to_csv('error_by_cartisian_weight.csv', index=False)
 
     @staticmethod
     def tune_weight_vector(n_features, base_alpha=2, exponential_increase=5):

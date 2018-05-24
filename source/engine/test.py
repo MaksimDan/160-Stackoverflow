@@ -118,6 +118,6 @@ if __name__ == '__main__':
     # t.basic_tests()
     # t.plot_tests()
 
-    # estimated run time: 9.3 hours hours
     t = TestWeightVector(6)
-    t.build_error_matrix_by_cartisian_weight((-1000, 1000), 666)
+    # t.build_error_matrix_by_cartisian_weight((-500, 1000), 500) # 52 hours
+    t.build_error_matrix_by_cartisian_weight((-250, 1000), 750) # 9 hours

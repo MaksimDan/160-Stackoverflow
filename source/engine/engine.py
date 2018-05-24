@@ -54,7 +54,7 @@ class Residuals:
 
     def get_total_error(self):
         d = self.flatted_errors()
-        return d['answer'] + d['comment']
+        return sum([d[key] for key in d.keys()])
 
     def get_summarize_statistics(self, n_total_users):
         stats = 'Residual Summary Statistics\n\n'
@@ -115,8 +115,8 @@ class Engine:
     t1 = time.time()
 
     # load questions and all user activities
-    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(25)
-    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(25)
+    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(33)
+    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(33)
     X['CreationDate'] = pd.to_datetime(X['CreationDate'], format="%Y-%m-%dT%H:%M:%S")
 
     # load engineered features

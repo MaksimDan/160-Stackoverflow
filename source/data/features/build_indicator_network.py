@@ -18,69 +18,49 @@ Graph Structure:
     }
 """
 
-<<<<<<< HEAD
-BASE_PATH = '../../160-Stackoverflow-Data/train_test/raw_query/'
-=======
->>>>>>> 901709588ef2d9313e22a4333b8b5be7fa3c8b99
 
-def build_indicator_network():
-    # the data
-<<<<<<< HEAD
-    Users = pd.read_csv(BASE_PATH + 'Users.csv', low_memory = False)
-    Posts = pd.read_csv(BASE_PATH + 'Posts.csv', low_memory = False)
-    all_users = pickle.load(open(BASE_PATH + '../meta/users_list.p', 'rb'))
-=======
-    from build_all_features import BASE_PATH
-    Users = pd.read_csv(BASE_PATH + 'raw_query/Users.csv')
-    Posts = pd.read_csv(BASE_PATH + 'raw_query/Posts.csv')
-    all_users = pickle.load(open(BASE_PATH + 'meta/users_list.p', 'rb'))
->>>>>>> 901709588ef2d9313e22a4333b8b5be7fa3c8b99
-
-    # date preprocessing
-    Posts.CreationDate = pd.to_datetime(Posts.CreationDate, format="%Y-%m-%dT%H:%M:%S")
-    Users.CreationDate = pd.to_datetime(Users.CreationDate, format="%Y-%m-%dT%H:%M:%S")
-    Users.LastAccessDate = pd.to_datetime(Users.LastAccessDate, format="%Y-%m-%dT%H:%M:%S")
-
-    # date subsetting
-    Questions = Posts.loc[Posts.PostTypeId == 1]
-    Answers = Posts.loc[Posts.PostTypeId == 2]
-
+def go(postid_date, userid_date, Questions, BASE_PATH):
     def user_created_account_after_question(user_id, question_id):
-<<<<<<< HEAD
-        question_creation_date = I.Questions.loc[I.Questions.Id == question_id].CreationDate
-        user_creation_date = I.Users.loc[I.Users.Id == user_id].CreationDate
-        return int(user_creation_date.iloc[0] > question_creation_date.iloc[0])
-=======
-        question_creation_date = Questions.loc[Questions.Id == question_id].CreationDate
-        user_creation_date = Users.loc[Users.Id == user_id].CreationDate
-        return int(question_creation_date < user_creation_date)
->>>>>>> 901709588ef2d9313e22a4333b8b5be7fa3c8b99
+        try:
+            return postid_date[question_id] < userid_date[user_id]['CreationDate']
+        except KeyError:
+            return False
 
     def user_inactive_before_question(user_id, question_id):
-<<<<<<< HEAD
-        question_creation_date = I.Questions.loc[I.Questions.Id == question_id].CreationDate
-        user_last_access_date = I.Users.loc[I.Users.Id == user_id].LastAccessDate
-        return int(user_last_access_date.iloc[0] < question_creation_date.iloc[0])
-=======
-        question_creation_date = Questions.loc[Questions.Id == question_id].CreationDate
-        user_last_access_date = Users.loc[Users.Id == user_id].LastAccessDate
-        return int(user_last_access_date < question_creation_date)
->>>>>>> 901709588ef2d9313e22a4333b8b5be7fa3c8b99
+        try:
+            return userid_date[user_id]['LastAccessDate'] < postid_date[question_id]
+        except KeyError:
+            return False
 
-    i_dict = defaultdict(lambda: defaultdict(lambda: set()))
-    all_questions, all_users = Questions, all_users
+    i_dict = defaultdict(set)
+    all_questions, all_users = Questions.Id.values, pickle.load(open(BASE_PATH + 'meta/users_list.p', 'rb'))
 
     bar = progressbar.ProgressBar()
-    for question_id in bar(all_questions.Id.values):
+    for question_id in bar(all_questions):
         for user_id in all_users:
-            if user_created_account_after_question(user_id, question_id):
-                i_dict[question_id]['create_after_q'].add(user_id)
-            if user_inactive_before_question(user_id, question_id):
-                i_dict[question_id]['inactive_before_q'].add(user_id)
+            if user_created_account_after_question(user_id, question_id) or \
+                    user_inactive_before_question(user_id, question_id):
+                i_dict[question_id].add(user_id)
+
     with open('indicator_network.p', 'wb') as fp:
         pickle.dump(i_dict, fp)
 
-<<<<<<< HEAD
-build_indicator_network()
-=======
->>>>>>> 901709588ef2d9313e22a4333b8b5be7fa3c8b99
+
+def build_indicator_network():
+    # the data
+    from build_all_features import BASE_PATH
+    Users = pd.read_csv(BASE_PATH + 'raw_query/Users.csv')
+    Questions = pd.read_csv(BASE_PATH + 'X_train.csv').head(1000)
+
+    # date preprocessing
+    Questions.CreationDate = pd.to_datetime(Questions.CreationDate, format="%Y-%m-%dT%H:%M:%S")
+    Users.CreationDate = pd.to_datetime(Users.CreationDate, format="%Y-%m-%dT%H:%M:%S")
+    Users.LastAccessDate = pd.to_datetime(Users.LastAccessDate, format="%Y-%m-%dT%H:%M:%S")
+
+    # preproprocessing lookups to speed things up
+    postid_date = {row['Id']: row['CreationDate'] for index, row in Questions.iterrows()}
+    userid_date = {row['Id']: {'CreationDate': row['CreationDate'],
+                               'LastAccessDate': row['LastAccessDate']} for index, row in Users.iterrows()}
+
+    del Users
+    go(postid_date, userid_date, Questions, BASE_PATH)
