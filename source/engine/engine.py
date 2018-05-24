@@ -28,20 +28,29 @@ class Residuals:
         observed = self.y.iloc[y_index]
         predicted = {int(score_matrix[i, 0]): {'index': i, 'score': score_matrix[i, -1]} for i in range(score_matrix.shape[0])}
 
-        index_answer = [predicted[user]['index'] for user in eval(observed.answerers)]
-        index_comment = [predicted[user]['index'] for user in eval(observed.commenters)]
-        # index_editor = [predicted[user]['index'] for user in eval(observed.editers)]
-        # index_favorite = [predicted[user]['index'] for user in eval(observed.favorite)]
+        def try_iter(l):
+            indices = []
+            for user in l:
+                try:
+                    indices.append(predicted[user]['index'])
+                except KeyError:
+                    continue
+            return indices
+
+        index_answer = try_iter(eval(observed.answerers))
+        index_comment = try_iter(eval(observed.commenters))
+        index_editor = try_iter(eval(observed.editers))
+        index_favorite = try_iter(eval(observed.favorite))
 
         self.error_per_question['answer'].append(sum(index_answer))
         self.error_per_question['comment'].append(sum(index_comment))
-        # self.error_per_question['edit'].append(sum(index_editor))
-        # self.error_per_question['favorite'].append(sum(index_favorite))
+        self.error_per_question['edit'].append(sum(index_editor))
+        self.error_per_question['favorite'].append(sum(index_favorite))
 
         self.raw_residuals_per_question[y_index]['i_answer'] = index_answer
         self.raw_residuals_per_question[y_index]['i_comment'] = index_comment
-        # self.raw_residuals_per_question[y_index]['i_editor'] = index_editor
-        # self.raw_residuals_per_question[y_index]['i_favorite'] = index_favorite
+        self.raw_residuals_per_question[y_index]['i_editor'] = index_editor
+        self.raw_residuals_per_question[y_index]['i_favorite'] = index_favorite
 
     def get_total_error(self):
         d = self.flatted_errors()
@@ -65,7 +74,6 @@ class Residuals:
 
         stats += 'Total Error: '
         stats += str(self.get_total_error()) + '\n'
-
         return stats
 
     def flatted_errors(self):
@@ -107,8 +115,8 @@ class Engine:
     t1 = time.time()
 
     # load questions and all user activities
-    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(18)
-    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(18)
+    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(25)
+    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(25)
     X['CreationDate'] = pd.to_datetime(X['CreationDate'], format="%Y-%m-%dT%H:%M:%S")
 
     # load engineered features
@@ -128,6 +136,7 @@ class Engine:
 
     def __init__(self):
         self.residuals = Residuals(Engine.X, Engine.y)
+        self.recommender_user_matrix = np.zeros((len(Engine.X), len(Engine.unique_users_list)))
 
     def rank_all_questions(self, w, log_disabled=False):
         logger = logging.getLogger()
@@ -140,19 +149,19 @@ class Engine:
         matrix_init[:, 0] = np.array(Engine.unique_users_list)
 
         logging.info(f'Computing ranks using weight vector: {w}')
-        t1 = time.time()
 
         # iterate through all questions
+        t1 = time.time()
         bar = progressbar.ProgressBar()
         for index, row in bar(Engine.X.iterrows()):
             question_score_matrix = Engine._rank_question(row, copy(matrix_init), w)
             self.residuals.compute_and_store_residuals(question_score_matrix, index)
-
+            self.recommender_user_matrix[index, :] = question_score_matrix[:, 0]
         t2 = time.time()
+
         logging.info(f'Ranking all questions computation finished in {(t2 - t1)/60} minutes.\n'
                      f'With an average time of {(t2 - t1)/len(Engine.X)} seconds per question.')
-        if not log_disabled:
-            logging.info(self.residuals.get_summarize_statistics(len(Engine.unique_users_list)))
+        logging.info(self.residuals.get_summarize_statistics(len(Engine.unique_users_list)))
         logger.disabled = False
 
     @staticmethod
@@ -176,7 +185,6 @@ class Engine:
 
     @staticmethod
     def _compute_feature_row_for_user(user_id, x_row):
-        # todo: add user expertise
         user_avail = Engine.user_availability.get_user_availability_probability(user_id, x_row.CreationDate.hour)
         user_expertise = Engine.user_expertise.get_user_sum_expertise(user_id, x_row['Tags'].split())
         user_basic_profile = Engine.user_profile.get_all_measureable_features(user_id)

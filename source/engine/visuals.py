@@ -3,10 +3,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import numpy as np
+import logging
 
 
 class ResidualPlots:
-    col_list = ["blue", "cyan", "purple", "yellow"]
+    col_list = ["blue", "cyan", "purple", "red"]
     col_list_palette = sns.xkcd_palette(col_list)
 
     @staticmethod
@@ -35,18 +36,18 @@ class ResidualPlots:
                        scatter_kws={"s": 10})
 
         # colors for vertical lines
-        keys = ['i_answer', 'i_comment', 'i_edit', 'i_favorite']
-        dic = dict(zip(keys, ResidualPlots.col_list))
-
         g.set(xticks=[])
         g.set(yticks=[])
         ax = plt.gca()
         ax.invert_yaxis()
 
         avg_error = df.groupby('activity')['rank'].mean()
-        for err in avg_error:
-            plt.axvline(x=err, ymax=0.96, color=dic.get(avg_error[avg_error == err].index[0]))
+        for i, err in enumerate(avg_error):
+            plt.axvline(x=err, ymax=0.96, color=ResidualPlots.col_list[i])
 
+        # keys = ['i_answer', 'i_comment', 'i_edit', 'i_favorite']
+        # dic = dict(zip(keys, ResidualPlots.col_list))
+        # dic.get(avg_error[avg_error == err].index[0])
         plt.gcf().suptitle("Residual Matrix")
         plt.savefig(save_path)
         plt.show()
@@ -90,8 +91,23 @@ class ResidualPlots:
         axs = axs.ravel()
 
         for i, (activity, sub_df) in enumerate(activity_groups):
-            sns.distplot(sub_df['rank'].values, ax=axs[i]).set_title(activity)
+            if len(sub_df['rank'].values) <= 1:
+                logging.debug(f'Cannot plot error distribution for activity {activity}, not enough data.')
+            else:
+                sns.distplot(sub_df['rank'].values, ax=axs[i]).set_title(activity)
 
         fig.suptitle('Rank Distribution by Activity Level', fontsize=14)
         plt.savefig(save_path)
         plt.show()
+
+    @staticmethod
+    def plot_variance_per_rank(rank_matrix, save_path):
+        rank = np.arange(0, rank_matrix.shape[1])
+        sd = np.std(rank_matrix, axis=0)
+        sns.kdeplot(rank, sd, shade=True)
+        plt.title('Recommender System Variance by Rank')
+        plt.xlabel('User Rank')
+        plt.ylabel('Standard Deviation')
+        plt.savefig(save_path)
+        plt.show()
+

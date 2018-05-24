@@ -11,6 +11,7 @@ from engine import Engine
 class WeightVector:
     @staticmethod
     def cartisian_weight_approximation(n_features, axis_lim, inc):
+        # total_expected_run_time_in_hrs = (single_run_in_min * dimension_single_axis^dimension_weights)/60
         total_engine_runs = math.pow(abs(axis_lim[0] - axis_lim[1]) // inc, n_features)
         logging.info('Beginning cartisian_weight_approximation')
         logging.info(f'Planning out {total_engine_runs} engine runs.')

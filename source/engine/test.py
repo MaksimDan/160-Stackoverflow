@@ -36,6 +36,10 @@ class TestPlots:
         ResidualPlots.plot_error_by_threshold(self.engine.residuals.raw_residuals_per_question,
                                               'TEST_error_by_threshold.png')
 
+    def variance_per_rank(self):
+        ResidualPlots.plot_variance_per_rank(self.engine.recommender_user_matrix,
+                                             'TEST_variance_per_rank.png')
+
 
 class TestWeightVector:
     def __init__(self, n_features):
@@ -69,6 +73,7 @@ class Test:
         self.pt.residual_matrix()
         self.pt.rank_distributions()
         self.pt.error_by_threshold()
+        self.pt.variance_per_rank()
 
     def weight_vector_tests(self):
         self.wt.weight_tune()
@@ -109,10 +114,10 @@ Post Features and Residual Analysis:
 
 if __name__ == '__main__':
     set_up_log_files('run.log')
-    t = Test(6)
+    # t = Test(6)
     # t.basic_tests()
-    t.plot_tests()
+    # t.plot_tests()
 
-    # estimated run time: 26 hours
-    # t = TestWeightVector(5)
-    # t.build_error_matrix_by_cartisian_weight((0, 500), 100)
+    # estimated run time: 9.3 hours hours
+    t = TestWeightVector(6)
+    t.build_error_matrix_by_cartisian_weight((-1000, 1000), 666)
