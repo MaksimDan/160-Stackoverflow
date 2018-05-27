@@ -105,7 +105,7 @@ class ResidualPlots:
         rank = np.arange(0, rank_matrix.shape[1])
         sd = np.std(rank_matrix, axis=0)
         sns.kdeplot(rank, sd, shade=True)
-        plt.title('Recommender System Variance by Rank')
+        plt.title('Recommender System Standard Deviation by Rank')
         plt.xlabel('User Rank')
         plt.ylabel('Standard Deviation')
         plt.savefig(save_path)

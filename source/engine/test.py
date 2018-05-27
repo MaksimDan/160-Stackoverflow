@@ -114,10 +114,10 @@ Post Features and Residual Analysis:
 
 if __name__ == '__main__':
     set_up_log_files('run.log')
-    # t = Test(6)
+    t = Test(6)
     # t.basic_tests()
-    # t.plot_tests()
+    t.plot_tests()
 
-    t = TestWeightVector(6)
+    # t = TestWeightVector(6)
     # t.build_error_matrix_by_cartisian_weight((-500, 1000), 500) # 52 hours
-    t.build_error_matrix_by_cartisian_weight((-250, 1000), 750) # 9 hours
+    # t.build_error_matrix_by_cartisian_weight((-250, 1000), 750) # 9 hours

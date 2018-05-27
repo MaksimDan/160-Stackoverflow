@@ -124,6 +124,9 @@ class Engine:
     user_profile = BasicProfile()
     user_expertise = UserExpertise()
 
+    # loading post features
+    indicator = Indicator()
+
     # todo: ignore these for now, integrate them later once everything works
     # tag_network = TagNetwork()
 
@@ -156,7 +159,9 @@ class Engine:
         for index, row in bar(Engine.X.iterrows()):
             question_score_matrix = Engine._rank_question(row, copy(matrix_init), w)
             self.residuals.compute_and_store_residuals(question_score_matrix, index)
+            # store the user matrix results as part of another visualization
             self.recommender_user_matrix[index, :] = question_score_matrix[:, 0]
+
         t2 = time.time()
 
         logging.info(f'Ranking all questions computation finished in {(t2 - t1)/60} minutes.\n'
@@ -171,14 +176,17 @@ class Engine:
 
         # now transform to fix units (excluding users column, and the score column)
         scaler = MinMaxScaler()
-        M[:, 1:-1] = scaler.fit_transform(M[:, 1:-1])
+        M[:, 1: -1] = scaler.fit_transform(M[:, 1:-1])
 
-        # weight each feature
+        # weight each feature (except the user and score)
         M[:, 1: -1] = np.multiply(M[:, 1:-1], w)
 
         # compute the final score based off the features by summing
         # all the rows (excluding the user column and the score column)
         M[:, -1] = np.array([np.sum(M[i, 1:-1]) for i in range(M.shape[0])])
+
+        # post process the matrix, and reduce inactive users before sorting the scores
+        # M[:, -1] = Engine.__post_process_indicate(M, x_row)
 
         # by default sort will sort by the last column
         return Engine._sort_matrix_by_column(M, -1, ascending=False)
@@ -186,11 +194,21 @@ class Engine:
     @staticmethod
     def _compute_feature_row_for_user(user_id, x_row):
         user_avail = Engine.user_availability.get_user_availability_probability(user_id, x_row.CreationDate.hour)
-        user_expertise = Engine.user_expertise.get_user_sum_expertise(user_id, x_row['Tags'].split())
         user_basic_profile = Engine.user_profile.get_all_measureable_features(user_id)
+        user_expertise = Engine.user_expertise.get_user_sum_expertise(user_id, x_row['Tags'].split())
         return [user_avail] + user_basic_profile + [user_expertise]
 
     @staticmethod
     def _sort_matrix_by_column(M, i_column, ascending=True):
         multiplier = 1 if ascending else -1
         return M[np.argsort(multiplier*M[:, i_column])]
+
+    @staticmethod
+    def __post_process_indicate(M, x_row):
+        # key:
+        #   M[i, 0] -> user_id
+        #   M[i, -1] -> score
+        return np.array([0 if (Engine.indicator.is_inactive(x_row.Id, M[i, 0]) or
+                               Engine.indicator.in_unavailable(M[i, 0], x_row.CreationDate.hour) or
+                               Engine.indicator.has_no_relative_expertise(M[i, 0], x_row.Tags.split())) else M[i, -1]
+                         for i in range(M.shape[0])])
