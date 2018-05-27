@@ -10,14 +10,14 @@ class ResidualPlots:
     col_list_palette = sns.xkcd_palette(col_list)
 
     @staticmethod
-    def _build_residual_dataframe(observed_ranks):
-        df = pd.DataFrame(ResidualPlots.__flatten_residual_dictionary(observed_ranks))
+    def build_residual_dataframe(observed_ranks):
+        df = pd.DataFrame(ResidualPlots.flatten_residual_dictionary(observed_ranks))
         _max_rank = max(df['rank'].values)
         df['rank'] = df['rank'].apply(lambda x: x / _max_rank)
         return df
 
     @staticmethod
-    def __flatten_residual_dictionary(r_dict):
+    def flatten_residual_dictionary(r_dict):
         flatted_d = []
         for question_i, activities in r_dict.items():
             for activity, index_list in activities.items():
@@ -27,7 +27,7 @@ class ResidualPlots:
 
     @staticmethod
     def plot_residual_matrix(raw_residuals, save_path):
-        df = ResidualPlots._build_residual_dataframe(raw_residuals)
+        df = ResidualPlots.build_residual_dataframe(raw_residuals)
         sns.set_palette(ResidualPlots.col_list_palette)
 
         g = sns.lmplot('rank', 'question_number', data=df, hue='activity',
@@ -53,7 +53,7 @@ class ResidualPlots:
 
     @staticmethod
     def build_threshold_dataframe(raw_residuals):
-        df = ResidualPlots._build_residual_dataframe(raw_residuals)
+        df = ResidualPlots.build_residual_dataframe(raw_residuals)
 
         def find_nearest(array, value):
             # searchsorted finds the index where an element would be inserted to maintain order in the array
@@ -83,7 +83,7 @@ class ResidualPlots:
 
     @staticmethod
     def plot_error_distributions(raw_residuals, save_path):
-        df = ResidualPlots._build_residual_dataframe(raw_residuals)
+        df = ResidualPlots.build_residual_dataframe(raw_residuals)
         activity_groups = df.groupby('activity')
         n_error_types = len(activity_groups)
         fig, axs = plt.subplots(1, n_error_types, figsize=(15, 6))
