@@ -4,14 +4,23 @@ import seaborn as sns
 import pandas as pd
 import numpy as np
 import logging
+from scipy import stats
+
+
+# https://stats.stackexchange.com/questions/51248/how-can-i-find-the-standard-deviation-in-categorical-distribution
+def entropy(cata_vector):
+    px = np.matrix(stats.itemfreq(cata_vector))[:, 1] / len(cata_vector)
+    lpx = np.log2(px)
+    ent = -np.sum(px.T*lpx)
+    return ent
 
 
 class ResidualPlots:
-    col_list = ["blue", "cyan", "purple", "red"]
+    col_list = ["blue", "cyan", "green", "red"]
     col_list_palette = sns.xkcd_palette(col_list)
 
     @staticmethod
-    def _build_residual_dataframe(observed_ranks):
+    def build_residual_dataframe(observed_ranks):
         df = pd.DataFrame(ResidualPlots.__flatten_residual_dictionary(observed_ranks))
         _max_rank = max(df['rank'].values)
         df['rank'] = df['rank'].apply(lambda x: x / _max_rank)
@@ -28,7 +37,7 @@ class ResidualPlots:
 
     @staticmethod
     def plot_residual_matrix(raw_residuals, save_path):
-        df = ResidualPlots._build_residual_dataframe(raw_residuals)
+        df = ResidualPlots.build_residual_dataframe(raw_residuals)
         sns.set_palette(ResidualPlots.col_list_palette)
 
         g = sns.lmplot('rank', 'question_number', data=df, hue='activity',
@@ -41,23 +50,21 @@ class ResidualPlots:
         ax = plt.gca()
         ax.invert_yaxis()
 
-        avg_error = df.groupby('activity')['rank'].mean()
-        for i, err in enumerate(avg_error):
-            plt.axvline(x=err, ymax=0.96, color=ResidualPlots.col_list[i])
+        col_dict = {'i_answer': 'blue', 'i_comment': 'cyan',
+                    'i_editor': 'green', 'i_favorite': 'red'}
+        for act, sub_df in df.groupby('activity'):
+            plt.axvline(x=sub_df['rank'].median(), ymax=0.96, color=col_dict[act])
 
-        # keys = ['i_answer', 'i_comment', 'i_edit', 'i_favorite']
-        # dic = dict(zip(keys, ResidualPlots.col_list))
-        # dic.get(avg_error[avg_error == err].index[0])
         plt.gcf().suptitle("Residual Matrix")
         plt.savefig(save_path)
         plt.show()
 
     @staticmethod
     def build_threshold_dataframe(raw_residuals):
-        df = ResidualPlots._build_residual_dataframe(raw_residuals)
+        df = ResidualPlots.build_residual_dataframe(raw_residuals)
 
         def find_nearest(array, value):
-            # searchsorted finds the index where an element would be inserted to maintain order in the array
+            # search sorted finds the index where an element would be inserted to maintain order in the array
             idx = np.searchsorted(array, value, side='right')
             if idx > 0 and (idx == len(array) or math.fabs(value - array[idx - 1]) < math.fabs(value - array[idx])):
                 return idx - 1
@@ -84,7 +91,7 @@ class ResidualPlots:
 
     @staticmethod
     def plot_error_distributions(raw_residuals, save_path):
-        df = ResidualPlots._build_residual_dataframe(raw_residuals)
+        df = ResidualPlots.build_residual_dataframe(raw_residuals)
         activity_groups = df.groupby('activity')
         n_error_types = len(activity_groups)
         fig, axs = plt.subplots(1, n_error_types, figsize=(15, 6))
@@ -103,11 +110,13 @@ class ResidualPlots:
     @staticmethod
     def plot_variance_per_rank(rank_matrix, save_path):
         rank = np.arange(0, rank_matrix.shape[1])
-        sd = np.std(rank_matrix, axis=0)
-        sns.kdeplot(rank, sd, shade=True)
-        plt.title('Recommender System Standard Deviation by Rank')
+        entropy_ar = np.array([entropy(rank_matrix[:, j]) for j in rank], dtype=np.float)
+        sns.lmplot('rank', 'entropy', data=pd.DataFrame({'rank': rank, 'entropy': entropy_ar}),
+                   fit_reg=False, markers='.')
+        # alternative, but less visibility sns.kdeplot(rank, entropy_ar, shade=True)
+        plt.title('Recommender System Entropy by Rank')
         plt.xlabel('User Rank')
-        plt.ylabel('Standard Deviation')
+        plt.ylabel('Entropy')
         plt.savefig(save_path)
         plt.show()
 

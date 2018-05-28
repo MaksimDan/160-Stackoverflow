@@ -138,10 +138,9 @@ class Indicator:
         self.user_expertise = UserExpertise()
 
     def is_inactive(self, q_id, u_id):
+        # reduces error for commentors
         return u_id in self.I_Network[q_id]
 
-    def in_unavailable(self, u_id, hour):
-        return self.user_avail.get_user_availability_probability(u_id, hour) == 0
-
     def has_no_relative_expertise(self, u_id, tags):
+        # reduces error for answerers and commentors
         return self.user_expertise.get_user_sum_expertise(u_id, tags) == 0

@@ -13,16 +13,14 @@ class TestBasic:
     def random_weight(self):
         engine = Engine()
         weights = np.random.rand(1, self.n_features)[0] + 1.5
-        engine.rank_all_questions(weights)
+        engine.rank_all_questions(weights, None)
 
 
 class TestPlots:
     def __init__(self, n_features):
         self.engine = Engine()
         weights = np.random.rand(1, n_features)[0] + 1.5
-        self.engine.rank_all_questions(weights)
-        # raw_r = ResidualPlots._build_residual_dataframe(self.engine.residuals.raw_residuals_per_question)
-        # raw_r.to_csv('residuals_300_questions.csv')
+        self.engine.rank_all_questions(weights, None)
 
     def residual_matrix(self):
         ResidualPlots.plot_residual_matrix(self.engine.residuals.raw_residuals_per_question,
@@ -38,7 +36,7 @@ class TestPlots:
 
     def variance_per_rank(self):
         ResidualPlots.plot_variance_per_rank(self.engine.recommender_user_matrix,
-                                             'TEST_variance_per_rank.png')
+                                             'TEST_entropy_per_rank.png')
 
 
 class TestWeightVector:
@@ -49,34 +47,31 @@ class TestWeightVector:
         engine = Engine()
         w = WeightVector.tune_weight_vector(self.n_features)
         print('Optimized weight vector:', w)
-        engine.rank_all_questions(w)
+        engine.rank_all_questions(w, None)
 
     def build_error_matrix_by_cartisian_weight(self, axis_lim, inc):
         WeightVector.cartisian_weight_approximation(self.n_features, axis_lim, inc)
 
 
 class Test:
-    def __init__(self, n_features):
-        self.t = TestBasic(n_features)
-        self.pt = TestPlots(n_features)
-        self.wt = TestWeightVector(n_features)
+    @staticmethod
+    def plot_tests(n_features):
+        pt = TestPlots(n_features)
+        pt.residual_matrix()
+        pt.rank_distributions()
+        pt.error_by_threshold()
+        pt.variance_per_rank()
 
-    def test_all(self):
-        self.basic_tests()
-        self.plot_tests()
-        self.weight_vector_tests()
+    @staticmethod
+    def save_residual_files(n_features):
+        engine = Engine()
+        # weights = np.random.rand(1, n_features)[0] + 1.5
+        weights = np.repeat(1, n_features)
+        engine.rank_all_questions(weights, None, save_output=True)
 
-    def basic_tests(self):
-        self.t.random_weight()
-
-    def plot_tests(self):
-        self.pt.residual_matrix()
-        self.pt.rank_distributions()
-        self.pt.error_by_threshold()
-        self.pt.variance_per_rank()
-
-    def weight_vector_tests(self):
-        self.wt.weight_tune()
+        # residuals data frame
+        raw_r = ResidualPlots.build_residual_dataframe(engine.residuals.raw_residuals_per_question)
+        raw_r.to_csv('residuals_600_q.csv')
 
 
 def set_up_log_files(name):
@@ -114,9 +109,8 @@ Post Features and Residual Analysis:
 
 if __name__ == '__main__':
     set_up_log_files('run.log')
-    t = Test(6)
-    # t.basic_tests()
-    t.plot_tests()
+    # Test.plot_tests(6)
+    Test.save_residual_files(6)
 
     # t = TestWeightVector(6)
     # t.build_error_matrix_by_cartisian_weight((-500, 1000), 500) # 52 hours

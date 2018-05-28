@@ -7,6 +7,7 @@ from visuals import ResidualPlots
 # utilities
 from collections import defaultdict
 from copy import copy
+import os
 
 # meta
 import logging
@@ -83,10 +84,9 @@ class Residuals:
         return flatted_errors
 
     def get_average_percent_rank_error_per_question(self, n_total_users):
-        d = self.flatted_errors()
-        n_questions = len(self.raw_residuals_per_question)
-        for activity, sum_rank_error in d.items():
-            d[activity] = sum_rank_error/n_questions/n_total_users
+        d = {}
+        for activity, ranks in self.error_per_question.items():
+            d[activity] = np.mean(ranks) / n_total_users
         return d
 
     def summarize_error_by_threshold(self):
@@ -115,8 +115,8 @@ class Engine:
     t1 = time.time()
 
     # load questions and all user activities
-    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(33)
-    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(33)
+    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(600)
+    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(600)
     X['CreationDate'] = pd.to_datetime(X['CreationDate'], format="%Y-%m-%dT%H:%M:%S")
 
     # load engineered features
@@ -141,7 +141,10 @@ class Engine:
         self.residuals = Residuals(Engine.X, Engine.y)
         self.recommender_user_matrix = np.zeros((len(Engine.X), len(Engine.unique_users_list)))
 
-    def rank_all_questions(self, w, log_disabled=False):
+    def rank_all_questions(self, w, opt_activity, log_disabled=False, save_output=False):
+        if save_output and not os.path.exists('feature_matrices'):
+            os.makedirs('feature_matrices')
+
         logger = logging.getLogger()
         logger.disabled = log_disabled
         n_features = len(w)
@@ -157,11 +160,12 @@ class Engine:
         t1 = time.time()
         bar = progressbar.ProgressBar()
         for index, row in bar(Engine.X.iterrows()):
-            question_score_matrix = Engine._rank_question(row, copy(matrix_init), w)
+            question_score_matrix = Engine._rank_question(row, copy(matrix_init), w, opt_activity)
             self.residuals.compute_and_store_residuals(question_score_matrix, index)
             # store the user matrix results as part of another visualization
             self.recommender_user_matrix[index, :] = question_score_matrix[:, 0]
-
+            if save_output:
+                np.savetxt(f'./feature_matrices/q_{index}_feature_matrix.csv', question_score_matrix, delimiter=',')
         t2 = time.time()
 
         logging.info(f'Ranking all questions computation finished in {(t2 - t1)/60} minutes.\n'
@@ -170,7 +174,7 @@ class Engine:
         logger.disabled = False
 
     @staticmethod
-    def _rank_question(x_row, M, w):
+    def _rank_question(x_row, M, w, opt_activity):
         for i, user in enumerate(M[:, 0]):
             M[i, 1:-1] = Engine._compute_feature_row_for_user(user, x_row)
 
@@ -186,7 +190,7 @@ class Engine:
         M[:, -1] = np.array([np.sum(M[i, 1:-1]) for i in range(M.shape[0])])
 
         # post process the matrix, and reduce inactive users before sorting the scores
-        # M[:, -1] = Engine.__post_process_indicate(M, x_row)
+        # M[:, -1] = Engine.__post_process_indicate(M, x_row, opt_activity)
 
         # by default sort will sort by the last column
         return Engine._sort_matrix_by_column(M, -1, ascending=False)
@@ -204,11 +208,15 @@ class Engine:
         return M[np.argsort(multiplier*M[:, i_column])]
 
     @staticmethod
-    def __post_process_indicate(M, x_row):
+    def __post_process_indicate(M, x_row, opt_activity):
         # key:
         #   M[i, 0] -> user_id
         #   M[i, -1] -> score
-        return np.array([0 if (Engine.indicator.is_inactive(x_row.Id, M[i, 0]) or
-                               Engine.indicator.in_unavailable(M[i, 0], x_row.CreationDate.hour) or
-                               Engine.indicator.has_no_relative_expertise(M[i, 0], x_row.Tags.split())) else M[i, -1]
-                         for i in range(M.shape[0])])
+        # after testing, we have identified that the indicator variables
+        # only help reduce the error for certain kinds of activities
+        if opt_activity == 'answerers' or opt_activity == 'commentors':
+            return np.array([0 if (Engine.indicator.is_inactive(x_row.Id, M[i, 0]) or
+                                   Engine.indicator.has_no_relative_expertise(M[i, 0], x_row.Tags.split())) else M[i, -1]
+                             for i in range(M.shape[0])])
+        else:
+            return M[:, -1]

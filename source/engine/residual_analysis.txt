@@ -1,0 +1,32 @@
+
+# suggestions
+1. Data can be found in /residuals
+2. It may be helpful to also use Users.csv, Posts.csv, etc, which can be found in /train_test/raw_query.
+3. Grab the first 600 questions from X_train and y_train, since this was what the engine ran on.
+4. Merge this with raw_residuals_table by _question_ in raw_residuals_table and _index_ in (3).
+5. Load in feature matrix files on demand and not as a dataframe.
+
+# questions (use R Markdown)
+1. What is the distribution on the type of activity after t > t* ? Select a reasonable t by inspecting the log file. For example, 15000 might be reasonable because that is the critical point in the threshold plot (t = 60000*1/4 = 15000).
+2. How many people dont seem to be active (latency) at the time of the question was posted?
+3. (IMPORTANT) Cluster together k groups after t > t*, what are the common characteristics between each of these groups? Look into hierarchical clustering in R.
+4. Inspect the outliers t > t** (select a reasonable t** using statistical methods). 
+	* What the questions for these observed outlier ranks? Are the obscure or not normal?
+	* What caused these activities to become ranked high (what caused us to misclassify these users)? 
+	* What weights should be boosted so that this is avoided? 
+	
+
+# column information
+## q_{i}_feature_matrix.csv
+represents the feature scores per individual question
+
+* column1: userid
+* column2-7: feature score in the following order: user availability, user reputation, user views, user total upvotes, user total downvotes, user expertise
+* column8: sum of all feature columns multiplied by weight vector (right now weight vector can be ignored since it all 1's, so it is just sum for now)
+	
+## residuals_600_q.csv
+summary of the observed user activity per question
+
+* column1: activity - type of observed user activity
+* column2: question_number - question number (in the order of X_train.csv and y_train.csv)
+* column3: rank - normalized rank. (Multiply by the total number of users to get discrete rank)
