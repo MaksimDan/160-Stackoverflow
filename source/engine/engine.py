@@ -105,6 +105,13 @@ class Residuals:
                                            for t, t_error in zip(summary_marker, summary_threshold)}
         return threshold_summary
 
+    def build_label_matrix(self, matrix_init):
+        # single classification for now (treat any kind of user activity as the same activity)
+        for question_number, activities in self.raw_residuals_per_question.items():
+            for activity, indices in activities.items():
+                for index in indices:
+                    matrix_init[question_number, index] = 1
+
     @staticmethod
     def pprint_dict(d):
         return json.dumps(d, indent=4)
@@ -115,8 +122,8 @@ class Engine:
     t1 = time.time()
 
     # load questions and all user activities
-    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(600)
-    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(600)
+    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(33)
+    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(33)
     X['CreationDate'] = pd.to_datetime(X['CreationDate'], format="%Y-%m-%dT%H:%M:%S")
 
     # load engineered features
@@ -140,6 +147,8 @@ class Engine:
     def __init__(self):
         self.residuals = Residuals(Engine.X, Engine.y)
         self.recommender_user_matrix = np.zeros((len(Engine.X), len(Engine.unique_users_list)))
+        self.recommender_score_matrix = np.zeros((len(Engine.X), len(Engine.unique_users_list)))
+        self.recommender_label_matrix = np.zeros((len(Engine.X), len(Engine.unique_users_list)))
 
     def rank_all_questions(self, w, opt_activity, log_disabled=False, save_output=False):
         if save_output and not os.path.exists('feature_matrices'):
@@ -162,11 +171,16 @@ class Engine:
         for index, row in bar(Engine.X.iterrows()):
             question_score_matrix = Engine._rank_question(row, copy(matrix_init), w, opt_activity)
             self.residuals.compute_and_store_residuals(question_score_matrix, index)
-            # store the user matrix results as part of another visualization
+            # store the user matrix and score results for entropy visualization and roc curve
             self.recommender_user_matrix[index, :] = question_score_matrix[:, 0]
+            self.recommender_score_matrix[index, :] = question_score_matrix[:, -1]
+
             if save_output:
                 np.savetxt(f'./feature_matrices/q_{index}_feature_matrix.csv', question_score_matrix, delimiter=',')
         t2 = time.time()
+
+        # finally add labels for residuals for roc curve
+        self.residuals.build_label_matrix(self.recommender_label_matrix)
 
         logging.info(f'Ranking all questions computation finished in {(t2 - t1)/60} minutes.\n'
                      f'With an average time of {(t2 - t1)/len(Engine.X)} seconds per question.')

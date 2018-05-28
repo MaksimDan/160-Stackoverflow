@@ -38,6 +38,10 @@ class TestPlots:
         ResidualPlots.plot_variance_per_rank(self.engine.recommender_user_matrix,
                                              'TEST_entropy_per_rank.png')
 
+    def ROC_curve_all_activities(self):
+        score_matrix, label_matrix = self.engine.recommender_score_matrix, self.engine.recommender_label_matrix
+        ResidualPlots.plot_roc_curve_for_all_activities(score_matrix, label_matrix, 'TEST_ROC_curve_all_activities.png')
+
 
 class TestWeightVector:
     def __init__(self, n_features):
@@ -60,6 +64,7 @@ class Test:
         pt.residual_matrix()
         pt.rank_distributions()
         pt.error_by_threshold()
+        pt.ROC_curve_all_activities()
         pt.variance_per_rank()
 
     @staticmethod
@@ -109,8 +114,8 @@ Post Features and Residual Analysis:
 
 if __name__ == '__main__':
     set_up_log_files('run.log')
-    # Test.plot_tests(6)
-    Test.save_residual_files(6)
+    Test.plot_tests(6)
+    # Test.save_residual_files(6)
 
     # t = TestWeightVector(6)
     # t.build_error_matrix_by_cartisian_weight((-500, 1000), 500) # 52 hours
