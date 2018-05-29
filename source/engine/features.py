@@ -1,6 +1,8 @@
 import dill as pickle
 import sys
-import math
+from sklearn.feature_extraction.text import CountVectorizer
+import scipy.sparse as sp
+import pandas as pd
 
 # preprocessing in order for the pickle files to unpack
 # the modules must be included where they were packed
@@ -44,9 +46,19 @@ class UserExpertise:
 
     def __init__(self):
         self.UE_network = Utilities.load_p_file(UserExpertise.pickle_path)
+        Posts = pd.read_csv(BASE_PATH + 'raw_query/Posts.csv')
+        Posts.dropna(subset=['Tags'], inplace=True)
+        self.similarity_matrix, self.word2i = self._build_tag_similarity_network(Posts.Tags)
+        del Posts
 
     def get_user_sum_expertise(self, user_id, tags):
         return sum([self._get_user_expertise(user_id, tag) for tag in tags])
+
+    def get_user_sum_tag_sim_expertise(self, user_id, post_tags):
+        # to avoid any overlap with get_user_sum_expertise, this feature
+        # will only be summing over tags that are different
+        user_tags = self.UE_network[int(user_id)].keys()
+        return sum([self._get_similarity_expertise(user_tags, post_tag, user_id) for post_tag in post_tags])
 
     def _get_user_expertise(self, user_id, tag):
         # note that you are currently summing the frequency
@@ -67,6 +79,30 @@ class UserExpertise:
         except KeyError as e:
             print(f'user_id {user_id} was not found.', e)
             raise
+
+    def _get_similarity_expertise(self, user_tags, post_tag, user_id):
+        return sum([self.get_tag_similarity(user_tag, post_tag) * self._get_user_expertise(user_id, user_tag)
+                    if user_tag != post_tag else 0 for user_tag in user_tags])
+
+    def get_tag_similarity(self, tag1, tag2):
+        return self.similarity_matrix[self.word2i[tag1], self.word2i[tag2]]
+
+    @staticmethod
+    def _build_tag_similarity_network(docs):
+        # the token pattern is necessary otherwise hyphenated tags will be ignored
+        count_model = CountVectorizer(ngram_range=(1, 1), token_pattern=r'\S+')
+        X = count_model.fit_transform(docs)
+
+        # co-occurrence matrix in sparse csr format
+        Xc = (X.T * X)
+
+        # normalized co-occurence matrix
+        g = sp.diags(1. / Xc.diagonal())
+        Xc_norm = g * Xc
+
+        # identify word similarity by indexing into the matrix
+        word2i = {word: i for i, word in enumerate(count_model.get_feature_names())}
+        return Xc_norm, word2i
 
 
 class BasicProfile:
@@ -116,16 +152,6 @@ class BasicProfile:
         except KeyError as e:
             print(f'user_id {e} was not found.')
             raise
-
-
-class TagNetwork:
-    pickle_path = BASE_PATH + 'engineered_features/tag_network.p'
-
-    def __init__(self):
-        self.TAG_Network = Utilities.load_p_file(TagNetwork.pickle_path)
-
-    def shortest_path(self, a, b):
-        pass
 
 
 # post feature

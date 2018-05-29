@@ -134,9 +134,6 @@ class Engine:
     # loading post features
     indicator = Indicator()
 
-    # todo: ignore these for now, integrate them later once everything works
-    # tag_network = TagNetwork()
-
     # load all users list (order does not matter)
     with open(BASE_PATH + 'meta/users_list.p', 'rb') as fp:
         unique_users_list = pickle.load(fp)
@@ -222,7 +219,8 @@ class Engine:
         user_avail = Engine.user_availability.get_user_availability_probability(user_id, x_row.CreationDate.hour)
         user_basic_profile = Engine.user_profile.get_all_measureable_features(user_id)
         user_expertise = Engine.user_expertise.get_user_sum_expertise(user_id, x_row['Tags'].split())
-        return [user_avail] + user_basic_profile + [user_expertise]
+        user_sim_expertise = Engine.user_expertise.get_user_sum_tag_sim_expertise(user_id, x_row['Tags'].split())
+        return [user_avail] + user_basic_profile + [user_expertise] + [user_sim_expertise]
 
     @staticmethod
     def _sort_matrix_by_column(M, i_column, ascending=True):

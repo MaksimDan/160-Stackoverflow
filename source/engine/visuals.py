@@ -138,3 +138,26 @@ class ResidualPlots:
         plt.legend(loc="lower right")
         plt.savefig(save_path)
         plt.show()
+
+    @staticmethod
+    def plot_weight_vs_error(weight_error_df, feature_order, inc, save_path):
+        individual_df = {}
+        row_index = np.arange(0, len(weight_error_df) + inc, inc)
+
+        for i in range(1, len(row_index)):
+            row_start, row_end = row_index[i - 1], row_index[i]
+            feature_name = feature_order[i - 1]
+            individual_df[feature_name] = weight_error_df[[feature_name, 'error']].iloc[row_start:row_end, :]
+
+        fig, axs = plt.subplots(2, 3, figsize=(15, 6))
+        fig.tight_layout()
+        axs = axs.ravel()
+
+        for i, (weight_type, df) in enumerate(individual_df.items()):
+            df.plot.line(x=weight_type, y='error', ax=axs[i], title=weight_type)
+            axs[i].legend_.remove()
+
+        plt.subplots_adjust(top=0.85, hspace=.5, wspace=.25)
+        fig.suptitle('Error by Feature Weight', fontsize=18)
+        plt.savefig(save_path)
+        plt.show()

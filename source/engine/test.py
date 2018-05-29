@@ -2,6 +2,7 @@ from engine import Engine
 from weights import WeightVector
 from visuals import ResidualPlots
 import numpy as np
+import pandas as pd
 import logging
 import os
 
@@ -33,6 +34,13 @@ class TestPlots:
         score_matrix, label_matrix = self.engine.recommender_score_matrix, self.engine.recommender_label_matrix
         ResidualPlots.plot_roc_curve_for_all_activities(score_matrix, label_matrix, 'TEST_roc_curve_all_activities.png')
 
+    @staticmethod
+    def feature_weight_vs_error(inc):
+        BASE_PATH = '../../../160-Stackoverflow-Data/'
+        error_weight = pd.read_csv(BASE_PATH + 'residuals/error_by_linear_weight.csv')
+        feature_order = ['availability', 'reputation', 'views', 'upvotes', 'downvotes', 'expertise']
+        ResidualPlots.plot_weight_vs_error(error_weight, feature_order, inc, 'TEST_feature_weight_vs_error.png')
+
 
 class TestWeightVector:
     def __init__(self, feature_names):
@@ -52,13 +60,14 @@ class TestWeightVector:
 
 class Test:
     @staticmethod
-    def plot_tests(n_features):
+    def plot_tests(n_features, inc):
         pt = TestPlots(n_features)
         pt.residual_matrix()
         pt.rank_distributions()
         pt.error_by_threshold()
         pt.roc_curve_all_activities()
         pt.variance_per_rank()
+        TestPlots.feature_weight_vs_error(inc)
 
     @staticmethod
     def save_residual_files(n_features):
@@ -106,11 +115,13 @@ Post Features and Residual Analysis:
 
 if __name__ == '__main__':
     set_up_log_files('run.log')
-    # Test.plot_tests(6)
-    # Test.save_residual_files(6)
+    # TestPlots.feature_weight_vs_error(6)
 
-    features = ['availability', 'reputation', 'views', 'upvotes', 'downvotes', 'expertise']
-    t = TestWeightVector(features)
-    t.linear_weight_optimization((-200, 1000), 200)
+    # Test.plot_tests(7)
+    # Test.save_residual_files(7)
+
+    # features = ['availability', 'reputation', 'views', 'upvotes', 'downvotes', 'expertise', 'tag_sim_expertise']
+    # t = TestWeightVector(features)
+    # t.linear_weight_optimization((-200, 1000), 200)
     # t.build_error_matrix_by_cartisian_weight((-500, 1000), 500) # 52 hours
     # t.build_error_matrix_by_cartisian_weight((-250, 1000), 750) # 9 hours
