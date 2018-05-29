@@ -122,8 +122,8 @@ class Engine:
     t1 = time.time()
 
     # load questions and all user activities
-    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(33)
-    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(33)
+    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(35) #.sample(35, random_state=42)
+    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(35) #.sample(35, random_state=42)
     X['CreationDate'] = pd.to_datetime(X['CreationDate'], format="%Y-%m-%dT%H:%M:%S")
 
     # load engineered features
@@ -144,18 +144,23 @@ class Engine:
     t2 = time.time()
     logging.info(f'DataFrame loading finished in time {t2 - t1} seconds.\n')
 
-    def __init__(self):
-        self.residuals = Residuals(Engine.X, Engine.y)
-        self.recommender_user_matrix = np.zeros((len(Engine.X), len(Engine.unique_users_list)))
-        self.recommender_score_matrix = np.zeros((len(Engine.X), len(Engine.unique_users_list)))
-        self.recommender_label_matrix = np.zeros((len(Engine.X), len(Engine.unique_users_list)))
+    def __init__(self, log_disabled=False, save_feature_matrices=False,
+                 visuals_active=True):
+        self.log_disabled, self.save_feature_matrices, \
+            self.visuals_active = log_disabled, save_feature_matrices, visuals_active
 
-    def rank_all_questions(self, w, opt_activity, log_disabled=False, save_output=False):
-        if save_output and not os.path.exists('feature_matrices'):
+        self.residuals = Residuals(Engine.X, Engine.y)
+        if visuals_active:
+            self.recommender_user_matrix = np.zeros((len(Engine.X), len(Engine.unique_users_list)))
+            self.recommender_score_matrix = np.zeros((len(Engine.X), len(Engine.unique_users_list)))
+            self.recommender_label_matrix = np.zeros((len(Engine.X), len(Engine.unique_users_list)))
+
+    def rank_all_questions(self, w, opt_activity):
+        if self.save_feature_matrices and not os.path.exists('feature_matrices'):
             os.makedirs('feature_matrices')
 
         logger = logging.getLogger()
-        logger.disabled = log_disabled
+        logger.disabled = self.log_disabled
         n_features = len(w)
 
         # n_features + 2, for the user id column and score column
@@ -171,16 +176,19 @@ class Engine:
         for index, row in bar(Engine.X.iterrows()):
             question_score_matrix = Engine._rank_question(row, copy(matrix_init), w, opt_activity)
             self.residuals.compute_and_store_residuals(question_score_matrix, index)
-            # store the user matrix and score results for entropy visualization and roc curve
-            self.recommender_user_matrix[index, :] = question_score_matrix[:, 0]
-            self.recommender_score_matrix[index, :] = question_score_matrix[:, -1]
 
-            if save_output:
+            if self.visuals_active:
+                # store the user matrix and score results for entropy visualization and roc curve
+                self.recommender_user_matrix[index, :] = question_score_matrix[:, 0]
+                self.recommender_score_matrix[index, :] = question_score_matrix[:, -1]
+
+            if self.save_feature_matrices:
                 np.savetxt(f'./feature_matrices/q_{index}_feature_matrix.csv', question_score_matrix, delimiter=',')
         t2 = time.time()
 
-        # finally add labels for residuals for roc curve
-        self.residuals.build_label_matrix(self.recommender_label_matrix)
+        if self.visuals_active:
+            # finally add labels for residuals for roc curve
+            self.residuals.build_label_matrix(self.recommender_label_matrix)
 
         logging.info(f'Ranking all questions computation finished in {(t2 - t1)/60} minutes.\n'
                      f'With an average time of {(t2 - t1)/len(Engine.X)} seconds per question.')

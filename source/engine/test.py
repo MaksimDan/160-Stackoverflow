@@ -6,20 +6,11 @@ import logging
 import os
 
 
-class TestBasic:
-    def __init__(self, n_features):
-        self.n_features = n_features
-
-    def random_weight(self):
-        engine = Engine()
-        weights = np.random.rand(1, self.n_features)[0] + 1.5
-        engine.rank_all_questions(weights, None)
-
-
 class TestPlots:
-    def __init__(self, n_features):
+    def __init__(self, n_features, weights=None):
+        if not weights:
+            weights = np.repeat(1, n_features)
         self.engine = Engine()
-        weights = np.random.rand(1, n_features)[0] + 1.5
         self.engine.rank_all_questions(weights, None)
 
     def residual_matrix(self):
@@ -38,23 +29,25 @@ class TestPlots:
         ResidualPlots.plot_variance_per_rank(self.engine.recommender_user_matrix,
                                              'TEST_entropy_per_rank.png')
 
-    def ROC_curve_all_activities(self):
+    def roc_curve_all_activities(self):
         score_matrix, label_matrix = self.engine.recommender_score_matrix, self.engine.recommender_label_matrix
-        ResidualPlots.plot_roc_curve_for_all_activities(score_matrix, label_matrix, 'TEST_ROC_curve_all_activities.png')
+        ResidualPlots.plot_roc_curve_for_all_activities(score_matrix, label_matrix, 'TEST_roc_curve_all_activities.png')
 
 
 class TestWeightVector:
-    def __init__(self, n_features):
-        self.n_features = n_features
+    def __init__(self, feature_names):
+        self.feature_names = feature_names
 
     def weight_tune(self):
-        engine = Engine()
-        w = WeightVector.tune_weight_vector(self.n_features)
-        print('Optimized weight vector:', w)
+        engine = Engine(visuals_active=True)
+        w = WeightVector.tune_weight_vector(len(self.feature_names))
         engine.rank_all_questions(w, None)
 
-    def build_error_matrix_by_cartisian_weight(self, axis_lim, inc):
-        WeightVector.cartisian_weight_approximation(self.n_features, axis_lim, inc)
+    def brute_force_weight_optimization(self, axis_lim, inc):
+        WeightVector.cartisian_weight_approximation(self.feature_names, axis_lim, inc)
+
+    def linear_weight_optimization(self, axis_lim, inc):
+        WeightVector.linear_weight_tune(self.feature_names, axis_lim, inc)
 
 
 class Test:
@@ -64,15 +57,14 @@ class Test:
         pt.residual_matrix()
         pt.rank_distributions()
         pt.error_by_threshold()
-        pt.ROC_curve_all_activities()
+        pt.roc_curve_all_activities()
         pt.variance_per_rank()
 
     @staticmethod
     def save_residual_files(n_features):
-        engine = Engine()
-        # weights = np.random.rand(1, n_features)[0] + 1.5
+        engine = Engine(save_feature_matrices=True, visuals_active=False)
         weights = np.repeat(1, n_features)
-        engine.rank_all_questions(weights, None, save_output=True)
+        engine.rank_all_questions(weights, None)
 
         # residuals data frame
         raw_r = ResidualPlots.build_residual_dataframe(engine.residuals.raw_residuals_per_question)
@@ -114,9 +106,11 @@ Post Features and Residual Analysis:
 
 if __name__ == '__main__':
     set_up_log_files('run.log')
-    Test.plot_tests(6)
+    # Test.plot_tests(6)
     # Test.save_residual_files(6)
 
-    # t = TestWeightVector(6)
+    features = ['availability', 'reputation', 'views', 'upvotes', 'downvotes', 'expertise']
+    t = TestWeightVector(features)
+    t.linear_weight_optimization((-200, 1000), 200)
     # t.build_error_matrix_by_cartisian_weight((-500, 1000), 500) # 52 hours
     # t.build_error_matrix_by_cartisian_weight((-250, 1000), 750) # 9 hours

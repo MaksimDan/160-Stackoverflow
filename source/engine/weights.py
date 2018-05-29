@@ -11,26 +11,50 @@ from engine import Engine
 class WeightVector:
     @staticmethod
     def cartisian_weight_approximation(n_features, axis_lim, inc):
-        # total_expected_run_time_in_hrs = (single_run_in_min * dimension_single_axis^dimension_weights)/60
+        # total_expected_run_time_in_hrs = (single_run_in_min *
+        #                                   dimension_single_axis^dimension_weights)/60
         all_weights = list(itertools.product(range(axis_lim[0], axis_lim[1]+inc, inc), repeat=n_features))
         total_engine_runs = len(all_weights)
         logging.info('Beginning cartisian_weight_approximation')
         logging.info(f'Planning out {total_engine_runs} engine runs.')
 
         t1 = time.time()
-        temp_dict = []
-        with progressbar.ProgressBar(max_value=total_engine_runs) as bar:
-            for weights in all_weights:
-                engine = Engine()
-                engine.rank_all_questions(weights, log_disabled=True)
-                weight_dict = {f'f{i}': w for i, w in enumerate(weights)}
-                weight_dict['error'] = engine.residuals.get_total_error()
-                temp_dict.append(weight_dict)
-                # bar.update(i)
+        results_dict = []
+        bar = progressbar.ProgressBar()
+        for weights in bar(all_weights):
+            engine = Engine(log_disabled=True, visuals_active=False)
+            engine.rank_all_questions(weights, None)
+            weight_dict = {f'f{i}': w for i, w in enumerate(weights)}
+            weight_dict['error'] = engine.residuals.get_total_error()
+            results_dict.append(weight_dict)
 
         t2 = time.time()
         logging.info(f'cartisian_weight_approximation finished in {(t2-t1)/60} minutes.')
-        pd.DataFrame(temp_dict).to_csv('error_by_cartisian_weight.csv', index=False)
+        pd.DataFrame(results_dict).to_csv('error_by_cartisian_weight.csv', index=False)
+
+    @staticmethod
+    def linear_weight_tune(features, axis_lim, inc):
+        results_dict = []
+        init_w = np.repeat(1, len(features))
+
+        logging.info('Beginning linear_weight_tune')
+        total_engine_runs = len(list(range(axis_lim[0], axis_lim[1], inc))) * len(features)
+        logging.info(f'Planning out {total_engine_runs} engine runs.')
+
+        t1 = time.time()
+        bar = progressbar.ProgressBar()
+        for feature_i in bar(range(len(features))):
+            for weight in range(axis_lim[0], axis_lim[1], inc):
+                weights = init_w.copy()
+                weights[feature_i] = weight
+                engine = Engine(log_disabled=True, visuals_active=False)
+                engine.rank_all_questions(weights, None)
+                weight_dict = {feature: weights[i] for i, feature in enumerate(features)}
+                weight_dict['error'] = engine.residuals.get_total_error()
+                results_dict.append(weight_dict)
+        t2 = time.time()
+        logging.info(f'linear_weight_tune finished in {(t2-t1)/60} minutes.')
+        pd.DataFrame(results_dict).to_csv('error_by_linear_weight.csv', index=False)
 
     @staticmethod
     def tune_weight_vector(n_features, base_alpha=2, exponential_increase=5):
@@ -41,8 +65,8 @@ class WeightVector:
         logging.info(f'Initial random weights: {weights}')
 
         t1 = time.time()
-        engine = Engine()
-        engine.rank_all_questions(weights, log_disabled=True)
+        engine = Engine(log_disabled=True, visuals_active=False)
+        engine.rank_all_questions(weights, None)
         prev_error = engine.residuals.get_total_error()
 
         bar = progressbar.ProgressBar()
@@ -53,7 +77,6 @@ class WeightVector:
         t2 = time.time()
         logging.info(f'\nFinished gradient descent in {(t2-t1)/60} minutes.'
                      f'\nThe final weight vector is {weights}.')
-        engine.rank_all_questions(weights, log_disabled=False)
         return weights
 
     @staticmethod
@@ -70,8 +93,8 @@ class WeightVector:
 
                 a *= exp_increase
                 adjust_weight(increase)
-                e = Engine()
-                e.rank_all_questions(w, log_disabled=True)
+                e = Engine(log_disabled=True, visuals_active=False)
+                e.rank_all_questions(w, None)
                 p_error = c_error
                 c_error = engine.residuals.get_total_error()
             return p_weight
@@ -81,8 +104,8 @@ class WeightVector:
         alpha *= exp_increase
         adjust_weight(True)
 
-        engine = Engine()
-        engine.rank_all_questions(w, log_disabled=True)
+        engine = Engine(log_disabled=True, visuals_active=False)
+        engine.rank_all_questions(w, None)
         current_error = engine.residuals.get_total_error()
         # if the error decreases, repeat the same operation unit it does not
         if current_error < prev_error:
@@ -95,7 +118,7 @@ class WeightVector:
             w[i] = prev_weight
             adjust_weight(False)
 
-            engine = Engine()
-            engine.rank_all_questions(w, log_disabled=True)
+            engine = Engine(log_disabled=True, visuals_active=False)
+            engine.rank_all_questions(w, None)
             current_error = engine.residuals.get_total_error()
             return loop_until_error_increase(current_error, prev_error, alpha, False)

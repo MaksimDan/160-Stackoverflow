@@ -123,7 +123,7 @@ class ResidualPlots:
 
     @staticmethod
     def plot_roc_curve_for_all_activities(score_matrix, label_matrix, save_path):
-        fpr, tpr, _ = roc_curve(np.asarray(label_matrix).ravel(), np.asarray(score_matrix).ravel())
+        fpr, tpr, _ = roc_curve(label_matrix.ravel(), score_matrix.ravel())
         roc_auc = auc(fpr, tpr)
 
         lw = 2
@@ -134,7 +134,7 @@ class ResidualPlots:
         plt.ylim([0.0, 1.05])
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
-        plt.title('Receiver operating characteristic example')
+        plt.title('ROC Curve by Score Threshold')
         plt.legend(loc="lower right")
         plt.savefig(save_path)
         plt.show()
