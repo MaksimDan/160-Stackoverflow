@@ -25,7 +25,7 @@ class WeightVector:
             engine = Engine(log_disabled=True, visuals_active=False)
             engine.rank_all_questions(weights, None)
             weight_dict = {f'f{i}': w for i, w in enumerate(weights)}
-            weight_dict['error'] = engine.residuals.get_total_error()
+            weight_dict['error'] = engine.residuals.get_total_rank_error()
             results_dict.append(weight_dict)
 
         t2 = time.time()
@@ -50,7 +50,7 @@ class WeightVector:
                 engine = Engine(log_disabled=True, visuals_active=False)
                 engine.rank_all_questions(weights, None)
                 weight_dict = {feature: weights[i] for i, feature in enumerate(features)}
-                weight_dict['error'] = engine.residuals.get_total_error()
+                weight_dict['error'] = engine.residuals.get_total_rank_error()
                 results_dict.append(weight_dict)
         t2 = time.time()
         logging.info(f'linear_weight_tune finished in {(t2-t1)/60} minutes.')
@@ -67,7 +67,7 @@ class WeightVector:
         t1 = time.time()
         engine = Engine(log_disabled=True, visuals_active=False)
         engine.rank_all_questions(weights, None)
-        prev_error = engine.residuals.get_total_error()
+        prev_error = engine.residuals.get_total_rank_error()
 
         bar = progressbar.ProgressBar()
         for i in bar(range(len(weights))):
@@ -96,7 +96,7 @@ class WeightVector:
                 e = Engine(log_disabled=True, visuals_active=False)
                 e.rank_all_questions(w, None)
                 p_error = c_error
-                c_error = engine.residuals.get_total_error()
+                c_error = engine.residuals.get_total_rank_error()
             return p_weight
 
         # first try increasing the weight
@@ -106,7 +106,7 @@ class WeightVector:
 
         engine = Engine(log_disabled=True, visuals_active=False)
         engine.rank_all_questions(w, None)
-        current_error = engine.residuals.get_total_error()
+        current_error = engine.residuals.get_total_rank_error()
         # if the error decreases, repeat the same operation unit it does not
         if current_error < prev_error:
             print('error decrease with increased alpha')
@@ -120,5 +120,5 @@ class WeightVector:
 
             engine = Engine(log_disabled=True, visuals_active=False)
             engine.rank_all_questions(w, None)
-            current_error = engine.residuals.get_total_error()
+            current_error = engine.residuals.get_total_rank_error()
             return loop_until_error_increase(current_error, prev_error, alpha, False)

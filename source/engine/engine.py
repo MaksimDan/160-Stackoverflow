@@ -8,6 +8,8 @@ from visuals import ResidualPlots
 from collections import defaultdict
 from copy import copy
 import os
+import itertools
+import math
 
 # meta
 import logging
@@ -53,12 +55,35 @@ class Residuals:
         self.raw_residuals_per_question[y_index]['i_editor'] = index_editor
         self.raw_residuals_per_question[y_index]['i_favorite'] = index_favorite
 
-    def get_total_error(self):
+    def get_loss_function_errors(self, t):
+        def flatten_activities(activities):
+            return list(itertools.chain.from_iterable(activities))
+
+        errors = []
+        for y_index, activities in self.raw_residuals_per_question.items():
+            obs_q = flatten_activities(activities.values())
+            if len(obs_q) != 0:
+                errors.append(1 - (sum([1 if 0 <= obs <= t else 0 for obs in obs_q]) / len(obs_q)) )
+        return errors
+
+    def get_loss_function_total_error(self, t):
+        return sum(self.get_loss_function_errors(t))
+
+    def get_total_rank_error(self):
         d = self.flatted_errors()
         return sum([d[key] for key in d.keys()])
 
     def get_summarize_statistics(self, n_total_users):
+        n_questions = len(self.raw_residuals_per_question)
+
         stats = 'Residual Summary Statistics\n\n'
+
+        stats += f'----- META -----\n'
+        stats += f'Total Questions Ran: {n_questions}\n'
+        stats += f'Total Users Ranked: {n_total_users}\n\n'
+
+        stats += '----- RANK -----\n'
+        stats += f'Total Error (defined as the summation of ranks): {self.get_total_rank_error()}\n'
 
         stats += 'Error per User Activity:\n'
         stats += Residuals.pprint_dict(self.flatted_errors())
@@ -69,12 +94,20 @@ class Residuals:
         stats += '\nThreshold Accuracy per User Activity:\n'
         stats += Residuals.pprint_dict(self.summarize_error_by_threshold())
 
-        n_questions = len(self.raw_residuals_per_question)
-        stats += '\nAverage Rank Error Per Question: '
-        stats += str(self.get_total_error()/n_questions) + '\n'
+        stats += f'\nAverage Error Per Question: {self.get_total_rank_error() / n_questions}\n\n'
 
-        stats += 'Total Error: '
-        stats += str(self.get_total_error()) + '\n'
+        stats += '----- LOSS FUNCTION -----\n'
+        threshold_rank = math.floor(n_total_users*.17)
+        loss_errors = self.get_loss_function_errors(threshold_rank)
+        loss_error = sum(loss_errors)
+
+        stats += f'Threshold Choice: {threshold_rank}\n'
+        stats += f'Total Error: {loss_error}\n'
+        stats += f'Average ratio of missed users per question: {np.mean(loss_errors)}\n'
+        stats += f'Standard Deviation of missed users per question: {np.std(loss_errors)}\n\n'
+
+        stats += f'If we send out an email to {threshold_rank} out of {n_total_users} total users,\n' + \
+                 f'then we can expect to meet {(1 - np.mean(loss_errors)) * 100:.4f} of our target responders.'
         return stats
 
     def flatted_errors(self):
@@ -101,7 +134,7 @@ class Residuals:
             sub_df['capture_accuracy'] = sub_df['capture_accuracy'].apply(lambda x: x/_max_position)
             basic_increment_index = np.where(np.isin(np.array(sub_df['t']), summary_marker))
             summary_threshold = np.array(sub_df['capture_accuracy'])[basic_increment_index]
-            threshold_summary[activity] = {f'{round(t*100, 1)}%': t_error
+            threshold_summary[activity] = {f'{t*100:.4f}%': t_error
                                            for t, t_error in zip(summary_marker, summary_threshold)}
         return threshold_summary
 

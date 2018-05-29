@@ -6,6 +6,7 @@ import numpy as np
 import logging
 from scipy import stats
 from sklearn.metrics import roc_curve, auc
+plt.style.use('ggplot')
 
 
 # https://stats.stackexchange.com/questions/51248/how-can-i-find-the-standard-deviation-in-categorical-distribution
@@ -82,7 +83,7 @@ class ResidualPlots:
         return pd.DataFrame(threshold_error_by_activity)
 
     @staticmethod
-    def plot_error_by_threshold(raw_residuals, save_path):
+    def plot_rank_error_by_threshold(raw_residuals, save_path):
         threshold_error_by_activity_df = ResidualPlots.build_threshold_dataframe(raw_residuals)
         sns.lmplot('t', 'capture_accuracy', data=threshold_error_by_activity_df, hue='activity', fit_reg=False,
                    palette=ResidualPlots.col_list_palette, markers='.')
@@ -91,7 +92,7 @@ class ResidualPlots:
         plt.show()
 
     @staticmethod
-    def plot_error_distributions(raw_residuals, save_path):
+    def plot_rank_error_distributions(raw_residuals, save_path):
         df = ResidualPlots.build_residual_dataframe(raw_residuals)
         activity_groups = df.groupby('activity')
         n_error_types = len(activity_groups)
@@ -109,12 +110,21 @@ class ResidualPlots:
         plt.show()
 
     @staticmethod
-    def plot_variance_per_rank(rank_matrix, save_path):
+    def plot_loss_function_error_distribution(loss_errors, save_path):
+        plt.hist(loss_errors, 15, normed=1)
+        plt.title('Distribution of all Loss Function Errors')
+        plt.savefig(save_path)
+        plt.xlabel('Error')
+        plt.ylabel('Frequency (normalized)')
+        plt.show()
+
+    @staticmethod
+    def plot_entropy_per_rank(rank_matrix, save_path):
         rank = np.arange(0, rank_matrix.shape[1])
         entropy_ar = np.array([entropy(rank_matrix[:, j]) for j in rank], dtype=np.float)
         sns.lmplot('rank', 'entropy', data=pd.DataFrame({'rank': rank, 'entropy': entropy_ar}),
                    fit_reg=False, markers='.')
-        # alternative, but less visibility sns.kdeplot(rank, entropy_ar, shade=True)
+        # alternative, but less clear: sns.kdeplot(rank, entropy_ar, shade=True)
         plt.title('Recommender System Entropy by Rank')
         plt.xlabel('User Rank')
         plt.ylabel('Entropy')
