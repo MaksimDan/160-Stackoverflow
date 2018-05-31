@@ -8,12 +8,13 @@
 
 # questions (use R Markdown)
 1. What is the distribution on the type of activity after t > t* ? Select a reasonable t by inspecting the log file. For example, 15000 might be reasonable because that is the critical point in the threshold plot (t = 60000*1/4 = 15000).
-2. How many people dont seem to be active (latency) at the time of the question was posted?
-3. (IMPORTANT) Cluster together k groups after t > t*, what are the common characteristics between each of these groups? Look into hierarchical clustering in R.
-4. Inspect the outliers t > t** (select a reasonable t** using statistical methods). 
-	* What the questions for these observed outlier ranks? Are the obscure or not normal?
+2. (IMPORTANT) Cluster together k groups (select a reasonable k like 3 or 4 depending on your sample size) after t > t*. 
+	* What are the common characteristics between each of these groups? Look into hierarchical clustering methods in R.
+	* Now cluster the users t < t*. How did the characteristics of these group differ from the users t > t*?
+3. Manually inspect the outliers t > t** (select a reasonable t** using statistical methods). 
+	* What the questions for these observed outlier ranks? Do these seem like normal questions?
 	* What caused these activities to become ranked high (what caused us to misclassify these users)? 
-	* What weights should be boosted so that this is avoided? 
+	* What weights should be boosted so that this is avoided? Would this be a reasonable thing to do?
 	
 
 # column information
@@ -21,9 +22,9 @@
 represents the feature scores per individual question
 
 * column1: userid
-* column2-7: feature score in the following order: user availability, user reputation, user views, user total upvotes, user total downvotes, user expertise
-* column8: sum of all feature columns multiplied by weight vector (right now weight vector can be ignored since it all 1's, so it is just sum for now)
-	
+* column2-8: feature score in the following order: user availability, user reputation, user views, user total upvotes, user total downvotes, user expertise, tag network expertise
+* column9: sum of all feature columns multiplied by weight vector (right now weight vector can be ignored since it all 1's, so it is just sum for now)
+
 ## residuals_600_q.csv
 summary of the observed user activity per question
 

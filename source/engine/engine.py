@@ -2,7 +2,7 @@
 import time
 import json
 from features import *
-from visuals import ResidualPlots
+from visuals import DataUtilities
 
 # utilities
 from collections import defaultdict
@@ -26,10 +26,12 @@ class Residuals:
         self.X, self.y = X, y
         self.error_per_question = defaultdict(list)
         self.raw_residuals_per_question = defaultdict(lambda: defaultdict(lambda: list()))
+        self.full_raw_residuals_per_question = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: list())))
 
-    def compute_and_store_residuals(self, score_matrix, y_index):
+    def compute_and_store_residuals_filtered(self, score_matrix, y_index):
         observed = self.y.iloc[y_index]
-        predicted = {int(score_matrix[i, 0]): {'index': i, 'score': score_matrix[i, -1]} for i in range(score_matrix.shape[0])}
+        predicted = {int(score_matrix[i, 0]): {'index': i, 'score': score_matrix[i, -1]}
+                     for i in range(score_matrix.shape[0])}
 
         def try_iter(l):
             indices = []
@@ -55,6 +57,43 @@ class Residuals:
         self.raw_residuals_per_question[y_index]['i_editor'] = index_editor
         self.raw_residuals_per_question[y_index]['i_favorite'] = index_favorite
 
+    def compute_and_store_residuals_unfiltered(self, score_matrix, y_index):
+        observed = self.y.iloc[y_index]
+        predicted = {int(score_matrix[i, 0]): {'index': i, 'score': score_matrix[i, -1]}
+                     for i in range(score_matrix.shape[0])}
+
+        def try_iter(l):
+            indices, users, scores = [], [], []
+            for user in l:
+                try:
+                    indices.append(predicted[user]['index'])
+                    users.append(user)
+                    scores.append(predicted[user]['score'])
+                except KeyError:
+                    continue
+            return indices, users, scores
+
+        i_ans, u_ans, s_ans = try_iter(eval(observed.answerers))
+        i_com, u_com, s_com = try_iter(eval(observed.commenters))
+        i_ed, u_ed, s_ed = try_iter(eval(observed.editers))
+        i_fav, u_fav, s_fav = try_iter(eval(observed.favorite))
+
+        self.full_raw_residuals_per_question[y_index]['answer']['rank'] = i_ans
+        self.full_raw_residuals_per_question[y_index]['answer']['userid'] = u_ans
+        self.full_raw_residuals_per_question[y_index]['answer']['score'] = s_ans
+
+        self.full_raw_residuals_per_question[y_index]['comment']['rank'] = i_com
+        self.full_raw_residuals_per_question[y_index]['comment']['userid'] = u_com
+        self.full_raw_residuals_per_question[y_index]['comment']['score'] = s_com
+
+        self.full_raw_residuals_per_question[y_index]['edit']['rank'] = i_ed
+        self.full_raw_residuals_per_question[y_index]['edit']['userid'] = u_ed
+        self.full_raw_residuals_per_question[y_index]['edit']['score'] = s_ed
+
+        self.full_raw_residuals_per_question[y_index]['favorite']['rank'] = i_fav
+        self.full_raw_residuals_per_question[y_index]['favorite']['userid'] = u_fav
+        self.full_raw_residuals_per_question[y_index]['favorite']['score'] = s_fav
+
     def get_loss_function_errors(self, t):
         def flatten_activities(activities):
             return list(itertools.chain.from_iterable(activities))
@@ -72,6 +111,10 @@ class Residuals:
     def get_total_rank_error(self):
         d = self.flatted_errors()
         return sum([d[key] for key in d.keys()])
+
+    def get_total_observed_users(self):
+        return sum([len(indices) for y_index, activities in self.raw_residuals_per_question.items()
+                    for activity, indices in activities.items()])
 
     def get_summarize_statistics(self, n_total_users):
         n_questions = len(self.raw_residuals_per_question)
@@ -106,8 +149,12 @@ class Residuals:
         stats += f'Average ratio of missed users per question: {np.mean(loss_errors)}\n'
         stats += f'Standard Deviation of missed users per question: {np.std(loss_errors)}\n\n'
 
+        total_user_activities = self.get_total_observed_users()
+        hear_back_from = math.floor(total_user_activities * (1 - np.mean(loss_errors)))
         stats += f'If we send out an email to {threshold_rank} out of {n_total_users} total users,\n' + \
-                 f'then we can expect to meet {(1 - np.mean(loss_errors)) * 100:.4f} of our target responders.'
+                 f'then we can expect to meet {(1 - np.mean(loss_errors)) * 100:.4f}% of our target responders.\n' + \
+                 f'From the identified {total_user_activities} total user activities, we can expect to hear back\n' + \
+                 f'from {hear_back_from} such users.'
         return stats
 
     def flatted_errors(self):
@@ -123,8 +170,7 @@ class Residuals:
         return d
 
     def summarize_error_by_threshold(self):
-        r_plot = ResidualPlots()
-        t_df = r_plot.build_threshold_dataframe(self.raw_residuals_per_question)
+        t_df = DataUtilities.build_threshold_dataframe(self.raw_residuals_per_question)
 
         threshold_summary = {}
         summary_marker = np.arange(0, 1 + .1, .1)
@@ -155,8 +201,8 @@ class Engine:
     t1 = time.time()
 
     # load questions and all user activities
-    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(35) #.sample(35, random_state=42)
-    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(35) #.sample(35, random_state=42)
+    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(30)
+    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(30)
     X['CreationDate'] = pd.to_datetime(X['CreationDate'], format="%Y-%m-%dT%H:%M:%S")
 
     # load engineered features
@@ -180,12 +226,12 @@ class Engine:
             self.visuals_active = log_disabled, save_feature_matrices, visuals_active
 
         self.residuals = Residuals(Engine.X, Engine.y)
-        if visuals_active:
-            self.recommender_user_matrix = np.zeros((len(Engine.X), len(Engine.unique_users_list)))
-            self.recommender_score_matrix = np.zeros((len(Engine.X), len(Engine.unique_users_list)))
-            self.recommender_label_matrix = np.zeros((len(Engine.X), len(Engine.unique_users_list)))
+        if visuals_active or save_feature_matrices:
+            self.recommender_user_matrix = np.zeros((len(Engine.X), len(Engine.unique_users_list)), dtype=np.int)
+            self.recommender_score_matrix = np.zeros((len(Engine.X), len(Engine.unique_users_list)), dtype=np.float)
+            self.recommender_label_matrix = np.zeros((len(Engine.X), len(Engine.unique_users_list)), dtype=np.int)
 
-    def rank_all_questions(self, w, opt_activity):
+    def rank_all_questions(self, w):
         if self.save_feature_matrices and not os.path.exists('feature_matrices'):
             os.makedirs('feature_matrices')
 
@@ -204,20 +250,21 @@ class Engine:
         t1 = time.time()
         bar = progressbar.ProgressBar()
         for index, row in bar(Engine.X.iterrows()):
-            question_score_matrix = Engine._rank_question(row, copy(matrix_init), w, opt_activity)
-            self.residuals.compute_and_store_residuals(question_score_matrix, index)
+            question_score_matrix = Engine._rank_question(row, copy(matrix_init), w)
+            if not self.save_feature_matrices:
+                self.residuals.compute_and_store_residuals_filtered(question_score_matrix, index)
+            else:
+                self.residuals.compute_and_store_residuals_unfiltered(question_score_matrix, index)
+                np.savetxt(f'./feature_matrices/q_{index}_feature_matrix.csv', question_score_matrix, delimiter=',')
 
+            # store the user matrix and score results for entropy visualization and roc curve
             if self.visuals_active:
-                # store the user matrix and score results for entropy visualization and roc curve
                 self.recommender_user_matrix[index, :] = question_score_matrix[:, 0]
                 self.recommender_score_matrix[index, :] = question_score_matrix[:, -1]
-
-            if self.save_feature_matrices:
-                np.savetxt(f'./feature_matrices/q_{index}_feature_matrix.csv', question_score_matrix, delimiter=',')
         t2 = time.time()
 
+        # finally add labels for residuals for roc curve
         if self.visuals_active:
-            # finally add labels for residuals for roc curve
             self.residuals.build_label_matrix(self.recommender_label_matrix)
 
         logging.info(f'Ranking all questions computation finished in {(t2 - t1)/60} minutes.\n'
@@ -226,7 +273,7 @@ class Engine:
         logger.disabled = False
 
     @staticmethod
-    def _rank_question(x_row, M, w, opt_activity):
+    def _rank_question(x_row, M, w):
         for i, user in enumerate(M[:, 0]):
             M[i, 1:-1] = Engine._compute_feature_row_for_user(user, x_row)
 

@@ -1,6 +1,7 @@
 from engine import Engine
 from weights import WeightVector
 from visuals import ResidualPlots
+from visuals import DataUtilities
 import math
 import numpy as np
 import pandas as pd
@@ -13,7 +14,7 @@ class TestPlots:
         if not weights:
             weights = np.repeat(1, n_features)
         self.engine = Engine()
-        self.engine.rank_all_questions(weights, None)
+        self.engine.rank_all_questions(weights)
 
     def residual_matrix(self):
         ResidualPlots.plot_residual_matrix(self.engine.residuals.raw_residuals_per_question,
@@ -56,7 +57,7 @@ class TestWeightVector:
     def weight_tune(self):
         engine = Engine(visuals_active=False)
         w = WeightVector.tune_weight_vector(len(self.feature_names))
-        engine.rank_all_questions(w, None)
+        engine.rank_all_questions(w)
 
     def brute_force_weight_optimization(self, axis_lim, inc):
         WeightVector.cartisian_weight_approximation(self.feature_names, axis_lim, inc)
@@ -78,20 +79,25 @@ class Test:
         pt.distribution_loss_function(t)
 
     @staticmethod
-    def save_residual_files(n_features, n_questions):
-        engine = Engine(save_feature_matrices=True, visuals_active=False)
-        weights = np.repeat(1, n_features)
-        engine.rank_all_questions(weights, None)
-
-        # residuals data frame
-        raw_r = ResidualPlots.build_residual_dataframe(engine.residuals.raw_residuals_per_question)
-        raw_r.to_csv(f'residuals_{n_questions}_q.csv')
-
-    @staticmethod
     def simplest_test(n_features):
         engine = Engine(visuals_active=False)
         weights = np.repeat(1, n_features)
-        engine.rank_all_questions(weights, None)
+        engine.rank_all_questions(weights)
+
+    @staticmethod
+    def save_residual_files(n_features, n_questions):
+        engine = Engine(save_feature_matrices=True, visuals_active=False)
+        weights = np.repeat(1, n_features)
+        engine.rank_all_questions(weights)
+
+        # residuals data frame
+        flattened_full_residuals = DataUtilities.flatten_full_residual_dictionary(engine.residuals.full_raw_residuals_per_question)
+        pd.DataFrame(flattened_full_residuals).to_csv(f'residuals_{n_questions}_q.csv')
+
+        # remaining additional files
+        np.savetxt('label_matrix.csv', engine.recommender_label_matrix, delimiter=',')
+        np.savetxt('score_matrix.csv', engine.recommender_score_matrix, delimiter=',')
+        np.savetxt('user_matrix.csv', engine.recommender_user_matrix, delimiter=',')
 
 
 def set_up_log_files(name):
@@ -133,11 +139,11 @@ if __name__ == '__main__':
 
     # TestPlots.feature_weight_vs_error(6)
 
-    Test.plot_tests(7, 6, .17)
-    # Test.save_residual_files(7)
+    # Test.plot_tests(7, 6, .17)
+    # Test.save_residual_files(7, 600)
 
-    # features = ['availability', 'reputation', 'views', 'upvotes', 'downvotes', 'expertise', 'tag_sim_expertise']
-    # t = TestWeightVector(features)
-    # t.linear_weight_optimization((-200, 1000), 200)
+    features = ['availability', 'reputation', 'views', 'upvotes', 'downvotes', 'expertise', 'tag_sim_expertise']
+    t = TestWeightVector(features)
+    t.linear_weight_optimization((-100, 10000), 1500)
     # t.build_error_matrix_by_cartisian_weight((-500, 1000), 500) # 52 hours
     # t.build_error_matrix_by_cartisian_weight((-250, 1000), 750) # 9 hours

@@ -17,19 +17,16 @@ def entropy(cata_vector):
     return ent
 
 
-class ResidualPlots:
-    col_list = ["blue", "cyan", "green", "red"]
-    col_list_palette = sns.xkcd_palette(col_list)
-
+class DataUtilities:
     @staticmethod
     def build_residual_dataframe(observed_ranks):
-        df = pd.DataFrame(ResidualPlots.__flatten_residual_dictionary(observed_ranks))
+        df = pd.DataFrame(DataUtilities.flatten_residual_dictionary(observed_ranks))
         _max_rank = max(df['rank'].values)
         df['rank'] = df['rank'].apply(lambda x: x / _max_rank)
         return df
 
     @staticmethod
-    def __flatten_residual_dictionary(r_dict):
+    def flatten_residual_dictionary(r_dict):
         flatted_d = []
         for question_i, activities in r_dict.items():
             for activity, index_list in activities.items():
@@ -38,8 +35,44 @@ class ResidualPlots:
         return flatted_d
 
     @staticmethod
+    def flatten_full_residual_dictionary(r_dict):
+        flatted_d = []
+        for question_i, activities in r_dict.items():
+            for activity, data_types in activities.items():
+                for u_id, rank, score in zip(data_types['userid'], data_types['rank'], data_types['score']):
+                    flatted_d.append({'q_num': question_i, 'activity': activity,
+                                      'userid': u_id, 'rank': rank, 'score': score})
+        return flatted_d
+
+    @staticmethod
+    def build_threshold_dataframe(raw_residuals):
+        df = DataUtilities.build_residual_dataframe(raw_residuals)
+
+        def find_nearest(array, value):
+            # search sorted finds the index where an element would be inserted to maintain order in the array
+            idx = np.searchsorted(array, value, side='right')
+            if idx > 0 and (idx == len(array) or math.fabs(value - array[idx - 1]) < math.fabs(value - array[idx])):
+                return idx - 1
+            else:
+                return idx
+
+        threshold_error_by_activity = []
+        for activity, sub_df in df.groupby('activity'):
+            sorted_ranks = np.array(sorted(sub_df['rank'].values))
+            for threshold in np.arange(0, 1 + .01, .01):
+                threshold_error_by_activity.append({'activity': activity,
+                                                    't': threshold,
+                                                    'capture_accuracy': find_nearest(sorted_ranks, threshold) / len(sorted_ranks)})
+        return pd.DataFrame(threshold_error_by_activity)
+
+
+class ResidualPlots:
+    col_list = ["blue", "cyan", "green", "red"]
+    col_list_palette = sns.xkcd_palette(col_list)
+
+    @staticmethod
     def plot_residual_matrix(raw_residuals, save_path):
-        df = ResidualPlots.build_residual_dataframe(raw_residuals)
+        df = DataUtilities.build_residual_dataframe(raw_residuals)
         sns.set_palette(ResidualPlots.col_list_palette)
 
         g = sns.lmplot('rank', 'question_number', data=df, hue='activity',
@@ -62,29 +95,8 @@ class ResidualPlots:
         plt.show()
 
     @staticmethod
-    def build_threshold_dataframe(raw_residuals):
-        df = ResidualPlots.build_residual_dataframe(raw_residuals)
-
-        def find_nearest(array, value):
-            # search sorted finds the index where an element would be inserted to maintain order in the array
-            idx = np.searchsorted(array, value, side='right')
-            if idx > 0 and (idx == len(array) or math.fabs(value - array[idx - 1]) < math.fabs(value - array[idx])):
-                return idx - 1
-            else:
-                return idx
-
-        threshold_error_by_activity = []
-        for activity, sub_df in df.groupby('activity'):
-            sorted_ranks = np.array(sorted(sub_df['rank'].values))
-            for threshold in np.arange(0, 1 + .01, .01):
-                threshold_error_by_activity.append({'activity': activity,
-                                                    't': threshold,
-                                                    'capture_accuracy': find_nearest(sorted_ranks, threshold) / len(sorted_ranks)})
-        return pd.DataFrame(threshold_error_by_activity)
-
-    @staticmethod
     def plot_rank_error_by_threshold(raw_residuals, save_path):
-        threshold_error_by_activity_df = ResidualPlots.build_threshold_dataframe(raw_residuals)
+        threshold_error_by_activity_df = DataUtilities.build_threshold_dataframe(raw_residuals)
         sns.lmplot('t', 'capture_accuracy', data=threshold_error_by_activity_df, hue='activity', fit_reg=False,
                    palette=ResidualPlots.col_list_palette, markers='.')
         plt.gcf().suptitle('Threshold Accuracy by User Activity')
@@ -93,7 +105,7 @@ class ResidualPlots:
 
     @staticmethod
     def plot_rank_error_distributions(raw_residuals, save_path):
-        df = ResidualPlots.build_residual_dataframe(raw_residuals)
+        df = DataUtilities.build_residual_dataframe(raw_residuals)
         activity_groups = df.groupby('activity')
         n_error_types = len(activity_groups)
         fig, axs = plt.subplots(1, n_error_types, figsize=(15, 6))
@@ -135,6 +147,8 @@ class ResidualPlots:
     def plot_roc_curve_for_all_activities(score_matrix, label_matrix, save_path):
         fpr, tpr, _ = roc_curve(label_matrix.ravel(), score_matrix.ravel())
         roc_auc = auc(fpr, tpr)
+        np.savetxt("score_matrix.csv", score_matrix, delimiter=",")
+        np.savetxt("label_matrix.csv", label_matrix, delimiter=",")
 
         lw = 2
         plt.plot(fpr, tpr, color='darkorange',
