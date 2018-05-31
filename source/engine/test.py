@@ -113,33 +113,12 @@ def set_up_log_files(name):
     logging.basicConfig(filename=name, level=logging.DEBUG)
 
 
-'''
-Current Feature Summary:
-    BasicProfile (4):
-        - reputation
-        - views
-        - up votes
-        - down votes
-    UserExpertise (1) 
-    UserAvailability (1)
-
-Remaining Features:
-    Indicator Network
-    
-Post Features and Residual Analysis:
-    Tag Network
-    User Similarity Network
-    Similiar Questions Network
-    PostLinks
-'''
-
 if __name__ == '__main__':
     set_up_log_files('run.log')
     # Test.simplest_test(7)
+    Test.plot_tests(7, 6, .17)
 
     # TestPlots.feature_weight_vs_error(6)
-
-    # Test.plot_tests(7, 6, .17)
     # Test.save_residual_files(7, 600)
 
     features = ['availability', 'reputation', 'views', 'upvotes', 'downvotes', 'expertise', 'tag_sim_expertise']

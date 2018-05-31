@@ -38,8 +38,8 @@ def go(postid_date, userid_date, Questions, BASE_PATH):
     bar = progressbar.ProgressBar()
     for question_id in bar(all_questions):
         for user_id in all_users:
-            if user_created_account_after_question(user_id, question_id) or \
-                    user_inactive_before_question(user_id, question_id):
+            if user_created_account_after_question(user_id, question_id): #or \
+                    #user_inactive_before_question(user_id, question_id):
                 i_dict[question_id].add(user_id)
 
     with open('indicator_network.p', 'wb') as fp:
@@ -50,7 +50,7 @@ def build_indicator_network():
     # the data
     from build_all_features import BASE_PATH
     Users = pd.read_csv(BASE_PATH + 'raw_query/Users.csv')
-    Questions = pd.read_csv(BASE_PATH + 'X_train.csv').head(1000)
+    Questions = pd.read_csv(BASE_PATH + 'X_train.csv').head(2000)
 
     # date preprocessing
     Questions.CreationDate = pd.to_datetime(Questions.CreationDate, format="%Y-%m-%dT%H:%M:%S")
