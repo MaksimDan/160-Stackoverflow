@@ -156,7 +156,7 @@ class BasicProfile:
 
 # post feature
 class Indicator:
-    pickle_path = BASE_PATH + 'engineered_features/indicator_network_1000_q.p'
+    pickle_path = BASE_PATH + 'engineered_features/indicator_network.p'
 
     def __init__(self):
         self.I_Network = Utilities.load_p_file(Indicator.pickle_path)

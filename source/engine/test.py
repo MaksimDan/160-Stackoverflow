@@ -39,7 +39,7 @@ class TestPlots:
     @staticmethod
     def feature_weight_vs_error(inc):
         BASE_PATH = '../../../160-Stackoverflow-Data/'
-        error_weight = pd.read_csv(BASE_PATH + 'residuals/error_by_linear_weight.csv')
+        error_weight = pd.read_csv(BASE_PATH + 'residuals/data/error_by_linear_weight.csv')
         feature_order = ['availability', 'reputation', 'views', 'upvotes', 'downvotes', 'expertise']
         ResidualPlots.plot_weight_vs_error(error_weight, feature_order, inc, 'TEST_feature_weight_vs_error.png')
 
@@ -59,16 +59,15 @@ class TestWeightVector:
         w = WeightVector.tune_weight_vector(len(self.feature_names))
         engine.rank_all_questions(w)
 
-    def brute_force_weight_optimization(self, axis_lim, inc):
-        WeightVector.cartisian_weight_approximation(self.feature_names, axis_lim, inc)
-
-    def linear_weight_optimization(self, axis_lim, inc):
-        WeightVector.linear_weight_tune(self.feature_names, axis_lim, inc)
+    def linear_weight_opt(self, scaled_t, axis_lim, inc):
+        n_users = len(Engine.unique_users_list)
+        threshold = math.floor(n_users * scaled_t)
+        WeightVector.linear_weight_tune(self.feature_names, axis_lim, inc, threshold)
 
 
 class Test:
     @staticmethod
-    def plot_tests(n_features, inc, t):
+    def plot_tests(n_features, inc, scaled_t):
         pt = TestPlots(n_features)
         pt.residual_matrix()
         pt.rank_distributions()
@@ -76,7 +75,7 @@ class Test:
         pt.roc_curve_all_activities()
         pt.variance_per_rank()
         TestPlots.feature_weight_vs_error(inc)
-        pt.distribution_loss_function(t)
+        pt.distribution_loss_function(scaled_t)
 
     @staticmethod
     def simplest_test(n_features):
@@ -91,7 +90,8 @@ class Test:
         engine.rank_all_questions(weights)
 
         # residuals data frame
-        flattened_full_residuals = DataUtilities.flatten_full_residual_dictionary(engine.residuals.full_raw_residuals_per_question)
+        flattened_full_residuals = \
+            DataUtilities.flatten_full_residual_dictionary(engine.residuals.full_raw_residuals_per_question)
         pd.DataFrame(flattened_full_residuals).to_csv(f'residuals_{n_questions}_q.csv')
 
         # remaining additional files
@@ -116,13 +116,10 @@ def set_up_log_files(name):
 if __name__ == '__main__':
     set_up_log_files('run.log')
     # Test.simplest_test(7)
-    Test.plot_tests(7, 6, .17)
+    Test.plot_tests(n_features=3, inc=6, scaled_t=.17)
 
     # TestPlots.feature_weight_vs_error(6)
     # Test.save_residual_files(7, 600)
 
-    features = ['availability', 'reputation', 'views', 'upvotes', 'downvotes', 'expertise', 'tag_sim_expertise']
-    t = TestWeightVector(features)
-    t.linear_weight_optimization((-100, 10000), 1500)
-    # t.build_error_matrix_by_cartisian_weight((-500, 1000), 500) # 52 hours
-    # t.build_error_matrix_by_cartisian_weight((-250, 1000), 750) # 9 hours
+    WTest = TestWeightVector(['availability', 'expertise', 'tag_sim_expertise'])
+    WTest.linear_weight_opt(scaled_t=.15, axis_lim=(-100, 10000), inc=1000)

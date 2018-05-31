@@ -94,15 +94,15 @@ class Residuals:
         self.full_raw_residuals_per_question[y_index]['favorite']['userid'] = u_fav
         self.full_raw_residuals_per_question[y_index]['favorite']['score'] = s_fav
 
-    def get_loss_function_errors(self, t):
-        def flatten_activities(activities):
-            return list(itertools.chain.from_iterable(activities))
+    def get_loss_function_errors(self, t_discrete):
+        def flatten_lists(lists):
+            return list(itertools.chain.from_iterable(lists))
 
         errors = []
         for y_index, activities in self.raw_residuals_per_question.items():
-            obs_q = flatten_activities(activities.values())
+            obs_q = flatten_lists(activities.values())
             if len(obs_q) != 0:
-                errors.append(1 - (sum([1 if 0 <= obs <= t else 0 for obs in obs_q]) / len(obs_q)) )
+                errors.append(1 - (sum([1 if 0 <= obs <= t_discrete else 0 for obs in obs_q]) / len(obs_q)))
         return errors
 
     def get_loss_function_total_error(self, t):
@@ -201,8 +201,8 @@ class Engine:
     t1 = time.time()
 
     # load questions and all user activities
-    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(30)
-    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(30)
+    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(35)
+    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(35)
     X['CreationDate'] = pd.to_datetime(X['CreationDate'], format="%Y-%m-%dT%H:%M:%S")
 
     # load engineered features
@@ -289,7 +289,7 @@ class Engine:
         M[:, -1] = np.array([np.sum(M[i, 1:-1]) for i in range(M.shape[0])])
 
         # post process the matrix, and reduce inactive users before sorting the scores
-        # M[:, -1] = Engine.__post_process_indicate(M, x_row, opt_activity)
+        M[:, -1] = Engine.__post_process_indicate(M, x_row)
 
         # by default sort will sort by the last column
         return Engine._sort_matrix_by_column(M, -1, ascending=False)
@@ -297,10 +297,11 @@ class Engine:
     @staticmethod
     def _compute_feature_row_for_user(user_id, x_row):
         user_avail = Engine.user_availability.get_user_availability_probability(user_id, x_row.CreationDate.hour)
-        user_basic_profile = Engine.user_profile.get_all_measureable_features(user_id)
+        # note: no longer using user basic profile as a feature (worthless)
+        # user_basic_profile = Engine.user_profile.get_all_measureable_features(user_id)
         user_expertise = Engine.user_expertise.get_user_sum_expertise(user_id, x_row['Tags'].split())
         user_sim_expertise = Engine.user_expertise.get_user_sum_tag_sim_expertise(user_id, x_row['Tags'].split())
-        return [user_avail] + user_basic_profile + [user_expertise] + [user_sim_expertise]
+        return [user_avail] + [user_expertise] + [user_sim_expertise]
 
     @staticmethod
     def _sort_matrix_by_column(M, i_column, ascending=True):
@@ -308,15 +309,9 @@ class Engine:
         return M[np.argsort(multiplier*M[:, i_column])]
 
     @staticmethod
-    def __post_process_indicate(M, x_row, opt_activity):
+    def __post_process_indicate(M, x_row):
         # key:
         #   M[i, 0] -> user_id
         #   M[i, -1] -> score
-        # after testing, we have identified that the indicator variables
-        # only help reduce the error for certain kinds of activities
-        if opt_activity == 'answerers' or opt_activity == 'commentors':
-            return np.array([0 if (Engine.indicator.is_inactive(x_row.Id, M[i, 0]) or
-                                   Engine.indicator.has_no_relative_expertise(M[i, 0], x_row.Tags.split())) else M[i, -1]
-                             for i in range(M.shape[0])])
-        else:
-            return M[:, -1]
+        return np.array([0 if Engine.indicator.is_inactive(x_row.Id, M[i, 0]) else M[i, -1]
+                         for i in range(M.shape[0])])
