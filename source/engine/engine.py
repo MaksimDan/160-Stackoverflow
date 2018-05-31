@@ -201,8 +201,8 @@ class Engine:
     t1 = time.time()
 
     # load questions and all user activities
-    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(35)
-    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(35)
+    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(3)
+    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(3)
     X['CreationDate'] = pd.to_datetime(X['CreationDate'], format="%Y-%m-%dT%H:%M:%S")
 
     # load engineered features
@@ -258,18 +258,19 @@ class Engine:
                 np.savetxt(f'./feature_matrices/q_{index}_feature_matrix.csv', question_score_matrix, delimiter=',')
 
             # store the user matrix and score results for entropy visualization and roc curve
-            if self.visuals_active:
+            if self.visuals_active or self.save_feature_matrices:
                 self.recommender_user_matrix[index, :] = question_score_matrix[:, 0]
                 self.recommender_score_matrix[index, :] = question_score_matrix[:, -1]
         t2 = time.time()
 
         # finally add labels for residuals for roc curve
-        if self.visuals_active:
+        if self.visuals_active or self.save_feature_matrices:
             self.residuals.build_label_matrix(self.recommender_label_matrix)
 
         logging.info(f'Ranking all questions computation finished in {(t2 - t1)/60} minutes.\n'
                      f'With an average time of {(t2 - t1)/len(Engine.X)} seconds per question.')
-        logging.info(self.residuals.get_summarize_statistics(len(Engine.unique_users_list)))
+        if not self.log_disabled:
+            logging.info(self.residuals.get_summarize_statistics(len(Engine.unique_users_list)))
         logger.disabled = False
 
     @staticmethod

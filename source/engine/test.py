@@ -85,14 +85,14 @@ class Test:
 
     @staticmethod
     def save_residual_files(n_features, n_questions):
-        engine = Engine(save_feature_matrices=True, visuals_active=False)
+        engine = Engine(log_disabled=True, save_feature_matrices=True, visuals_active=False)
         weights = np.repeat(1, n_features)
         engine.rank_all_questions(weights)
 
         # residuals data frame
         flattened_full_residuals = \
             DataUtilities.flatten_full_residual_dictionary(engine.residuals.full_raw_residuals_per_question)
-        pd.DataFrame(flattened_full_residuals).to_csv(f'residuals_{n_questions}_q.csv')
+        pd.DataFrame(flattened_full_residuals).to_csv(f'residuals_{n_questions}_q.csv', index=False)
 
         # remaining additional files
         np.savetxt('label_matrix.csv', engine.recommender_label_matrix, delimiter=',')
@@ -116,10 +116,10 @@ def set_up_log_files(name):
 if __name__ == '__main__':
     set_up_log_files('run.log')
     # Test.simplest_test(7)
-    Test.plot_tests(n_features=3, inc=6, scaled_t=.17)
+    # Test.plot_tests(n_features=3, inc=6, scaled_t=.17)
 
     # TestPlots.feature_weight_vs_error(6)
-    # Test.save_residual_files(7, 600)
+    Test.save_residual_files(n_features=3, n_questions=600)
 
-    WTest = TestWeightVector(['availability', 'expertise', 'tag_sim_expertise'])
-    WTest.linear_weight_opt(scaled_t=.15, axis_lim=(-100, 10000), inc=1000)
+    # WTest = TestWeightVector(['availability', 'expertise', 'tag_sim_expertise'])
+    # WTest.linear_weight_opt(scaled_t=.15, axis_lim=(-100, 10000), inc=1000)

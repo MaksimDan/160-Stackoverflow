@@ -9,15 +9,15 @@ from sklearn.metrics import roc_curve, auc
 plt.style.use('ggplot')
 
 
-# https://stats.stackexchange.com/questions/51248/how-can-i-find-the-standard-deviation-in-categorical-distribution
-def entropy(cata_vector):
-    px = np.matrix(stats.itemfreq(cata_vector))[:, 1] / len(cata_vector)
-    lpx = np.log2(px)
-    ent = -np.sum(px.T*lpx)
-    return ent
-
-
 class DataUtilities:
+    # https://stats.stackexchange.com/questions/51248/how-can-i-find-the-standard-deviation-in-categorical-distribution
+    @staticmethod
+    def entropy(cata_vector):
+        px = np.matrix(stats.itemfreq(cata_vector))[:, 1] / len(cata_vector)
+        lpx = np.log2(px)
+        ent = -np.sum(px.T * lpx)
+        return ent
+
     @staticmethod
     def build_residual_dataframe(observed_ranks):
         df = pd.DataFrame(DataUtilities.flatten_residual_dictionary(observed_ranks))
@@ -123,7 +123,7 @@ class ResidualPlots:
 
     @staticmethod
     def plot_loss_function_error_distribution(loss_errors, save_path):
-        plt.hist(loss_errors, 15, normed=1)
+        plt.hist(loss_errors, 20, normed=1)
         plt.title('Distribution of all Loss Function Errors')
         plt.savefig(save_path)
         plt.xlabel('Error')
@@ -133,7 +133,7 @@ class ResidualPlots:
     @staticmethod
     def plot_entropy_per_rank(rank_matrix, save_path):
         rank = np.arange(0, rank_matrix.shape[1])
-        entropy_ar = np.array([entropy(rank_matrix[:, j]) for j in rank], dtype=np.float)
+        entropy_ar = np.array([DataUtilities.entropy(rank_matrix[:, j]) for j in rank], dtype=np.float)
         sns.lmplot('rank', 'entropy', data=pd.DataFrame({'rank': rank, 'entropy': entropy_ar}),
                    fit_reg=False, markers='.')
         # alternative, but less clear: sns.kdeplot(rank, entropy_ar, shade=True)
