@@ -51,37 +51,35 @@ class UserExpertise:
         self.similarity_matrix, self.word2i = self._build_tag_similarity_network(Posts.Tags)
         del Posts
 
-    def get_user_sum_expertise(self, user_id, tags):
-        return sum([self._get_user_expertise(user_id, tag) for tag in tags])
+    def get_user_sum_expertise(self, user_id, tags, activity_type):
+        return sum([self._get_user_expertise(user_id, tag, activity_type) for tag in tags])
 
-    def get_user_sum_tag_sim_expertise(self, user_id, post_tags):
+    def get_user_sum_tag_sim_expertise(self, user_id, post_tags, activity_type):
         # to avoid any overlap with get_user_sum_expertise, this feature
         # will only be summing over tags that are different
         user_tags = self.UE_network[int(user_id)].keys()
-        return sum([self._get_similarity_expertise(user_tags, post_tag, user_id) for post_tag in post_tags])
+        return sum([self._get_similarity_expertise(user_tags, post_tag, user_id, activity_type)
+                    for post_tag in post_tags])
 
-    def _get_user_expertise(self, user_id, tag):
-        # note that you are currently summing the frequency
-        # of comments, questions, and answers. this inversely
-        # will affect the residual analysis
+    def _get_user_expertise(self, user_id, tag, activity_type):
         try:
             user_tag_expertise = self.UE_network[int(user_id)]
             if tag not in user_tag_expertise:
                 return 0
             else:
+                return user_tag_expertise[tag].get(activity_type, 0.0)
                 # otherwise return the sum of the frequencies of posts per tag
-                a = user_tag_expertise[tag].get('n_answers', 0.0)
-                b = user_tag_expertise[tag].get('n_comments', 0.0)
-                # note: ignoring number of questions because it is not
-                #       accounted as a user activity.
+                # a = user_tag_expertise[tag].get('n_answers', 0.0)
+                # b = user_tag_expertise[tag].get('n_comments', 0.0)
                 # c = user_tag_expertise[tag].get('n_questions', 0.0)
-                return a + b
+                # return a + b
         except KeyError as e:
             print(f'user_id {user_id} was not found.', e)
             raise
 
-    def _get_similarity_expertise(self, user_tags, post_tag, user_id):
-        return sum([self.get_tag_similarity(user_tag, post_tag) * self._get_user_expertise(user_id, user_tag)
+    def _get_similarity_expertise(self, user_tags, post_tag, user_id, activity_type):
+        return sum([self.get_tag_similarity(user_tag, post_tag) *
+                    self._get_user_expertise(user_id, user_tag, activity_type)
                     if user_tag != post_tag else 0 for user_tag in user_tags])
 
     def get_tag_similarity(self, tag1, tag2):
@@ -167,6 +165,6 @@ class Indicator:
         # reduces error for commentors
         return u_id in self.I_Network[q_id]
 
-    def has_no_relative_expertise(self, u_id, tags):
+    def has_no_relative_expertise(self, u_id, tags, activity_type):
         # reduces error for answerers and commentors
-        return self.user_expertise.get_user_sum_expertise(u_id, tags) == 0
+        return self.user_expertise.get_user_sum_expertise(u_id, tags, activity_type) == 0

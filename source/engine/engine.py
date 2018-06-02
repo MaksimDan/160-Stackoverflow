@@ -201,8 +201,8 @@ class Engine:
     t1 = time.time()
 
     # load questions and all user activities
-    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(3)
-    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(3)
+    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(30)
+    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(30)
     X['CreationDate'] = pd.to_datetime(X['CreationDate'], format="%Y-%m-%dT%H:%M:%S")
 
     # load engineered features
@@ -298,11 +298,18 @@ class Engine:
     @staticmethod
     def _compute_feature_row_for_user(user_id, x_row):
         user_avail = Engine.user_availability.get_user_availability_probability(user_id, x_row.CreationDate.hour)
-        # note: no longer using user basic profile as a feature (worthless)
+        # deprecation note: no longer using user basic profile as a feature (worthless)
         # user_basic_profile = Engine.user_profile.get_all_measureable_features(user_id)
-        user_expertise = Engine.user_expertise.get_user_sum_expertise(user_id, x_row['Tags'].split())
-        user_sim_expertise = Engine.user_expertise.get_user_sum_tag_sim_expertise(user_id, x_row['Tags'].split())
-        return [user_avail] + [user_expertise] + [user_sim_expertise]
+        user_expertise_a = Engine.user_expertise.get_user_sum_expertise(user_id, x_row['Tags'].split(), 'n_answers')
+        user_expertise_c = Engine.user_expertise.get_user_sum_expertise(user_id, x_row['Tags'].split(), 'n_comments')
+        user_expertise_q = Engine.user_expertise.get_user_sum_expertise(user_id, x_row['Tags'].split(), 'n_questions')
+
+        user_sim_expertise_a = Engine.user_expertise.get_user_sum_tag_sim_expertise(user_id, x_row['Tags'].split(), 'n_answers')
+        user_sim_expertise_c = Engine.user_expertise.get_user_sum_tag_sim_expertise(user_id, x_row['Tags'].split(), 'n_comments')
+        user_sim_expertise_q = Engine.user_expertise.get_user_sum_tag_sim_expertise(user_id, x_row['Tags'].split(), 'n_questions')
+
+        return [user_avail, user_expertise_a, user_expertise_c, user_expertise_q,
+                user_sim_expertise_a, user_sim_expertise_c, user_sim_expertise_q]
 
     @staticmethod
     def _sort_matrix_by_column(M, i_column, ascending=True):

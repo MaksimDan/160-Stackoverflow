@@ -116,10 +116,11 @@ def set_up_log_files(name):
 if __name__ == '__main__':
     set_up_log_files('run.log')
     # Test.simplest_test(7)
-    # Test.plot_tests(n_features=3, inc=6, scaled_t=.17)
+    Test.plot_tests(n_features=7, inc=6, scaled_t=.17)
 
     # TestPlots.feature_weight_vs_error(6)
-    Test.save_residual_files(n_features=3, n_questions=600)
+    # Test.save_residual_files(n_features=3, n_questions=800)
 
-    # WTest = TestWeightVector(['availability', 'expertise', 'tag_sim_expertise'])
+    # WTest = TestWeightVector(['user_avail', 'user_expertise_a', 'user_expertise_c', 'user_expertise_q',
+    #                           'user_sim_expertise_a', 'user_sim_expertise_c', 'user_sim_expertise_q'])
     # WTest.linear_weight_opt(scaled_t=.15, axis_lim=(-100, 10000), inc=1000)
