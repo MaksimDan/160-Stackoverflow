@@ -122,11 +122,11 @@ class Residuals:
         stats = 'Residual Summary Statistics\n\n'
 
         stats += f'----- META -----\n'
-        stats += f'Total Questions Ran: {n_questions}\n'
+        stats += f'Total Questions Analyzed: {n_questions}\n'
         stats += f'Total Users Ranked: {n_total_users}\n\n'
 
         stats += '----- RANK -----\n'
-        stats += f'Total Error (defined as the summation of ranks): {self.get_total_rank_error()}\n'
+        stats += f'Summation of Ranks: {self.get_total_rank_error()}\n'
 
         stats += 'Error per User Activity:\n'
         stats += Residuals.pprint_dict(self.flatted_errors())
@@ -201,8 +201,8 @@ class Engine:
     t1 = time.time()
 
     # load questions and all user activities
-    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(30)
-    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(30)
+    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(500)
+    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(500)
     X['CreationDate'] = pd.to_datetime(X['CreationDate'], format="%Y-%m-%dT%H:%M:%S")
 
     # load engineered features
