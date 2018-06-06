@@ -173,15 +173,15 @@ class ResidualPlots:
             feature_name = feature_order[i - 1]
             individual_df[feature_name] = weight_error_df[[feature_name, 'error']].iloc[row_start:row_end, :]
 
-        fig, axs = plt.subplots(2, 3, figsize=(15, 6))
+        fig, axs = plt.subplots(3, 2, figsize=(6, 8))
         fig.tight_layout()
         axs = axs.ravel()
 
         for i, (weight_type, df) in enumerate(individual_df.items()):
-            df.plot.line(x=weight_type, y='error', ax=axs[i], title=weight_type)
+            df.plot.line(x=weight_type, y='error', ax=axs[i])
             axs[i].legend_.remove()
 
-        plt.subplots_adjust(top=0.85, hspace=.5, wspace=.25)
+        plt.subplots_adjust(top=.9, hspace=.5, wspace=.25, bottom=.05)
         fig.suptitle('Error by Feature Weight', fontsize=18)
         plt.savefig(save_path)
         plt.show()

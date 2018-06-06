@@ -13,8 +13,8 @@ class TestPlots:
     def __init__(self, n_features, weights=None):
         if not weights:
             weights = np.repeat(1, n_features)
-        self.engine = Engine(log_disabled=False, save_feature_matrices=False, visuals_active=True)
-        self.engine.rank_all_questions(weights)
+        # self.engine = Engine(log_disabled=False, save_feature_matrices=False, visuals_active=True)
+        # self.engine.rank_all_questions(weights)
 
     def residual_matrix(self):
         ResidualPlots.plot_residual_matrix(self.engine.residuals.raw_residuals_per_question,
@@ -69,13 +69,13 @@ class Test:
     @staticmethod
     def plot_tests(n_features, inc, scaled_t):
         pt = TestPlots(n_features)
-        pt.residual_matrix()
-        pt.rank_distributions()
-        pt.error_by_threshold()
-        pt.roc_curve_all_activities()
-        pt.variance_per_rank()
+        # pt.residual_matrix()
+        # pt.rank_distributions()
+        # pt.error_by_threshold()
+        # pt.roc_curve_all_activities()
+        # pt.variance_per_rank()
         TestPlots.feature_weight_vs_error(inc)
-        pt.distribution_loss_function(scaled_t)
+        # pt.distribution_loss_function(scaled_t)
 
     @staticmethod
     def simplest_test(n_features):
