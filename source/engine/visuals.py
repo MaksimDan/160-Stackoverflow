@@ -147,8 +147,8 @@ class ResidualPlots:
     def plot_roc_curve_for_all_activities(score_matrix, label_matrix, save_path):
         fpr, tpr, _ = roc_curve(label_matrix.ravel(), score_matrix.ravel())
         roc_auc = auc(fpr, tpr)
-        np.savetxt("score_matrix.csv", score_matrix, delimiter=",")
-        np.savetxt("label_matrix.csv", label_matrix, delimiter=",")
+        # np.savetxt("score_matrix.csv", score_matrix, delimiter=",")
+        # np.savetxt("label_matrix.csv", label_matrix, delimiter=",")
 
         lw = 2
         plt.plot(fpr, tpr, color='darkorange',

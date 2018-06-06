@@ -13,7 +13,7 @@ class TestPlots:
     def __init__(self, n_features, weights=None):
         if not weights:
             weights = np.repeat(1, n_features)
-        self.engine = Engine()
+        self.engine = Engine(log_disabled=False, save_feature_matrices=False, visuals_active=True)
         self.engine.rank_all_questions(weights)
 
     def residual_matrix(self):
@@ -119,7 +119,7 @@ if __name__ == '__main__':
     Test.plot_tests(n_features=7, inc=6, scaled_t=.17)
 
     # TestPlots.feature_weight_vs_error(6)
-    # Test.save_residual_files(n_features=3, n_questions=800)
+    # Test.save_residual_files(n_features=7, n_questions=1000)
 
     # WTest = TestWeightVector(['user_avail', 'user_expertise_a', 'user_expertise_c', 'user_expertise_q',
     #                           'user_sim_expertise_a', 'user_sim_expertise_c', 'user_sim_expertise_q'])
