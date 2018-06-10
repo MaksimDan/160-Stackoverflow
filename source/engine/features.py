@@ -45,6 +45,7 @@ class UserExpertise:
     pickle_path = BASE_PATH + 'engineered_features/user_expertise_network.p'
 
     def __init__(self):
+        # build tag similarity expertise feature attributes
         self.UE_network = Utilities.load_p_file(UserExpertise.pickle_path)
         Posts = pd.read_csv(BASE_PATH + 'raw_query/Posts.csv')
         Posts.dropna(subset=['Tags'], inplace=True)
@@ -101,6 +102,34 @@ class UserExpertise:
         # identify word similarity by indexing into the matrix
         word2i = {word: i for i, word in enumerate(count_model.get_feature_names())}
         return Xc_norm, word2i
+
+
+class UserQuestionRelation:
+    def __init__(self):
+        # load in user history matrices
+        self.question_user_q = sp.load_npz(BASE_PATH + 'engineered_features/user_history/questions.npz')
+        self.question_user_a = sp.load_npz(BASE_PATH + 'engineered_features/user_history/answers.npz')
+        self.question_user_t = sp.load_npz(BASE_PATH + 'engineered_features/user_history/titles.npz')
+        self.question_user_c = sp.load_npz(BASE_PATH + 'engineered_features/user_history/comments.npz')
+
+        # key into matrices
+        self.key = Utilities.load_p_file(BASE_PATH + 'engineered_features/user_history/key.p')
+
+    def get_user_question_relation(self, question_n, user_id, basis):
+        row, col = self.key['q_to_row'][question_n], self.key['user_to_col'][user_id]
+        try:
+            if basis == 'answers':
+                return self.question_user_a[row, col]
+            elif basis == 'questions':
+                return self.question_user_q[row, col]
+            elif basis == 'titles':
+                return self.question_user_t[row, col]
+            elif basis == 'comments':
+                return self.question_user_c[row, col]
+            else:
+                print('Invalid activity type')
+        except IndexError:
+            return 0
 
 
 class BasicProfile:

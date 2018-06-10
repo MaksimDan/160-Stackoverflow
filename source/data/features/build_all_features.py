@@ -32,3 +32,6 @@ if __name__ == '__main__':
     print('building user question matrix...')
     # build_user_communication_df()
     build_user_question_similarity_matrix()
+
+
+

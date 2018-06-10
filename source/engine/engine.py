@@ -201,14 +201,17 @@ class Engine:
     t1 = time.time()
 
     # load questions and all user activities
-    X = pd.read_csv(BASE_PATH + 'X_train.csv').head(30)
-    y = pd.read_csv(BASE_PATH + 'y_train.csv').head(30)
+    X_full = pd.read_csv(BASE_PATH + 'X_train.csv')
+    y_full = pd.read_csv(BASE_PATH + 'y_train.csv')
+    X = X_full.head(30)
+    y = y_full.head(30)
     X['CreationDate'] = pd.to_datetime(X['CreationDate'], format="%Y-%m-%dT%H:%M:%S")
 
     # load engineered features
     user_availability = UserAvailability()
     user_profile = BasicProfile()
     user_expertise = UserExpertise()
+    user_q_relation = UserQuestionRelation()
 
     # loading post features
     indicator = Indicator()
@@ -250,7 +253,7 @@ class Engine:
         t1 = time.time()
         bar = progressbar.ProgressBar()
         for index, row in bar(Engine.X.iterrows()):
-            question_score_matrix = Engine._rank_question(row, copy(matrix_init), w)
+            question_score_matrix = Engine._rank_question(index, row, copy(matrix_init), w)
             if not self.save_feature_matrices:
                 self.residuals.compute_and_store_residuals_filtered(question_score_matrix, index)
             else:
@@ -274,9 +277,9 @@ class Engine:
         logger.disabled = False
 
     @staticmethod
-    def _rank_question(x_row, M, w):
+    def _rank_question(q_num, x_row, M, w):
         for i, user in enumerate(M[:, 0]):
-            M[i, 1:-1] = Engine._compute_feature_row_for_user(user, x_row)
+            M[i, 1:-1] = Engine._compute_feature_row_for_user(q_num, user, x_row)
 
         # now transform to fix units (excluding users column, and the score column)
         scaler = MinMaxScaler()
@@ -296,7 +299,7 @@ class Engine:
         return Engine._sort_matrix_by_column(M, -1, ascending=False)
 
     @staticmethod
-    def _compute_feature_row_for_user(user_id, x_row):
+    def _compute_feature_row_for_user(q_num, user_id, x_row):
         user_avail = Engine.user_availability.get_user_availability_probability(user_id, x_row.CreationDate.hour)
         # deprecation note: no longer using user basic profile as a feature (worthless)
         # user_basic_profile = Engine.user_profile.get_all_measureable_features(user_id)
@@ -308,8 +311,14 @@ class Engine:
         user_sim_expertise_c = Engine.user_expertise.get_user_sum_tag_sim_expertise(user_id, x_row['Tags'].split(), 'n_comments')
         user_sim_expertise_q = Engine.user_expertise.get_user_sum_tag_sim_expertise(user_id, x_row['Tags'].split(), 'n_questions')
 
+        user_a_relation = Engine.user_q_relation.get_user_question_relation(q_num, user_id, 'answers')
+        user_q_relation = Engine.user_q_relation.get_user_question_relation(q_num, user_id, 'questions')
+        user_t_relation = Engine.user_q_relation.get_user_question_relation(q_num, user_id, 'titles')
+        user_c_relation = Engine.user_q_relation.get_user_question_relation(q_num, user_id, 'comments')
+
         return [user_avail, user_expertise_a, user_expertise_c, user_expertise_q,
-                user_sim_expertise_a, user_sim_expertise_c, user_sim_expertise_q]
+                user_sim_expertise_a, user_sim_expertise_c, user_sim_expertise_q,
+                user_a_relation, user_q_relation, user_t_relation, user_c_relation]
 
     @staticmethod
     def _sort_matrix_by_column(M, i_column, ascending=True):

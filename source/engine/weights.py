@@ -10,10 +10,10 @@ from engine import Engine
 
 class WeightVector:
     @staticmethod
-    def cartisian_weight_approximation(n_features, axis_lim, inc):
+    def cartisian_weight_approximation(features, axis_lim, inc, t):
         # total_expected_run_time_in_hrs = (single_run_in_min *
         #                                   dimension_single_axis^dimension_weights)/60
-        all_weights = list(itertools.product(range(axis_lim[0], axis_lim[1]+inc, inc), repeat=n_features))
+        all_weights = list(itertools.product(range(axis_lim[0], axis_lim[1]+inc, inc), repeat=len(features)))
         total_engine_runs = len(all_weights)
         logging.info('Beginning cartisian_weight_approximation')
         logging.info(f'Planning out {total_engine_runs} engine runs.')
@@ -24,8 +24,9 @@ class WeightVector:
         for weights in bar(all_weights):
             engine = Engine(log_disabled=True, visuals_active=False)
             engine.rank_all_questions(weights)
-            weight_dict = {f'f{i}': w for i, w in enumerate(weights)}
-            weight_dict['error'] = engine.residuals.get_total_rank_error()
+            weight_dict = {f: w for f, w in zip(features, weights)}
+            weight_dict['rank_error'] = engine.residuals.get_total_rank_error()
+            weight_dict['loss_function_error'] = engine.residuals.get_loss_function_total_error(t)
             results_dict.append(weight_dict)
 
         t2 = time.time()
@@ -33,7 +34,7 @@ class WeightVector:
         pd.DataFrame(results_dict).to_csv('error_by_cartisian_weight.csv', index=False)
 
     @staticmethod
-    def linear_weight_tune(features, axis_lim, inc, t):
+    def linear_weight_correlate(features, axis_lim, inc, t):
         results_dict = []
         init_w = np.repeat(1, len(features))
 
@@ -47,11 +48,16 @@ class WeightVector:
             for weight in range(axis_lim[0], axis_lim[1], inc):
                 weights = init_w.copy()
                 weights[feature_i] = weight
+
+                # grab a random sample of questions per engine run
                 engine = Engine(log_disabled=True, visuals_active=False)
+                engine.X = engine.X_full.sample(30, random_state=42)
+                engine.y = engine.y_full.sample(30, random_state=42)
+
                 engine.rank_all_questions(weights)
                 weight_dict = {feature: weights[i] for i, feature in enumerate(features)}
                 weight_dict['rank_error'] = engine.residuals.get_total_rank_error()
-                weight_dict['loss_function_error'] = engine.residuals.get_loss_function_errors(t)
+                weight_dict['loss_function_error'] = engine.residuals.get_loss_function_total_error(t)
                 results_dict.append(weight_dict)
         t2 = time.time()
         logging.info(f'linear_weight_tune finished in {(t2-t1)/60} minutes.')

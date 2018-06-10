@@ -65,6 +65,10 @@ class DataUtilities:
                                                     'capture_accuracy': find_nearest(sorted_ranks, threshold) / len(sorted_ranks)})
         return pd.DataFrame(threshold_error_by_activity)
 
+    @staticmethod
+    def min_max_scale(ar):
+        return ar/max(ar)
+
 
 class ResidualPlots:
     col_list = ["blue", "cyan", "green", "red"]
@@ -164,24 +168,35 @@ class ResidualPlots:
         plt.show()
 
     @staticmethod
-    def plot_weight_vs_error(weight_error_df, feature_order, inc, save_path):
+    def min_max_scale(ar):
+        return ar / max(ar)
+
+    def plot_weight_vs_error(weight_error_df, split_point, save_path):
         individual_df = {}
-        row_index = np.arange(0, len(weight_error_df) + inc, inc)
+        row_index = np.arange(0, len(weight_error_df) + split_point, split_point)
+        feature_order = list(filter(lambda x: x not in ['loss_function_error', 'rank_error'], list(linear_error)))
 
         for i in range(1, len(row_index)):
             row_start, row_end = row_index[i - 1], row_index[i]
             feature_name = feature_order[i - 1]
-            individual_df[feature_name] = weight_error_df[[feature_name, 'error']].iloc[row_start:row_end, :]
+            individual_df[feature_name] = \
+                weight_error_df[[feature_name, 'rank_error', 'loss_function_error']].iloc[row_start:row_end, :]
 
-        fig, axs = plt.subplots(3, 2, figsize=(6, 8))
+        fig, axs = plt.subplots(4, 2, figsize=(6, 8))
         fig.tight_layout()
         axs = axs.ravel()
 
         for i, (weight_type, df) in enumerate(individual_df.items()):
-            df.plot.line(x=weight_type, y='error', ax=axs[i])
+            df['rank_error'] = DataUtilities.min_max_scale(np.array(df['rank_error']))
+            df['loss_function_error'] = DataUtilities.min_max_scale(np.array(df['loss_function_error']))
+            df.plot.line(x=weight_type, y='rank_error', ax=axs[i])
+            df.plot.line(x=weight_type, y='loss_function_error', ax=axs[i])
             axs[i].legend_.remove()
 
-        plt.subplots_adjust(top=.9, hspace=.5, wspace=.25, bottom=.05)
+        plt.figlegend(labels=('Rank Sum', 'Error'), loc='lower center', labelspacing=0)
+
+        plt.subplots_adjust(top=.9, hspace=.5, wspace=.25, bottom=.15)
         fig.suptitle('Error by Feature Weight', fontsize=18)
         plt.savefig(save_path)
         plt.show()
+

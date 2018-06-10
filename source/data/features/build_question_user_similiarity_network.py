@@ -36,7 +36,7 @@ def clean_html(raw_html):
 def build_user_question_similarity_matrix():
     from build_all_features import BASE_PATH
 
-    X_train = pd.read_csv(BASE_PATH + 'X_train.csv').head(100)
+    X_train = pd.read_csv(BASE_PATH + 'X_train.csv').head(600)
     user_qac = pd.read_csv(BASE_PATH + 'raw_query/user_communication.csv')
     user_qac.fillna('', inplace=True)
 
@@ -46,23 +46,14 @@ def build_user_question_similarity_matrix():
     X_train['Title+Body_filtered'] = X_train.apply(lambda row: (row['Title']*weight) +
                                                                 clean_html(row['Body']), axis=1)
 
-    # this snippet is used to get a feel for how long this will take
-    # for index, row in X_train.iterrows():
-    #     a = (row['Title'] * weight) + clean_html(row['Body'])
-    #     print(index/len(X_train))
-
     # set maximum features to 1000 to not overkill
-    vectorizer = TfidfVectorizer(stop_words='english', analyzer='word', max_features=10)
     bar = progressbar.ProgressBar()
+    tf = TfidfVectorizer(stop_words='english', analyzer='word', max_features=1000)
     for column in bar(['answers_body', 'comments_body', 'asks_body', 'asks_title']):
-        tfidf_questions_and_user_history = vectorizer.fit_transform(list(X_train['Title+Body_filtered'].values) +
-                                                                    list(user_qac[column].values))
-        M = tfidf_questions_and_user_history * tfidf_questions_and_user_history.T
-        print(M.shape)
-        print(0, X_train.shape[0], X_train.shape[0], M.shape[1])
-        save_npz(f'{column}_question_user_sim_matrix.npz', M)
-        # print(M.shape)
-        # save_npz(f'{column}_question_user_sim_matrix.npz', M[0, X_train.shape[0]: X_train.shape[0], M.shape[1]])
+        content_and_history = list(X_train['Title+Body_filtered'].values) + list(user_qac[column].values)
+        tf_M = tf.fit_transform(content_and_history)
+        M = (tf_M * tf_M.T)[0:X_train.shape[0], X_train.shape[0]:-1]
+        save_npz(f'{column}.npz', M)
 
     # in order to become able to key into the matrix by q_id (row), and u_id (col)
     # add column and row key in (respectively)
@@ -73,6 +64,6 @@ def build_user_question_similarity_matrix():
     column_key_in = {userid: j for j, userid in enumerate(user_qac['userid'].values)}
     matrix_key_in['q_to_row'] = row_key_in
     matrix_key_in['user_to_col'] = column_key_in
-    with open('user_question_similarity_key_in.p', 'wb') as fp:
+    with open('key.p', 'wb') as fp:
         pickle.dump(matrix_key_in, fp)
 
