@@ -10,8 +10,8 @@ import os
 
 
 class TestPlots:
-    def __init__(self, n_features, weights=None):
-        if not weights:
+    def __init__(self, n_features, weights):
+        if weights is None:
             weights = np.repeat(1, n_features)
         self.engine = Engine(log_disabled=False, save_feature_matrices=False, visuals_active=True)
         self.engine.rank_all_questions(weights)
@@ -66,8 +66,8 @@ class TestWeightVector:
 
 class Test:
     @staticmethod
-    def plot_tests(n_features, scaled_t):
-        pt = TestPlots(n_features)
+    def plot_tests(n_features, scaled_t, weights=None):
+        pt = TestPlots(n_features, weights)
         pt.residual_matrix()
         pt.rank_distributions()
         pt.error_by_threshold()
@@ -114,10 +114,12 @@ def set_up_log_files(name):
 if __name__ == '__main__':
     set_up_log_files('run.log')
     # Test.simplest_test(7)
-    Test.plot_tests(n_features=11, scaled_t=.17)
+    # Test.plot_tests(n_features=11, scaled_t=.17)
+    # Test.plot_tests(n_features=11, scaled_t=.17, weights=np.array([50, 100, 130, 0, 75, 60, 0, 60, 75, 80, 20]))
 
     # TestPlots.feature_weight_vs_error(6)
-    # Test.save_residual_files(n_features=7, n_questions=1000)
+
+    Test.save_residual_files(n_features=11, n_questions=800)
 
     # WTest = TestWeightVector(['user_avail', 'user_expertise_a', 'user_expertise_c', 'user_expertise_q',
     #                           'user_sim_expertise_a', 'user_sim_expertise_c', 'user_sim_expertise_q'])

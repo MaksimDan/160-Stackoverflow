@@ -129,6 +129,8 @@ class UserQuestionRelation:
             else:
                 print('Invalid activity type')
         except IndexError:
+            # ideally should not happen, but it does, just notify
+            print(f'question: ({row}) or column ({col}) was unidentified')
             return 0
 
 

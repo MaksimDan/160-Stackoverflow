@@ -36,8 +36,8 @@ def clean_html(raw_html):
 def build_user_question_similarity_matrix():
     from build_all_features import BASE_PATH
 
-    X_train = pd.read_csv(BASE_PATH + 'X_train.csv').head(600)
-    user_qac = pd.read_csv(BASE_PATH + 'raw_query/user_communication.csv')
+    X_train = pd.read_csv(BASE_PATH + 'X_train.csv').head(800)
+    user_qac = pd.read_csv(BASE_PATH + 'meta/user_communication.csv')
     user_qac.fillna('', inplace=True)
 
     # for the question, combine the question title and the body. Give more weight
@@ -52,7 +52,7 @@ def build_user_question_similarity_matrix():
     for column in bar(['answers_body', 'comments_body', 'asks_body', 'asks_title']):
         content_and_history = list(X_train['Title+Body_filtered'].values) + list(user_qac[column].values)
         tf_M = tf.fit_transform(content_and_history)
-        M = (tf_M * tf_M.T)[0:X_train.shape[0], X_train.shape[0]:-1]
+        M = (tf_M * tf_M.T)[0:X_train.shape[0], X_train.shape[0]:len(content_and_history)]
         save_npz(f'{column}.npz', M)
 
     # in order to become able to key into the matrix by q_id (row), and u_id (col)

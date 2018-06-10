@@ -171,10 +171,10 @@ class ResidualPlots:
     def min_max_scale(ar):
         return ar / max(ar)
 
-    def plot_weight_vs_error(weight_error_df, split_point, save_path):
+    def plot_weight_vs_error(self, weight_error_df, split_point, save_path):
         individual_df = {}
         row_index = np.arange(0, len(weight_error_df) + split_point, split_point)
-        feature_order = list(filter(lambda x: x not in ['loss_function_error', 'rank_error'], list(linear_error)))
+        feature_order = list(filter(lambda x: x not in ['loss_function_error', 'rank_error'], list(weight_error_df)))
 
         for i in range(1, len(row_index)):
             row_start, row_end = row_index[i - 1], row_index[i]
