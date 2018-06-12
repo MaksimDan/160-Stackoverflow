@@ -15,7 +15,7 @@
 		<ul class="menu">
 		  <li><a href="#"><b>Home</b></a></li>
 		  <li><a href="./website/source/references.html"><b>References</b></a></li>
-		  <li><a href="https://drive.google.com/file/d/1vj-N9NXWZ2I_UHtMrlOQhkzel7-g6Qu5/view?usp=sharing"><b>Paper</b>
+		  <li><a href="./paper/paper.pdf"><b>Paper</b>
 		  <li><a href="https://github.com/MaksimDan/160-Stackoverflow"><b>Code</b></a></li>
 		  </a></li>
 		</ul>
@@ -64,7 +64,7 @@
 			<h3> Model Features </h3>
 			<ul>
 			  <li><b>Indicator Variables:</b> Utilizing a users history, our model applies two features as indicators. The first identifies whether a user created an account after the question was posted, and the second identifies whether the user was inactive before a question was made.</li>
-			  <li><b>User Availability (Feature 1):</b> the probability at which a user is available to answer.</li>
+			  <li><b>User Availability (Feature 1):</b> The probability at which a user is available to answer.</li>
 			  <li><b>User Expertise (Feature 2-4):</b> The level of experience of a user to a particular tag. Under this category, there are three sub-feature, which are the frequency of comments, questions and answers in relation to the tags of a question.</li>
 			  <li><b>User Tag Similarity Expertise (Feature 5-7):</b> The similarity of a tag and another tag for which a user who is experienced in such tag.</li>
 			  <li><b>Question Familiarity (Feature 8-11):</b> The level of familiarity with the content of a question to a user based on his/her historical record.</li>
@@ -86,12 +86,19 @@
 		<div class="cell medium-8">
 		  <div class="blog-post">
 			<h3> Results </h3>
-			<img class="thumbnail" src="./website/assets/error_by_threshold.png">
-			<p> stuff </p>
+			<h4> Predicted Ranks </h4>
 			<img class="thumbnail" src="./website/assets/predicted_ranks_edit1.png">
-			<p> stuff </p>
+			<p>The figure above illustrates the overall performance of our model on a sample of 1000 questions. The x-axis is the user rank as determined by the recommender system and the y-axis denotes each questions from 1 to 1000 respectively. Finally, the vertical lines represent the average rank with respect to the activity type. </p>
+
+			<p>In the context of our project, a highly recommended individual has a small rank, where as a unrecommended individual has a large rank. Therefore a optimal system would be illustrative of active users who are clustered towards the left, and inactive users who are clustered towards the right. For the most part, this seems to be the case.</p>
+			
+			<h4> Loss Error by Threshold </h4>
+			<img class="thumbnail" src="./website/assets/error_by_threshold.png">
+			<p> Because our loss function is dependent on selecting a threshold, we needed a way to understand how well the recommender performed as a greater pool of users were accepted. In other words, how many users did the recommender system get right in the top 10, or top 100 recommended users? More generally, given some threshold t*, we were interested in the ratio of observed user activities under t* to the total observed user activities. </p>
+			
+			<p> Classification Evaluation </p>
 			<img class="thumbnail" src="./website/assets/roc_curve_all_activities.png">
-			<p> stuff </p>
+			<p> Using user scores as a classification metric, our true positive rate is defined as the ratio of a over a+b, where a is the number of correctly labeled active users and b is the number of incorrectly labeled inactive users for all questions. Steepness for early thresholds, is an critical property that was achieved within the ROC curve. This is because we are looking to maximize the true positive rate while minimizing the false positive rate without having to resort to high thresholds, or scores. </p>
 		  </div>
 		</div>
 	  </div>
@@ -104,9 +111,9 @@
 			
 			<img class="thumbnail" src="./website/assets/threshold_mean.png">
 			
-			<p>In the figure above, what is immediately obvious is that there are 3 key features that dominate the overall feature score. These are features user availability, user expertise (by answers), and question familiarity (by question title). This plot helps us identity which features are important in terms of accurate classification in our model. Interestingly, each of these features will uniquely map to their own respective groups. </p>
-			
-			<p>Another observation that is common between both groups is that a exponentially decaying feature mean by ascending rank. This is to be expected, as a the system naturally accepts a few individuals who are a good match for a particular question, and more individuals who are more or less are on the same playing field. In other words, this plot highlights the cluster of individuals spread across x < t* as shown in the figure, and more or less uniform spread of individuals spread across x > t*. Another conclusion is titles from questions are more powerful indicators in terms being capable to summarizing a user coherency to a question. This makes sense because questions naturally produce the most important elements of a text.</p>
+			<p>In the figure above, there are 3 key features that dominate the overall feature score. These are features user availability (feature 1), user expertise (by answers feature 3), and question familiarity (by question title feature 9). This plot helps us identity which features are important in terms of accurate classification in our model. Interestingly, each of these features will uniquely map to their own respective groups. </p>
+
+			<p>Another observation that is common between both groups is that a exponentially decaying feature mean by ascending rank. This is to be expected, as a the system naturally accepts a few individuals who are a good match for a particular question, and more individuals who are more or less are on the same playing field. In other words, this plot highlights the cluster of individuals spread across x < t* as shown in figure above for <b>Predicted Ranks</b>, and more or less uniform spread of individuals spread across x > t*. Another conclusion is titles from questions are more powerful indicators in terms being capable to summarizing a user coherency to a question. This makes sense because questions naturally produce the most important elements of a text.</p>
 		  </div>
 		</div>
 	  </div>
