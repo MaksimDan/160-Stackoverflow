@@ -13,8 +13,11 @@
 	<div class="top-bar">
 	  <div class="top-bar-left">
 		<ul class="menu">
-		  <li><a href="#"><b>HOME</b></a></li>
-		  <li><a href="./website/source/references.html"><b>REFERENCES</b></a></li>
+		  <li><a href="#"><b>Home</b></a></li>
+		  <li><a href="./website/source/references.html"><b>References</b></a></li>
+		  <li><a href="https://drive.google.com/file/d/1vj-N9NXWZ2I_UHtMrlOQhkzel7-g6Qu5/view?usp=sharing"><b>Paper</b>
+		  <li><a href="https://github.com/MaksimDan/160-Stackoverflow"><b>Code</b></a></li>
+		  </a></li>
 		</ul>
 	  </div>
 	</div>
@@ -31,7 +34,7 @@
 		<div class="cell medium-8">
 		  <div class="blog-post">
 			<h3> Executive Summary </h3>
-			<p> Community question and answer services (CQA) like the Stack Exchange platform enable users to crowd source knowledge in the form of questions and answers. Thousands of new questions are posted each day, but approximately 22\% of non-closed questions remain unanswered, and 72\% do not receive an accepted answer. With a large volume of incomplete answers, new questions generated everyday and considerable interest in users to become able to identify these questions \cite{value, soquestions}, it can be useful to route questions to potential answers at a user's convenience and interest. In this paper, we present a user-question routing scheme that is focused on the context of unanswered questions. Our experiments show that by selectively targeting 15\% of a user population, we can expect to capture 90\% of the activities in unanswered questions in the form of answering, commenting or editing. We also show that this can be achieved through a simple selection of engineered features. </p>
+			<p> Community question and answer services (CQA) like the Stack Exchange platform enable users to crowd source knowledge in the form of questions and answers. Thousands of new questions are posted each day, but approximately 22% of non-closed questions remain unanswered, and 72% do not receive an accepted answer. With a large volume of incomplete answers, new questions generated everyday and considerable interest in users to become able to identify these questions, it can be useful to route questions to potential answers at a user's convenience and interest. In this paper, we present a user-question routing scheme that is focused on the context of unanswered questions. Our experiments show that by selectively targeting 15% of a user population, we can expect to capture 90% of the activities in unanswered questions in the form of answering, commenting or editing. We also show that this can be achieved through a simple selection of engineered features. </p>
 		  </div>
 		</div>
 	  </div>
@@ -40,7 +43,7 @@
 		<div class="cell medium-8">
 		  <div class="blog-post">
 			<h3> Stack Overflow Data Set </h3>
-			<p> Data from Stack Overflow is publicly available on archive.org \cite{data}. We decided to subset on Java related questions in the months of January to June of the year 2012. This decision was made for two key reasons. First, due to Java’s versatility, the language contains a large ecosystem of questions that already comprises a large subset of programming related topics. Secondly, due to the questions being 6 years old at the time of query, responses to these questions have stabilized in terms of obtaining new responses. </p>
+			<p> Data from Stack Overflow is publicly available on archive.org. We decided to subset on Java related questions in the months of January to June of the year 2012. This decision was made for two key reasons. First, due to Java’s versatility, the language contains a large ecosystem of questions that already comprises a large subset of programming related topics. Secondly, due to the questions being 6 years old at the time of query, responses to these questions have stabilized in terms of obtaining new responses. </p>
 		  </div>
 		</div>
 	  </div>
@@ -128,6 +131,8 @@
 			<p>Defining user expertise to be proportional to the frequency of posts as we have done is a naive way of measuring expertise in a topical area. To improve this, we recommend further subsetting on features such as length of response, or the number of upvotes associated under a particular post.</p>
 			
 			<p> For the first feature - user availability, rather the observing the global history of activities for a given user as we have done, in a real system, we recommend observing user activity for the last few months, in order to maintain dynamic scheduling. </p>
+
+			<p> Currently, our evaluation metric is not optimal. We plan to use Average Precision, and Mean Average Precision to evaluate our model. These are mostly widely accepted for ranked classification data. </p>
 		  </div>
 		</div>
 	  </div>
