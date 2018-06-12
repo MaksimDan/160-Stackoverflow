@@ -15,9 +15,8 @@
 		<ul class="menu">
 		  <li><a href="#"><b>Home</b></a></li>
 		  <li><a href="./website/source/references.html"><b>References</b></a></li>
-		  <li><a href="./paper/paper.pdf"><b>Paper</b>
+		  <li><a href="./paper/paper.pdf"><b>Paper</b></a></li>
 		  <li><a href="https://github.com/MaksimDan/160-Stackoverflow"><b>Code</b></a></li>
-		  </a></li>
 		</ul>
 	  </div>
 	</div>
@@ -53,7 +52,7 @@
 		  <div class="blog-post">
 			<h3> Recommender System </h3>
 			<img class="thumbnail" src="./website/assets/feature_matrix.PNG">
-			<p> We define our loss as the inverse ratio of observed activities within a chosen threshold ($t^*$) of the user population. In other words, given a limited number of users to choose from, we are interested in maximizing the identification of individuals who have responded to a question. This loss function reflects the philosophy that there are many users who are equally qualified in answering a question. We are more interested in adequately identifying these users, than quantifying a measurable metric that distinguishes one user better than the other. </p>
+			<p> We define our loss as the inverse ratio of observed activities within a chosen threshold (t*) of the user population. In other words, given a limited number of users to choose from, we are interested in maximizing the identification of individuals who have responded to a question. This loss function reflects the philosophy that there are many users who are equally qualified in answering a question. We are more interested in adequately identifying these users, than quantifying a measurable metric that distinguishes one user better than the other. </p>
 		  </div>
 		</div>
 	  </div>
@@ -76,15 +75,6 @@
 	  <div class="grid-x align-center">
 		<div class="cell medium-8">
 		  <div class="blog-post">
-			<h3> Loss Function </h3>
-			<p> We define our loss as the inverse ratio of observed activities within a chosen threshold ($t^*$) of the user population. In other words, given a limited number of users to choose from, we are interested in maximizing the identification of individuals who have responded to a question. This loss function reflects the philosophy that there are many users who are equally qualified in answering a question. We are more interested in adequately identifying these users, than quantifying a measurable metric that distinguishes one user better than the other. </p>
-		  </div>
-		</div>
-	  </div>
-	  
-	  <div class="grid-x align-center">
-		<div class="cell medium-8">
-		  <div class="blog-post">
 			<h3> Results </h3>
 			<h4> Predicted Ranks </h4>
 			<img class="thumbnail" src="./website/assets/predicted_ranks_edit1.png">
@@ -96,7 +86,7 @@
 			<img class="thumbnail" src="./website/assets/error_by_threshold.png">
 			<p> Because our loss function is dependent on selecting a threshold, we needed a way to understand how well the recommender performed as a greater pool of users were accepted. In other words, how many users did the recommender system get right in the top 10, or top 100 recommended users? More generally, given some threshold t*, we were interested in the ratio of observed user activities under t* to the total observed user activities. </p>
 			
-			<p> Classification Evaluation </p>
+			<h4> Classification Evaluation </h4>
 			<img class="thumbnail" src="./website/assets/roc_curve_all_activities.png">
 			<p> Using user scores as a classification metric, our true positive rate is defined as the ratio of a over a+b, where a is the number of correctly labeled active users and b is the number of incorrectly labeled inactive users for all questions. Steepness for early thresholds, is an critical property that was achieved within the ROC curve. This is because we are looking to maximize the true positive rate while minimizing the false positive rate without having to resort to high thresholds, or scores. </p>
 		  </div>
@@ -107,7 +97,7 @@
 		<div class="cell medium-8">
 		  <div class="blog-post">
 			<h3> Residual Analysis </h3>
-			<p>To study the characteristics between the classified group 0 < x < t* (A), against misclassified user group t** < x < 60000 (B), we look over features that dominated the overall scores of the user with respect to the kind of user activity. Moreover, we wanted to identify how the distributions in group B compared when lined up against group A.  </p>
+			<p>To study the characteristics between the correctly classified group x<t* (A), against misclassified user group x>t* (B), we look over features that dominated the overall scores of the user with respect to the kind of user activity. Moreover, we wanted to identify how the distributions in group B compared when lined up against group A. </p>
 			
 			<img class="thumbnail" src="./website/assets/threshold_mean.png">
 			
