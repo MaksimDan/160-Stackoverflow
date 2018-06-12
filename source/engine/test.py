@@ -11,6 +11,11 @@ import os
 
 class TestPlots:
     def __init__(self, n_features, weights):
+        """
+        objective: generate all plots
+        :param n_features: int - number of features in the model
+        :param weights: np.array - initialized weight vector
+        """
         if weights is None:
             weights = np.repeat(1, n_features)
         self.engine = Engine(log_disabled=False, save_feature_matrices=False, visuals_active=True)
@@ -51,6 +56,11 @@ class TestPlots:
 
 class TestWeightVector:
     def __init__(self, feature_names):
+        """
+        objective: tests related to computations with
+                the weight vector
+        :param feature_names:
+        """
         self.feature_names = feature_names
 
     def weight_tune(self):
@@ -65,6 +75,9 @@ class TestWeightVector:
 
 
 class Test:
+    """
+    objective: complete tests aggregate
+    """
     @staticmethod
     def plot_tests(n_features, scaled_t, weights=None):
         pt = TestPlots(n_features, weights)
@@ -99,6 +112,11 @@ class Test:
 
 
 def set_up_log_files(name):
+    """
+    objective: initialize log file
+    :param name: string - name of log file
+    :return:
+    """
     # delete old log file, if existing
     try:
         os.remove(name)
@@ -114,12 +132,12 @@ def set_up_log_files(name):
 if __name__ == '__main__':
     set_up_log_files('run.log')
     # Test.simplest_test(7)
-    # Test.plot_tests(n_features=11, scaled_t=.17)
+    Test.plot_tests(n_features=11, scaled_t=.17, weights=np.array([50, 100, 130, 0, 75, 60, 0, 60, 75, 80, 20]))
     # Test.plot_tests(n_features=11, scaled_t=.17, weights=np.array([50, 100, 130, 0, 75, 60, 0, 60, 75, 80, 20]))
 
     # TestPlots.feature_weight_vs_error(6)
 
-    Test.save_residual_files(n_features=11, n_questions=800)
+    # Test.save_residual_files(n_features=11, n_questions=800)
 
     # WTest = TestWeightVector(['user_avail', 'user_expertise_a', 'user_expertise_c', 'user_expertise_q',
     #                           'user_sim_expertise_a', 'user_sim_expertise_c', 'user_sim_expertise_q'])

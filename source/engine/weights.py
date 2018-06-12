@@ -11,6 +11,14 @@ from engine import Engine
 class WeightVector:
     @staticmethod
     def cartisian_weight_approximation(features, axis_lim, inc, t):
+        """
+        objective: brute force error optimization technique
+        :param features: list(string) - feature names
+        :param axis_lim: (int, int) - min and max limit to search per dim
+        :param inc: int - increment from min to max
+        :param t: int - threshold for loss function
+        :return: pd.Dataframe - summary of results
+        """
         # total_expected_run_time_in_hrs = (single_run_in_min *
         #                                   dimension_single_axis^dimension_weights)/60
         all_weights = list(itertools.product(range(axis_lim[0], axis_lim[1]+inc, inc), repeat=len(features)))
@@ -35,6 +43,16 @@ class WeightVector:
 
     @staticmethod
     def linear_weight_correlate(features, axis_lim, inc, t):
+        """
+        objective: a more naive error optimization technique, which
+                   computes error linearly by keeping only a single
+                   variable weight
+        :param features: list(string) - feature names
+        :param axis_lim: (int, int) - min and max limit to search per dim
+        :param inc: int - increment from min to max
+        :param t: int - threshold for loss function
+        :return: pd.Dataframe - summary of results
+        """
         results_dict = []
         init_w = np.repeat(1, len(features))
 
@@ -65,6 +83,14 @@ class WeightVector:
 
     @staticmethod
     def tune_weight_vector(n_features, base_alpha=2, exponential_increase=5):
+        """
+        objective: another error optimization technique - this time built
+                   to move forward in the direction of loss error
+        :param n_features: int - number of features in model
+        :param base_alpha: int - initial parameter to begin weight increase
+        :param exponential_increase: int - value to exponentially increment base alpha to
+        :return: optimized weights
+        """
         # start at from at least 1.5 for reasonably fast transition time
         # < 1.0 would make the make the weights decrease
         weights = np.random.rand(1, n_features)[0] + 1.5
@@ -88,6 +114,15 @@ class WeightVector:
 
     @staticmethod
     def _tune_single_weight(w, i, alpha, exp_increase, prev_error):
+        """
+        objective: helper function to tune_weight_vector to optimize a single error
+        :param w: list(float) - weight vector
+        :param i: int - index weight vector
+        :param alpha: int - initial parameter to begin weight increase
+        :param exp_increase: int - value to exponentially increment base alpha to
+        :param prev_error: float - initial error
+        :return:
+        """
         def adjust_weight(increase):
             w[i] = math.pow(w[i], alpha if increase else 1 / alpha)
 

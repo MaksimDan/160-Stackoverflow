@@ -13,6 +13,11 @@ class DataUtilities:
     # https://stats.stackexchange.com/questions/51248/how-can-i-find-the-standard-deviation-in-categorical-distribution
     @staticmethod
     def entropy(cata_vector):
+        """
+        objective: compute the measure of entropy of a catagorical vector
+        :param cata_vector: list(factor)
+        :return: float - shermons entropy level
+        """
         px = np.matrix(stats.itemfreq(cata_vector))[:, 1] / len(cata_vector)
         lpx = np.log2(px)
         ent = -np.sum(px.T * lpx)
@@ -20,6 +25,11 @@ class DataUtilities:
 
     @staticmethod
     def build_residual_dataframe(observed_ranks):
+        """
+        objective: convert residuals dictionary from engine to a dataframe
+        :param observed_ranks: dict - observed ranks by type of activity
+        :return: equivalent pd.Dataframe
+        """
         df = pd.DataFrame(DataUtilities.flatten_residual_dictionary(observed_ranks))
         _max_rank = max(df['rank'].values)
         df['rank'] = df['rank'].apply(lambda x: x / _max_rank)
@@ -27,6 +37,11 @@ class DataUtilities:
 
     @staticmethod
     def flatten_residual_dictionary(r_dict):
+        """
+        objective: flatten json residual structure
+        :param r_dict: dict - residual dictionary
+        :return: list of flattened dictionary mappings
+        """
         flatted_d = []
         for question_i, activities in r_dict.items():
             for activity, index_list in activities.items():
@@ -36,6 +51,11 @@ class DataUtilities:
 
     @staticmethod
     def flatten_full_residual_dictionary(r_dict):
+        """
+        objective: flatten json residual structure
+        :param r_dict: dict - residual dictionary
+        :return: list of flattened dictionary mappings
+        """
         flatted_d = []
         for question_i, activities in r_dict.items():
             for activity, data_types in activities.items():
@@ -46,6 +66,11 @@ class DataUtilities:
 
     @staticmethod
     def build_threshold_dataframe(raw_residuals):
+        """
+        objective: builds a dataframe used to compute thresholds
+        :param raw_residuals: dict - residual dictionary
+        :return: pd.Dataframe
+        """
         df = DataUtilities.build_residual_dataframe(raw_residuals)
 
         def find_nearest(array, value):
@@ -76,6 +101,12 @@ class ResidualPlots:
 
     @staticmethod
     def plot_residual_matrix(raw_residuals, save_path):
+        """
+        objective: visualizes the main summary plot
+        :param raw_residuals: dict - residuals from engine
+        :param save_path: string - path to save plot
+        :return:
+        """
         df = DataUtilities.build_residual_dataframe(raw_residuals)
         sns.set_palette(ResidualPlots.col_list_palette)
 
@@ -100,6 +131,12 @@ class ResidualPlots:
 
     @staticmethod
     def plot_rank_error_by_threshold(raw_residuals, save_path):
+        """
+        objective: visualize performance of the model by threshold
+        :param raw_residuals: dict - residual dictionary
+        :param save_path: string - path to save plot
+        :return:
+        """
         threshold_error_by_activity_df = DataUtilities.build_threshold_dataframe(raw_residuals)
         sns.lmplot('t', 'capture_accuracy', data=threshold_error_by_activity_df, hue='activity', fit_reg=False,
                    palette=ResidualPlots.col_list_palette, markers='.')
@@ -109,6 +146,12 @@ class ResidualPlots:
 
     @staticmethod
     def plot_rank_error_distributions(raw_residuals, save_path):
+        """
+        objective: plots the distribution of rank by activity type
+        :param raw_residuals: dict - residuals dictionary
+        :param save_path: string - path to save plot
+        :return:
+        """
         df = DataUtilities.build_residual_dataframe(raw_residuals)
         activity_groups = df.groupby('activity')
         n_error_types = len(activity_groups)
@@ -127,6 +170,12 @@ class ResidualPlots:
 
     @staticmethod
     def plot_loss_function_error_distribution(loss_errors, save_path):
+        """
+        objective: plots the distribution of loss function errors per question
+        :param loss_errors: list(float) - loss function errors
+        :param save_path: string - path to save plot
+        :return:
+        """
         plt.hist(loss_errors, 20, normed=1)
         plt.title('Distribution of all Loss Function Errors')
         plt.savefig(save_path)
@@ -136,6 +185,12 @@ class ResidualPlots:
 
     @staticmethod
     def plot_entropy_per_rank(rank_matrix, save_path):
+        """
+        objective: plots shannons entropy by column rank
+        :param rank_matrix: NxM matrix where rows are questions, and columns are users
+        :param save_path: string - path to save plot
+        :return:
+        """
         rank = np.arange(0, rank_matrix.shape[1])
         entropy_ar = np.array([DataUtilities.entropy(rank_matrix[:, j]) for j in rank], dtype=np.float)
         sns.lmplot('rank', 'entropy', data=pd.DataFrame({'rank': rank, 'entropy': entropy_ar}),
@@ -149,6 +204,14 @@ class ResidualPlots:
 
     @staticmethod
     def plot_roc_curve_for_all_activities(score_matrix, label_matrix, save_path):
+        """
+        objective: plots receiver operating characteristic curve on classification
+        :param score_matrix: NxM matrix where rows ar questions, and columns are users
+        :param label_matrix: NxM matrix where rows are questions, and columns are indicative
+                             if there was an activity by user_j
+        :param save_path: string - path to save plot
+        :return:
+        """
         fpr, tpr, _ = roc_curve(label_matrix.ravel(), score_matrix.ravel())
         roc_auc = auc(fpr, tpr)
         # np.savetxt("score_matrix.csv", score_matrix, delimiter=",")
@@ -167,11 +230,14 @@ class ResidualPlots:
         plt.savefig(save_path)
         plt.show()
 
-    @staticmethod
-    def min_max_scale(ar):
-        return ar / max(ar)
-
     def plot_weight_vs_error(self, weight_error_df, split_point, save_path):
+        """
+        objective: plots the change of error based on weight value of feature
+        :param weight_error_df: pd.Dataframe
+        :param split_point: int - number of rows in df until next feature
+        :param save_path: string - path to save plot
+        :return:
+        """
         individual_df = {}
         row_index = np.arange(0, len(weight_error_df) + split_point, split_point)
         feature_order = list(filter(lambda x: x not in ['loss_function_error', 'rank_error'], list(weight_error_df)))

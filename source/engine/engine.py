@@ -29,6 +29,12 @@ class Residuals:
         self.full_raw_residuals_per_question = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: list())))
 
     def compute_and_store_residuals_filtered(self, score_matrix, y_index):
+        """
+        objective: store limited information residuals for plotting purposes
+        :param score_matrix: NxM np matrix
+        :param y_index: int - question number
+        :return:
+        """
         observed = self.y.iloc[y_index]
         predicted = {int(score_matrix[i, 0]): {'index': i, 'score': score_matrix[i, -1]}
                      for i in range(score_matrix.shape[0])}
@@ -50,14 +56,20 @@ class Residuals:
         self.error_per_question['answer'].append(sum(index_answer))
         self.error_per_question['comment'].append(sum(index_comment))
         self.error_per_question['edit'].append(sum(index_editor))
-        self.error_per_question['favorite'].append(sum(index_favorite))
+        # self.error_per_question['favorite'].append(sum(index_favorite))
 
         self.raw_residuals_per_question[y_index]['i_answer'] = index_answer
         self.raw_residuals_per_question[y_index]['i_comment'] = index_comment
         self.raw_residuals_per_question[y_index]['i_editor'] = index_editor
-        self.raw_residuals_per_question[y_index]['i_favorite'] = index_favorite
+        # self.raw_residuals_per_question[y_index]['i_favorite'] = index_favorite
 
     def compute_and_store_residuals_unfiltered(self, score_matrix, y_index):
+        """
+        objective: store residual information related to residual analysis processing
+        :param score_matrix: NxM np matrix
+        :param y_index: int - question number
+        :return:
+        """
         observed = self.y.iloc[y_index]
         predicted = {int(score_matrix[i, 0]): {'index': i, 'score': score_matrix[i, -1]}
                      for i in range(score_matrix.shape[0])}
@@ -76,7 +88,7 @@ class Residuals:
         i_ans, u_ans, s_ans = try_iter(eval(observed.answerers))
         i_com, u_com, s_com = try_iter(eval(observed.commenters))
         i_ed, u_ed, s_ed = try_iter(eval(observed.editers))
-        i_fav, u_fav, s_fav = try_iter(eval(observed.favorite))
+        # i_fav, u_fav, s_fav = try_iter(eval(observed.favorite))
 
         self.full_raw_residuals_per_question[y_index]['answer']['rank'] = i_ans
         self.full_raw_residuals_per_question[y_index]['answer']['userid'] = u_ans
@@ -90,11 +102,17 @@ class Residuals:
         self.full_raw_residuals_per_question[y_index]['edit']['userid'] = u_ed
         self.full_raw_residuals_per_question[y_index]['edit']['score'] = s_ed
 
-        self.full_raw_residuals_per_question[y_index]['favorite']['rank'] = i_fav
-        self.full_raw_residuals_per_question[y_index]['favorite']['userid'] = u_fav
-        self.full_raw_residuals_per_question[y_index]['favorite']['score'] = s_fav
+        # removing favorites as part of the error (doesnt make much sense to route)
+        # self.full_raw_residuals_per_question[y_index]['favorite']['rank'] = i_fav
+        # self.full_raw_residuals_per_question[y_index]['favorite']['userid'] = u_fav
+        # self.full_raw_residuals_per_question[y_index]['favorite']['score'] = s_fav
 
     def get_loss_function_errors(self, t_discrete):
+        """
+        objective: return all the loss function errors per question
+        :param t_discrete: int - population threshold criteria
+        :return: list - loss function error per function
+        """
         def flatten_lists(lists):
             return list(itertools.chain.from_iterable(lists))
 
@@ -106,17 +124,35 @@ class Residuals:
         return errors
 
     def get_loss_function_total_error(self, t):
+        """
+        objective: aggregates together all loss function errors
+        :param t: int - population threshold
+        :return: float - total loss function error
+        """
         return sum(self.get_loss_function_errors(t))
 
     def get_total_rank_error(self):
+        """
+        objective: aggregates together all ranks
+        :return: float - total sum of ranks
+        """
         d = self.flatted_errors()
         return sum([d[key] for key in d.keys()])
 
     def get_total_observed_users(self):
+        """
+        objective: counts the total number of user activities
+        :return: int - total activities
+        """
         return sum([len(indices) for y_index, activities in self.raw_residuals_per_question.items()
                     for activity, indices in activities.items()])
 
     def get_summarize_statistics(self, n_total_users):
+        """
+        objective: print performance summary for log file
+        :param n_total_users: int - population length
+        :return:
+        """
         n_questions = len(self.raw_residuals_per_question)
 
         stats = 'Residual Summary Statistics\n\n'
@@ -158,18 +194,32 @@ class Residuals:
         return stats
 
     def flatted_errors(self):
+        """
+        objective: aggregate ranks per activity basis
+        :return: dict - sum of ranks by activity
+        """
         flatted_errors = defaultdict(int)
         for activity, ranks in self.error_per_question.items():
             flatted_errors[activity] = sum(ranks)
         return flatted_errors
 
     def get_average_percent_rank_error_per_question(self, n_total_users):
+        """
+        objective: compute the average rank error per question
+        :param n_total_users: int - total users
+        :return:
+        """
         d = {}
         for activity, ranks in self.error_per_question.items():
             d[activity] = np.mean(ranks) / n_total_users
         return d
 
     def summarize_error_by_threshold(self):
+        """
+        objective: print information related to error by threshold
+                   note: there is a plot equivalent to this
+        :return: dict - summary of threshold
+        """
         t_df = DataUtilities.build_threshold_dataframe(self.raw_residuals_per_question)
 
         threshold_summary = {}
@@ -185,6 +235,12 @@ class Residuals:
         return threshold_summary
 
     def build_label_matrix(self, matrix_init):
+        """
+        objective: build NxM matrix that identifies whether there or was
+                   an activity at question_i, user_j
+        :param matrix_init: NxM np zero matrix
+        :return:
+        """
         # single classification for now (treat any kind of user activity as the same activity)
         for question_number, activities in self.raw_residuals_per_question.items():
             for activity, indices in activities.items():
@@ -235,6 +291,11 @@ class Engine:
             self.recommender_label_matrix = np.zeros((len(Engine.X), len(Engine.unique_users_list)), dtype=np.int)
 
     def rank_all_questions(self, w):
+        """
+        objective: rank all the users on per question basis
+        :param w: np.array - weight vector for features
+        :return:
+        """
         if self.save_feature_matrices and not os.path.exists('feature_matrices'):
             os.makedirs('feature_matrices')
 
@@ -278,6 +339,14 @@ class Engine:
 
     @staticmethod
     def _rank_question(q_num, x_row, M, w):
+        """
+        objective: rank individual question
+        :param q_num: int - question index or number
+        :param x_row: pd.Series - feature row for question
+        :param M: NxM feature matrix
+        :param w: np.array - weight vector
+        :return: NxM feature matrix that consists of users and feature scores
+        """
         for i, user in enumerate(M[:, 0]):
             M[i, 1:-1] = Engine._compute_feature_row_for_user(q_num, user, x_row)
 
@@ -300,6 +369,13 @@ class Engine:
 
     @staticmethod
     def _compute_feature_row_for_user(q_num, user_id, x_row):
+        """
+        objective: compute the features scores for a user
+        :param q_num: int - question number or index
+        :param user_id: int - user identifier
+        :param x_row: pd.Series - feature meta information
+        :return:
+        """
         user_avail = Engine.user_availability.get_user_availability_probability(user_id, x_row.CreationDate.hour)
         # deprecation note: no longer using user basic profile as a feature (worthless)
         # user_basic_profile = Engine.user_profile.get_all_measureable_features(user_id)
@@ -322,11 +398,24 @@ class Engine:
 
     @staticmethod
     def _sort_matrix_by_column(M, i_column, ascending=True):
+        """
+        objective: sort a matrix by a column name
+        :param M: NxM matrix
+        :param i_column: int - index column to sort by
+        :param ascending: boolean - true if ascending order
+        :return:
+        """
         multiplier = 1 if ascending else -1
         return M[np.argsort(multiplier*M[:, i_column])]
 
     @staticmethod
     def __post_process_indicate(M, x_row):
+        """
+        objective: filter through feature matrix by indicator
+        :param M: NxM feature matrix
+        :param x_row: pd.Series - feature meta information
+        :return: np.array - new filtered out scores
+        """
         # key:
         #   M[i, 0] -> user_id
         #   M[i, -1] -> score
