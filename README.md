@@ -3,6 +3,8 @@
 ## Routing Collaborative Activity in Community Answering Forums
 ### A look into the Stack Overflow Network
 
+http://danmak.info/160-Stackoverflow/
+
 Authors
 * Dan Maksimovich
 * Esmond Chu
